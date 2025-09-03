@@ -2,7 +2,7 @@ import { useState, StrictMode } from 'react';
 import Navbar from './navbar.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import Side_Panel from './Side_Panel.jsx';
-import Main_Page from './Main_Page.jsx';
+import Main_Header from './Main_Header.jsx';
 function App() {
 
   return (
@@ -13,7 +13,11 @@ function App() {
           <Navbar/>
           <div className='flex flex-1'>
             <Side_Panel/>
-            <Main_Page/>
+            <div className='w-full flex flex-col'>
+              <Main_Header/>
+              {/* router based content (dependency: search, category, sort, view) */}
+              
+            </div>
           </div>
         </div>
 
