@@ -10,9 +10,9 @@ function App() {
       <BrowserRouter>
         <div className='flex flex-col h-screen bg-gray-50'>
           <Navbar />
-          <div className='flex h-full overflow-auto'>
+          <div className='flex overflow-auto h-full w-full'> {/* penyelesaiannya cuman gn, dah itu aja */}
             <Side_Panel />
-            <div className='flex flex-col overflow-hidden'>
+            <div className='flex flex-1 flex-col'>
               <Main_Header />
               {/* router based content (dependency: search, category, sort, view) */}
               <Main_Content />
