@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export default () =>{
     return(
     <>
-        <div id="Header" className="flex items-center w-full h-20 border-b-2 border-black">
+        <div id="Header" className="flex items-center w-full h-20">
             <div className="pl-4 pt-4 flex-1"> {/* category section */}
                 <h1 className="text-[1.2em] font-bold font-mono">All Notes</h1> {/* based on sidebar selection */}
                 <p className="font-mono">24 notes</p> {/* based on the number of notes available on that category */}
