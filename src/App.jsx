@@ -6,6 +6,7 @@ function App() {
   const route = createBrowserRouter([
     { path: '/', element: <Front_Page /> },
     { path: '/notes', element: <Notes_App /> },
+    {path: '/login', element: <h1>this is login page</h1>}, // TODO:
     {path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1>}
   ])
 

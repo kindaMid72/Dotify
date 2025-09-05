@@ -6,8 +6,8 @@ function Navbar (props) {
     <nav id="container" className="p-2 pr-4 bg-gray-200 border-b-[2px] border-gray-300">
         <ol className=" flex justify-end items-center gap-1.5">
             <li className="flex justify-start items-center flex-1 pl-4">
-                <i class="fa-solid fa-note-sticky pr-3 scale-[1.4] "></i>
-                <p className="font-bold text-xl font-mono">FoNote</p>
+                <img src="../src/assets/Logo_Only.png" className="w-[25px]"></img>
+                <p className="font-bold text-xl font-mono pl-2">Dotify</p>
             </li>
             <li className="group border-2 border-black p-2 rounded-xl flex justify-center items-center pl-3 pr-1  focus-within:bg-gray-100 bg-gray-200 transition-colors duration-300 ease-in-out">{/* place holder */}
                 <form>
