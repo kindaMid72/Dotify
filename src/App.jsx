@@ -1,27 +1,17 @@
-import { BrowserRouter } from 'react-router-dom';
-import Main_Content from './Main_Content.jsx';
-import Main_Header from './Main_Header.jsx';
-import Navbar from './navbar.jsx';
-import Side_Panel from './Side_Panel.jsx';
+import { createBrowserRouter, RouterProvider, Link, useNavigate} from 'react-router-dom';
+import Front_Page from './Landing_Page/Front_Page.jsx';
+import Notes_App from './Main_Apps/Notes_App.jsx';
+
 function App() {
+  const route = createBrowserRouter([
+    { path: '/', element: <Front_Page /> },
+    { path: '/notes', element: <Notes_App /> },
+    {path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1>}
+  ])
 
   return (
     <>
-      <BrowserRouter>
-        <div className='flex flex-col h-screen bg-gray-50'>
-          <Navbar />
-          <div className='flex overflow-auto h-full w-full'> {/* penyelesaiannya cuman gn, dah itu aja */}
-            <Side_Panel />
-            <div className='flex flex-1 flex-col'>
-              <Main_Header />
-              {/* router based content (dependency: search, category, sort, view) */}
-              <Main_Content />
-            </div>
-          </div>
-        </div>
-
-
-      </BrowserRouter>
+      <RouterProvider router={route} />
     </>
   )
 }
