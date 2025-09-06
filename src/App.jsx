@@ -9,9 +9,11 @@ import Front_Faq from './Landing_Page/Faq.jsx';
 
 // login page
 import Login_Page from './Login_Page/Main_Login.jsx';
+import Sign_In from './Login_Page/Sign_In.jsx';
 
 // main Apps
 import Notes_App from './Main_Apps/Notes_App.jsx';
+
 
 function App() {
   const route = createBrowserRouter([
@@ -25,7 +27,8 @@ function App() {
         {path: 'faq', element: <Front_Faq/>}
       ]
     },
-    { path: '/login', element: <Login_Page/> }, // TODO: create ui for login
+    { path: '/login', element: <Login_Page/>}, // TODO: missing logic
+    {path: '/signin', element: <Sign_In/>}, // sign in page (ui logic)
     { path: '/notes', element: <Notes_App /> }, // TODO: add some functionality
     { path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1> } //TODO: add UI
   ])

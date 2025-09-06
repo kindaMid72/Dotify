@@ -7,7 +7,7 @@ export default () => {
     return (
         <>
             <nav>
-                <ol className="flex justify-start gap-15 w-full items-center [&_*]:font-mono py-3 pl-7 border-b-2 border-black">
+                <ol className="flex justify-start gap-15 w-full items-center [&_*]:font-mono py-3 pl-7 border-b-1 border-black">
                     <li className="flex items-center cursor-pointer" onClick={() => navigate('/')}>{/* this is main page */}
                         <img src="../src/assets/Logo_Only.png" alt="logo" className="w-9"></img>
                         <h1 className="font-mono font-extrabold pl-3 !text-[2.1em]">Dotify</h1>
