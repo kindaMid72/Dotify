@@ -7,10 +7,8 @@ import Front_Why_Us from './Landing_Page/Why.jsx';
 import Front_Features from './Landing_Page/Features.jsx';
 import Front_Faq from './Landing_Page/Faq.jsx';
 
-
 // login page
 import Login_Page from './Login_Page/Main_Login.jsx';
-
 
 // main Apps
 import Notes_App from './Main_Apps/Notes_App.jsx';
@@ -19,7 +17,7 @@ function App() {
   const route = createBrowserRouter([
     {
       path: '/',
-      element: <Front_Page />,
+      element: <Front_Page />, // all children from this page will be mounted in <Outlet/>
       children: [
         {index: true, element: <Front_Index /> },
         {path: 'WhyUs', element: <Front_Why_Us/>},
@@ -27,9 +25,9 @@ function App() {
         {path: 'faq', element: <Front_Faq/>}
       ]
     },
-    { path: '/login', element: <Login_Page/> }, // TODO:
-    { path: '/notes', element: <Notes_App /> },
-    { path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1> }
+    { path: '/login', element: <Login_Page/> }, // TODO: create ui for login
+    { path: '/notes', element: <Notes_App /> }, // TODO: add some functionality
+    { path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1> } //TODO: add UI
   ])
 
   return (
