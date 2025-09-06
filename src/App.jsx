@@ -1,13 +1,35 @@
-import { createBrowserRouter, RouterProvider, Link, useNavigate} from 'react-router-dom';
-import Front_Page from './Landing_Page/Front_Page.jsx';
+import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom';
+
+// landing page
+import Front_Page from './Landing_Page/Main_Page.jsx';
+import Front_Index from './Landing_Page/Index.jsx';
+import Front_Why_Us from './Landing_Page/Why.jsx';
+import Front_Features from './Landing_Page/Features.jsx';
+import Front_Faq from './Landing_Page/Faq.jsx';
+
+
+// login page
+import Login_Page from './Login_Page/Main_Login.jsx';
+
+
+// main Apps
 import Notes_App from './Main_Apps/Notes_App.jsx';
 
 function App() {
   const route = createBrowserRouter([
-    { path: '/', element: <Front_Page /> },
+    {
+      path: '/',
+      element: <Front_Page />,
+      children: [
+        {index: true, element: <Front_Index /> },
+        {path: 'WhyUs', element: <Front_Why_Us/>},
+        {path: 'features', element: <Front_Features/>},
+        {path: 'faq', element: <Front_Faq/>}
+      ]
+    },
+    { path: '/login', element: <Login_Page/> }, // TODO:
     { path: '/notes', element: <Notes_App /> },
-    {path: '/login', element: <h1>this is login page</h1>}, // TODO:
-    {path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1>}
+    { path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1> }
   ])
 
   return (
