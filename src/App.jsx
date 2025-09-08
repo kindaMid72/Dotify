@@ -1,18 +1,18 @@
 import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom';
 
 // landing page
-import Front_Page from './Landing_Page/Main_Page.jsx';
-import Front_Index from './Landing_Page/Index.jsx';
-import Front_Why_Us from './Landing_Page/Why.jsx';
-import Front_Features from './Landing_Page/Features.jsx';
-import Front_Faq from './Landing_Page/Faq.jsx';
+import Front_Page from './views/Landing_Page/Main_Page.jsx';
+import Front_Index from './views/Landing_Page/Index.jsx';
+import Front_Why_Us from './views/Landing_Page/Why.jsx';
+import Front_Features from './views/Landing_Page/Features.jsx';
+import Front_Faq from './views/Landing_Page/Faq.jsx';
 
 // login page
-import Login_Page from './Login_Page/Main_Login.jsx';
-import Sign_In from './Login_Page/Sign_In.jsx';
+import Login_Page from './views/Login_Page/Main_Login.jsx';
+import Sign_In from './views/Login_Page/Sign_In.jsx';
 
 // main Apps
-import Notes_App from './Main_Apps/Notes_App.jsx';
+import Notes_App from './views/Main_Apps/Notes_App.jsx';
 
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
       ]
     },
     { path: '/login', element: <Login_Page/>}, // TODO: missing logic
-    {path: '/signin', element: <Sign_In/>}, // sign in page (ui logic)
+    { path: '/signin', element: <Sign_In/>}, // sign in page (ui logic)
     { path: '/notes', element: <Notes_App /> }, // TODO: add some functionality
     { path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1> } //TODO: add UI
   ])
