@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-free": "^7.0.0",
     "@tailwindcss/vite": "^4.1.12",
     "express": "^5.1.0",
+    "mysql2": "^3.14.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.12"
