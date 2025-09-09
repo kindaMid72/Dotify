@@ -1,18 +1,18 @@
 import { createBrowserRouter, Link } from 'react-router-dom';
 
 // landing page
-import Front_Faq from '../views/Landing_Page/Faq.jsx';
-import Front_Features from '../views/Landing_Page/Features.jsx';
-import Front_Index from '../views/Landing_Page/Index.jsx';
-import Front_Page from '../views/Landing_Page/Main_Page.jsx';
-import Front_Why_Us from '../views/Landing_Page/Why.jsx';
+import Front_Faq from './Landing_Page/Faq.jsx';
+import Front_Features from './Landing_Page/Features.jsx';
+import Front_Index from './Landing_Page/Index.jsx';
+import Front_Page from './Landing_Page/Main_Page.jsx';
+import Front_Why_Us from './Landing_Page/Why.jsx';
 
 // login page
-import Login_Page from '../views/Login_Page/Main_Login.jsx';
-import Sign_In from '../views/Login_Page/Sign_In.jsx';
+import Login_Page from './Registration_Page/Main_Login.jsx';
+import Sign_In from './Registration_Page/Sign_In.jsx';
 
 // main Apps
-import Notes_App from '../views/Main_Apps/Notes_App.jsx';
+import Notes_App from './Main_Apps/Notes_App.jsx';
 
 const router = createBrowserRouter([
     {
