@@ -23,7 +23,7 @@ route.post('/create_user', async (req, res) => {
         res.status(201).json({massage: 'User created successfully ', result});
     } catch (error) {
         console.log(error);
-        res.status(500).json({massage: 'Failed to create user'});
+        res.status(500).json({massage: error.massage || 'Failed to create user'}); // kembalikan pesan error
     }
 });
 

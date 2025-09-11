@@ -17,41 +17,43 @@ export default () => {
         try {
             // Hapus pesan lama setiap kali submit baru
             setStatusElement(null);
-
-            switch (true) {
-                case !email || !password || !confirmPassword:
-                    setStatusElement(<PopUpMassage title="Input Tidak Lengkap" massage="Mohon isi semua kolom yang wajib." />);
-                    throw new Error("invalid input")
-                case password.length < 8: // check password length 
-                    setStatusElement(<PopUpMassage title="Password Lemah" massage="Password harus memiliki minimal 8 karakter." />);
-                    throw new Error("password too short")
-                case password !== confirmPassword: // check password match
-                    setStatusElement(<PopUpMassage title="Password Tidak Cocok" massage="Konfirmasi password tidak sesuai." />);
-                    throw new Error("password mismatch")
-                case !email.test(emailRegex): // check email format
-                    setStatusElement(<PopUpMassage title="Email Tidak Valid" massage="Mohon masukkan format email yang benar." />);
-                    throw new Error('Invalid email format');
-                default:
-                    break;
-            }
-            // Gunakan environment variable untuk base URL API
-            const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/db/users/create_user`;
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                    name: name
-                })
-
-            });
-            if (response.ok) {
-                setStatusElement(<PopUpMassage title="Welcome!!" massage="Akun berhasil dibuat." />);
-                /* redirect ke halaman aplikasi yang sudah login*/
-            }
+            setTimeout( async () => { // delay for UIs
+                switch (true) {
+                    case !email || !password || !confirmPassword:
+                        setStatusElement(<PopUpMassage title="Input Tidak Lengkap" massage="Mohon isi semua kolom yang wajib." color="red" />);
+                        throw new Error("invalid input")
+                    case password.length < 8: // check password length 
+                        setStatusElement(<PopUpMassage title="Password Lemah" massage="Password harus memiliki minimal 8 karakter." color="red" />);
+                        throw new Error("password too short")
+                    case password !== confirmPassword: // check password match
+                        setStatusElement(<PopUpMassage title="Password Tidak Cocok" massage="Konfirmasi password tidak sesuai." color="red"/>);
+                        throw new Error("password mismatch")
+                    case !emailRegex.test(email): // check email format
+                        setStatusElement(<PopUpMassage title="Email Tidak Valid" massage="Mohon masukkan format email yang benar." color="red"/>);
+                        throw new Error('Invalid email format');
+                    default:         
+                        break;
+                }
+                // Gunakan environment variable untuk base URL API
+                const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/db/users/create_user`;
+                const name = email.split('@')[0];
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        name: name
+                    })
+    
+                });
+                if (response.ok) {
+                    setStatusElement(<PopUpMassage title="Welcome!!" massage="Akun berhasil dibuat." color="green"/>);
+                    /* redirect ke halaman aplikasi yang sudah login*/
+                }
+            }, 50);
         } catch (error) {
             console.error(error);
         }
@@ -60,7 +62,7 @@ export default () => {
 
     return (<>
         <div className="flex items-center justify-center min-h-screen bg-gray-100 relative">
-            {statusElement}
+            {statusElement} {/* if submit is triggered */}
             <div className="flex flex-col justify-center items-center w-[450px] border-2 border-transparent rounded-xl py-6 px-8 font-mono [box-shadow:0px_0px_50px_#c7c7c7]">
                 <div> {/* welcome back section */}
                     <h1 className="text-4xl font-extrabold">Welcome to Dotify!</h1>
