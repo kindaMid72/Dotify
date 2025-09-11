@@ -3,6 +3,6 @@ import UserController from './UserController.js';
 
 const route = express.Router();
 
-route.use('/users', UserController); // /user/create_user
+route.use('/users', UserController); // /user/ <- user related database intreaction
 
 export default route;

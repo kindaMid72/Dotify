@@ -1,25 +1,42 @@
-
+import { useState } from 'react';
+import PopUpMassage from '../components/Pop_Up_Massage.jsx';
 
 export default () => {
+    let [email, setEmail] = useState('');
+    let [password, setPassword] = useState('');
+    let [confirmPassword, setConfirmPassword] = useState('');
+    let [name, setName] = useState('');
+    // Gunakan useState untuk mengelola elemen status agar UI bisa re-render
+    let [statusElement, setStatusElement] = useState(null);
 
 
     async function handleSubmit(event) {
         event.preventDefault();
-
-        const PORT = 3000;
-        const email = event.target.email.value;
-        const password = event.target.password.value;
-        const confirm_password = event.target.confirm_password.value;
-        const name = String(event.target.email.value).split('@')[0];
-
-        if (confirm_password !== password) {
-            console.log('password not match');
-            return;
-        }
-        console.log(email, password, name);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         try {
-            const response = await fetch(`http://localhost:${PORT}/api/db/users/create_user`, {
+            // Hapus pesan lama setiap kali submit baru
+            setStatusElement(null);
+
+            switch (true) {
+                case !email || !password || !confirmPassword:
+                    setStatusElement(<PopUpMassage title="Input Tidak Lengkap" massage="Mohon isi semua kolom yang wajib." />);
+                    throw new Error("invalid input")
+                case password.length < 8: // check password length 
+                    setStatusElement(<PopUpMassage title="Password Lemah" massage="Password harus memiliki minimal 8 karakter." />);
+                    throw new Error("password too short")
+                case password !== confirmPassword: // check password match
+                    setStatusElement(<PopUpMassage title="Password Tidak Cocok" massage="Konfirmasi password tidak sesuai." />);
+                    throw new Error("password mismatch")
+                case !email.test(emailRegex): // check email format
+                    setStatusElement(<PopUpMassage title="Email Tidak Valid" massage="Mohon masukkan format email yang benar." />);
+                    throw new Error('Invalid email format');
+                default:
+                    break;
+            }
+            // Gunakan environment variable untuk base URL API
+            const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/db/users/create_user`;
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,7 +48,10 @@ export default () => {
                 })
 
             });
-            console.log(response);
+            if (response.ok) {
+                setStatusElement(<PopUpMassage title="Welcome!!" massage="Akun berhasil dibuat." />);
+                /* redirect ke halaman aplikasi yang sudah login*/
+            }
         } catch (error) {
             console.error(error);
         }
@@ -39,7 +59,8 @@ export default () => {
 
 
     return (<>
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 relative">
+            {statusElement}
             <div className="flex flex-col justify-center items-center w-[450px] border-2 border-transparent rounded-xl py-6 px-8 font-mono [box-shadow:0px_0px_50px_#c7c7c7]">
                 <div> {/* welcome back section */}
                     <h1 className="text-4xl font-extrabold">Welcome to Dotify!</h1>
@@ -64,11 +85,11 @@ export default () => {
 
 
                     <p>Email</p>
-                    <input name="email" type='text' placeholder="your@example.com" className="w-full border-2 border-gray-300 p-2 rounded-md mb-2"></input>
+                    <input name="email" value={email} onChange={(e) => setEmail(e.target.value)} type='text' placeholder="your@example.com" className="w-full border-2 border-gray-300 p-2 rounded-md mb-2"></input>
                     <p>Password</p>
-                    <input name="password" type='password' placeholder="Enter your password" className="w-full border-gray-300 border-2 p-2 rounded-md mb-2"></input>
+                    <input name="password" value={password} onChange={(e) => setPassword(e.target.value)} type='password' placeholder="Enter your password" className="w-full border-gray-300 border-2 p-2 rounded-md mb-2"></input>
                     <p>Confirm Password</p>
-                    <input name="confirm_password" type='password' placeholder="Enter your password" className="w-full border-gray-300 border-2 p-2 rounded-md"></input>
+                    <input name="confirm_password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} type='password' placeholder="Enter your password" className="w-full border-gray-300 border-2 p-2 rounded-md"></input>
 
                     <div className="flex justify-between items-center mt-5"> {/* forgot password section */}
                         <div className="flex justify-start items-center">

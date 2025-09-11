@@ -20,5 +20,17 @@ async function createUser({ email, password, name, profile_url, current_time }) 
         throw new Error('Failed to create user');
     }
 };
+async function editUser(params) {
+    
+}
+async function deleteUser(params) {
+    
+}
+async function getUser(params) {
+    
+}
+async function getAllUser(params) {
+    
+}
 
-export default { createUser }; // Jangan lupa ekspor router agar bisa digunakan
+export default { createUser, editUser, deleteUser, getUser, getAllUser }; // Jangan lupa ekspor router agar bisa digunakan

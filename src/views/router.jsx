@@ -15,7 +15,7 @@ import Sign_In from './Registration_Page/Sign_In.jsx';
 import Notes_App from './Main_Apps/Notes_App.jsx';
 
 const router = createBrowserRouter([
-    {
+    {   
         path: '/',
         element: <Front_Page />, // all children from this page will be mounted in <Outlet/>
         children: [
