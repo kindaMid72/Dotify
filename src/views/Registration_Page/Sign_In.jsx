@@ -17,7 +17,7 @@ export default () => {
         try {
             // Hapus pesan lama setiap kali submit baru
             setStatusElement(null);
-            setTimeout( async () => { // delay for UIs
+            setTimeout(async () => { // delay for UIs
                 switch (true) {
                     case !email || !password || !confirmPassword:
                         setStatusElement(<PopUpMassage title="Input Tidak Lengkap" massage="Mohon isi semua kolom yang wajib." color="red" />);
@@ -26,17 +26,17 @@ export default () => {
                         setStatusElement(<PopUpMassage title="Password Lemah" massage="Password harus memiliki minimal 8 karakter." color="red" />);
                         throw new Error("password too short")
                     case password !== confirmPassword: // check password match
-                        setStatusElement(<PopUpMassage title="Password Tidak Cocok" massage="Konfirmasi password tidak sesuai." color="red"/>);
+                        setStatusElement(<PopUpMassage title="Password Tidak Cocok" massage="Konfirmasi password tidak sesuai." color="red" />);
                         throw new Error("password mismatch")
                     case !emailRegex.test(email): // check email format
-                        setStatusElement(<PopUpMassage title="Email Tidak Valid" massage="Mohon masukkan format email yang benar." color="red"/>);
+                        setStatusElement(<PopUpMassage title="Email Tidak Valid" massage="Mohon masukkan format email yang benar." color="red" />);
                         throw new Error('Invalid email format');
-                    default:         
+                    default:
                         break;
                 }
                 // Gunakan environment variable untuk base URL API
                 const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/db/users/create_user`;
-                const name = email.split('@')[0];
+                const name = email.split('@')[0]; // get name from email before @
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
@@ -47,11 +47,18 @@ export default () => {
                         password: password,
                         name: name
                     })
-    
+                    
                 });
+                
                 if (response.ok) {
-                    setStatusElement(<PopUpMassage title="Welcome!!" massage="Akun berhasil dibuat." color="green"/>);
+                    setStatusElement(<PopUpMassage title="Welcome!!" massage="Akun berhasil dibuat." color="green" />);
                     /* redirect ke halaman aplikasi yang sudah login*/
+                    setEmail('');
+                    setPassword('');
+                    setConfirmPassword('');
+                } else {
+                    console.log(response);
+                    setStatusElement(<PopUpMassage title="Failed to create account" massage={response.statusText} color="red" />);
                 }
             }, 50);
         } catch (error) {
