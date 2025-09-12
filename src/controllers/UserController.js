@@ -30,5 +30,25 @@ route.post('/create_user', async (req, res) => {
     }
 });
 
+
+route.post('/login', async(req, res)=>{
+    try{
+        const {email, password} = req.body;
+        const hashedPassword = await userModels.getHashedPasswordByEmail({email}); // get hashed password by email for comparison
+        const isCorrect = await bcrypt.compare(password, hashedPassword);
+        if(isCorrect){
+            res.status(200).json(
+                {canEnter: true}
+            )
+        }else{
+            res.status(400).json(
+                {canEnter: false}
+            )
+        }
+    }catch(err){
+        res.status(500).json({message: err.massage});
+    }
+});
+
 export default route;
 

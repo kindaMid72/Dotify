@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PopUpMassage from '../components/Pop_Up_Massage.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export default () => {
     let [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ export default () => {
     // Gunakan useState untuk mengelola elemen status agar UI bisa re-render
     let [statusElement, setStatusElement] = useState(null);
 
+    const navigate = useNavigate();
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -47,7 +49,6 @@ export default () => {
                         password: password,
                         name: name
                     })
-                    
                 });
                 
                 if (response.ok) {
@@ -56,6 +57,8 @@ export default () => {
                     setEmail('');
                     setPassword('');
                     setConfirmPassword('');
+                    setTimeout(() => navigate('/login'), 3000);
+
                 } else {
                     console.log(response);
                     setStatusElement(<PopUpMassage title="Failed to create account" massage={response.statusText} color="red" />);
