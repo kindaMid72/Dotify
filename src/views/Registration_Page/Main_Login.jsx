@@ -14,33 +14,45 @@ export default (props) => {
         e.preventDefault();
         setPopUpElement(null); // reset popup massage
         // auth login
-        setTimeout( async () => {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/db/users`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
-            });
-
-            const data = await response.json();
-
-            if(data.canEnter){
-                props.setLogin(true);
-                setPopUpElement(<PopupMassage title="Login Successfull" massage="we happy to have you back" color="green"/>)
-                navigate('/notes'); // redirect ke halaman utama
-            }else{
-                setPopUpElement(<PopupMassage title="Failed to Login" massage="email or password is incorrect" color="red"/>)
+        setTimeout(async () => {
+            if (!email || !password) {
+                setPopUpElement(<PopupMassage title="Login attempt failed" massage="fill all the fields" color="red" />)
+                return;
+            }
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/db/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                const data = await response.json();
+                if (data.canEnter) {
+                    props.setLogin(true); // pass
+                    setPopUpElement(<PopupMassage title="Login Successfull" massage="we happy to have you back" color="green" />);
+                    setTimeout(() => {
+                        navigate('/notes');
+                    }, 2000);
+                } else {
+                    setPopUpElement(<PopupMassage title="Failed to Login" massage="email or password is incorrect" color="red" />)
+                    return;
+                }
+                setEmail('');
+                setPassword('');
+            } catch (err) {
+                setPopUpElement(<PopupMassage title="Something When Wrong" massage="contact support if the problem persists" color="red" />)
+                console.error(err);
             }
         }, 50);
     }
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            {}
+            {popUpElement}
             <div className="flex flex-col justify-center items-center w-[450px] border-2 border-transparent rounded-xl py-6 px-8 font-mono [box-shadow:0px_0px_50px_#c7c7c7]">
                 <div> {/* welcome back section */}
                     <h1 className="text-4xl font-extrabold">Welcome back!</h1>

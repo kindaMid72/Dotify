@@ -12,6 +12,7 @@ export default () => {
 
     const navigate = useNavigate();
 
+
     async function handleSubmit(event) {
         event.preventDefault();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
