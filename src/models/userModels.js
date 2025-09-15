@@ -22,7 +22,7 @@ async function editUser(params) {
 
 }
 async function deleteUser(params) {
-
+    
 }
 async function getUserById(params) {
     const id = params.id;
@@ -43,7 +43,7 @@ async function getHashedPasswordByEmail(params) {
     return rows.length > 0 ? rows[0].password_hash : null;
 }
 async function getAllUser(params) {
-    
+
 }
 
 export default { getHashedPasswordByEmail, createUser, editUser, deleteUser, getUserByEmail, getUserById, getAllUser }; // Jangan lupa ekspor router agar bisa digunakan

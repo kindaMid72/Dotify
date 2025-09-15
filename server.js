@@ -1,14 +1,15 @@
 import cors from 'cors';
-import express from 'express';
 import dotenv from 'dotenv';
-import controllerRoute from './src/controllers/controllerRoute.js';
-
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import controllerRoute from './src/controllers/controllerRoute.js'
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000; // default value for development process
 
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

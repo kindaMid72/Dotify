@@ -5,10 +5,10 @@ dotenv.config(); // env configuration'
 
 async function storeSectionToken(params) {
     const section_id = params.section_id;
-    const date = new Date();
+    const exprireDate = Date.now() + (7 * 24 * 60 * 60 * 1000); // + 7 day
     const sql = "INSERT INTO section_token values (?, ?)";
     try{
-        const [result] = await db.query(sql, [section_id, date]);
+        const [result] = await db.query(sql, [section_id, exprireDate]);
         return result;
     }catch(err){
         console.log(err);

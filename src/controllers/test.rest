@@ -2,7 +2,24 @@ POST http://localhost:3000/api/db/users/login
 Content-Type: application/json
 
 {
-    "email": "kingahmadilyas05@gmail.com",
-    "password": "konz1234"
+    "email": "kingahmadilyas01@gmail.com",
+    "password": "jawirgoreng"
 }
 ###
+
+POST http://localhost:3000/api/db/users/create_user
+Content-Type: application/json
+
+{
+    "email": "kingahmadilyas01@gmail.com",
+    "password": "jawirgoreng",
+    "name" : "kingahmadilyas03"
+}
+
+###
+POST http://localhost:3000/api/db/users/logout
+Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpbmdhaG1hZGlseWFzMDVAZ21haWwuY29tIiwiaWF0IjoxNzU3OTQyNTEwfQ.Z-bc6bGEoGYlG7SL1PigCS13X1Xz7AbAb9hl13YA41k; Max-Age=604800; Path=/; Expires=Mon, 22 Sep 2025 13:21:50 GMT; HttpOnly; SameSite=Strict
+
+###
+GET http://localhost:3000/api/db/users/refresh-token
+
