@@ -1,3 +1,4 @@
+### login
 POST http://localhost:3000/api/db/users/login
 Content-Type: application/json
 
@@ -5,8 +6,8 @@ Content-Type: application/json
     "email": "kingahmadilyas010@gmail.com",
     "password": "jawirgoreng"
 }
-###
 
+### create new user
 POST http://localhost:3000/api/db/users/create_user
 Content-Type: application/json
 
@@ -16,9 +17,9 @@ Content-Type: application/json
     "name" : "kingahmadilyas10"
 }
 
-###
+### logout
 POST http://localhost:3000/api/db/users/logout
 
-###
+### refresh token
 GET http://localhost:3000/api/db/users/refresh-token
 

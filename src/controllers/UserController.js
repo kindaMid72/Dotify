@@ -40,7 +40,7 @@ route.post('/login', async (req, res) => {
     try {
         const COOKIE_NAME = 'refreshToken';
         const REFREST_TOKEN_AGE = 7; // 7 days
-        const ACCESS_TOKEN_AGE = '15s'; // 15 seconds
+        const ACCESS_TOKEN_AGE = '30s'; // 15 seconds
         const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
         const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
@@ -50,7 +50,7 @@ route.post('/login', async (req, res) => {
         if (!hashedPassword) {
             return res.sendStatus(401); // unauthorized, non-existing email. res.sendStatus() lebih singkat.
         }
-        
+
         // create section token & refresh token
         const isCorrect = await bcrypt.compare(password, hashedPassword);
         if (isCorrect) {
@@ -88,8 +88,13 @@ route.post('/logout', async (req, res) => {
     try {
         // delete token in database
         const response = await sectionModel.deleteSectionToken({ section_id: refreshToken });
-        if(!response){
-            return res.status(401).json({message: "token valid but deletion in database failed"});
+        if (!response) {
+            res.clearCookie(COOKIE_NAME, { // clear cookie just in case
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', // true di produksi, false di development
+                sameSite: 'strict'
+            })
+            return res.status(401).json({ message: "token valid but deletion in database failed" });
         }
         // hapus cookie  TODO: muncul error ke bawwah
         res.clearCookie(COOKIE_NAME, { // hapus cookies
@@ -101,7 +106,7 @@ route.post('/logout', async (req, res) => {
         res.status(202).json({ message: "logout successfull" });
 
     } catch (err) {
-        res.sendStatus(500).json({message: "something when wrong"});
+        res.sendStatus(500).json({ message: "something when wrong" });
     }
 });
 
@@ -120,14 +125,14 @@ route.get('/refresh-token', async (req, res) => { // pass
             if (verify) {
                 const newAccessToken = jwt.sign({ email: verify.email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
                 res.status(200).json({ email: verify.email, accessToken: newAccessToken })
-            }else{
-                res.status(403).json({message: "token expired or invalid, please login again"});
+            } else {
+                res.status(403).json({ message: "token expired or invalid, please login again" });
             }
         } else {
             // delete expired token from database
             sectionModel.deleteSectionToken({ section_id: refreshToken });
-            if(sectionModel){
-                res.status(403).json({message: "token expired, please login again"});
+            if (sectionModel) {
+                res.status(403).json({ message: "token expired, please login again" });
             }
             res.sendStatus(403); // forbidden
         }

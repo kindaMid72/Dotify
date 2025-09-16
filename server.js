@@ -1,14 +1,17 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import cookieParser from 'cookie-parser';
-import controllerRoute from './src/controllers/controllerRoute.js'
+import controllerRoute from './src/controllers/controllerRoute.js';
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000; // default value for development process
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

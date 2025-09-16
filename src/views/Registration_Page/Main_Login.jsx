@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-// status popup
+// components
 import PopupMassage from '../components/Pop_Up_Massage.jsx';
 
 export default (props) => {
+
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -25,14 +26,15 @@ export default (props) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include', // <-- Perbaiki kesalahan ketik dari 'inclued' menjadi 'include'
                     body: JSON.stringify({
                         email: email,
                         password: password
                     })
                 });
-                const data = await response.json();
-                if (data.canEnter) {
-                    props.setLogin(true); // pass
+                const data = await response.json(); // extract json
+                if (data.accessToken) { // if token exist (login successful)
+                    props.setJwt(data.accessToken); // pass
                     setPopUpElement(<PopupMassage title="Login Successfull" massage="we happy to have you back" color="green" />);
                     setTimeout(() => {
                         navigate('/notes');
