@@ -40,7 +40,7 @@ route.post('/login', async (req, res) => {
     try {
         const COOKIE_NAME = 'refreshToken';
         const REFREST_TOKEN_AGE = 7; // 7 days
-        const ACCESS_TOKEN_AGE = '30s'; // 15 seconds
+        const ACCESS_TOKEN_AGE = '30s'; // 30 seconds
         const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
         const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
@@ -108,6 +108,20 @@ route.post('/logout', async (req, res) => {
     } catch (err) {
         res.sendStatus(500).json({ message: "something when wrong" });
     }
+});
+
+route.get('/check-token', async (req, res) =>{
+    // req -> accessToken
+    const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+    const token = req.body.accessToken;
+
+    if(!token) return res.sendStatus(401);
+    if(jwt.verify(token, ACCESS_TOKEN_SECRET)){
+        res.sendStatus(200); // authorize
+    }else{
+        res.sendStatus(403); // unautohorize
+    }
+
 });
 
 route.get('/refresh-token', async (req, res) => { // pass

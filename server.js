@@ -9,8 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 3000; // default value for development process
 
 app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
+    origin: 'http://localhost:5173', // allow request only from this domain
+    credentials: true // allow to pass cookies
 }));
 app.use(cookieParser());
 app.use(express.json());

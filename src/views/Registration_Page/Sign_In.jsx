@@ -16,7 +16,6 @@ export default () => {
     async function handleSubmit(event) {
         event.preventDefault();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
         try {
             // Hapus pesan lama setiap kali submit baru
             setStatusElement(null);
@@ -59,7 +58,6 @@ export default () => {
                     setPassword('');
                     setConfirmPassword('');
                     setTimeout(() => navigate('/login'), 3000);
-
                 } else {
                     console.log(response);
                     setStatusElement(<PopUpMassage title="Failed to create account" massage={response.statusText} color="red" />);

@@ -12,9 +12,9 @@ POST http://localhost:3000/api/db/users/create_user
 Content-Type: application/json
 
 {
-    "email": "kingahmadilyas010@gmail.com",
-    "password": "jawirgoreng",
-    "name" : "kingahmadilyas10"
+    "email": "test",
+    "password": "test",
+    "name" : "testAcc"
 }
 
 ### logout

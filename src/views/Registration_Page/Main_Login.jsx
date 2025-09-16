@@ -36,9 +36,8 @@ export default (props) => {
                 if (data.accessToken) { // if token exist (login successful)
                     props.setJwt(data.accessToken); // pass
                     setPopUpElement(<PopupMassage title="Login Successfull" massage="we happy to have you back" color="green" />);
-                    setTimeout(() => {
-                        navigate('/notes');
-                    }, 2000);
+                    console.log("Login Successfull");
+                    navigate('/notes');
                 } else {
                     setPopUpElement(<PopupMassage title="Failed to Login" massage="email or password is incorrect" color="red" />)
                     return;

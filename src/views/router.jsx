@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createContext, useEffect, useState } from 'react';
-import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Link, RouterProvider, useNavigate } from 'react-router-dom';
 
 // landing page
 import Front_Faq from './Landing_Page/Faq.jsx';
@@ -21,11 +21,10 @@ import Notes_App from './Main_Apps/Notes_App.jsx';
 
 
 function Apps() {
-
     // shared variable
     const AppContext = createContext();
     const [jwt, setJwt] = useState(null);
-    useEffect(() => {
+    useEffect(() => { // minta jwt token pertama kali
         try {
             // Tambahkan withCredentials: true agar cookie (refreshToken) dikirim
             axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, { withCredentials: true })
