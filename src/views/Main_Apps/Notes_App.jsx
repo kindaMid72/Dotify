@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Main_Content from './Main_Content.jsx';
 import Main_Header from './Main_Header.jsx';
@@ -14,9 +14,13 @@ function Notes_App() {
   const [activeView, setActiveView] = useState('grid'); // Tampilan default: 'grid' atau 'list'
   const [activeSort, setActiveSort] = useState('date_desc'); // Pengurutan default: 'date_desc', 'date_asc', 'title_asc', dll.
 
+  // data ??? notes and tags
+
   const [selectedActiveNote, setSelectedActiveNote] = useState(null); // contain current selected note
 
-  // fetching data
+  useEffect(()=>{
+    // fetch data
+  }, []);
 
   return (
     <>
@@ -27,25 +31,32 @@ function Notes_App() {
             activeNote={activeNote} // for new note
             setActiveNote={setActiveNote}
             activeCategory={activeCategory} // for category, highlight current active category
-            setActiveCategory={setActiveCategory} 
+            setActiveCategory={setActiveCategory}
           />
-          <div className='flex flex-col'>
-            <Main_Header 
-              activeView={activeView}
-              setActiveView={setActiveView}
-              activeSort={activeSort}
-              setActiveSort={setActiveSort}
-            />
-            {activeNote && <Edit_Note_Card />}
+          <div className='flex flex-col w-full'>
+            {
+              activeNote ? 
+              <Edit_Note_Card activeNote={activeNote} setActiveNote={setActiveNote} /> 
+              :
+              <>
+              <Main_Header
+                activeView={activeView}
+                setActiveView={setActiveView}
+                activeSort={activeSort}
+                setActiveSort={setActiveSort}
+              />
+              <Main_Content
+                activeNote={activeNote} // for edit note & new note edit
+                setActiveNote={setActiveNote} // for new note & edit note
+                activeCategory={activeCategory} // all, favorite, archived, dll.
+                setActiveCategory={setActiveCategory}
+                activeView={activeView} // grid or list
+                activeSort={activeSort} // date_desc, date_asc, title_asc, dll.
+              />
+              </>
+            }
             {/* router based content (dependency: search, category, sort, view) */}
-            <Main_Content 
-              activeNote={activeNote} // for edit note & new note edit
-              setActiveNote={setActiveNote} // for new note & edit note
-              activeCategory={activeCategory} // all, favorite, archived, dll.
-              setActiveCategory={setActiveCategory}
-              activeView={activeView} // grid or list
-              activeSort={activeSort} // date_desc, date_asc, title_asc, dll.
-            />
+
           </div>
         </div>
       </div>

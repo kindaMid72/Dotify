@@ -24,7 +24,7 @@ function Apps() {
     // shared variable
     const AppContext = createContext();
     const [jwt, setJwt] = useState(null);
-    useEffect(() => { // minta jwt token pertama kali
+    useEffect(() => { // minta jwt token pertama kali, jika punya refresh token
         try {
             // Tambahkan withCredentials: true agar cookie (refreshToken) dikirim
             axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, { withCredentials: true })

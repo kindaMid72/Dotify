@@ -1,28 +1,64 @@
 import { useState } from "react";
 
-export default function (){
+export default function ({activeNote, setActiveNote}){
     const [isFavorite, setIsFavorite] = useState(false);
-    const [notes, setNotes] = useState("");
-    const [title, setTitle] = useState("");
-    const [tags, setTags] = useState([]);
+    const [title, setTitle] = useState(""); // 
+    const [notes, setNotes] = useState(""); // store note content
+    const [tags, setTags] = useState([]); // active tags
+    const date = new Date();
+
+    function handleSubmit(e){
+        e.target.preventDefault();
+    }
+
+    // utils function
+    const [showEditMetadata, setShowEditMetadata] = useState(false);
+    function editMetadata(e){
+        e.preventDefault();
+        setShowEditMetadata(!showEditMetadata);
+    }
+
+    // mini components
+    function editTags(){
+
+        return <>
+
+        </>
+    }
 
     return (<>
-        <div className="w-full border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono">
-            <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
-                <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em]">Meeting Notes</h2>
-                <button type="button" className="p-1" aria-label="Favorite">
-                    <i className={isFavorite? "fa-solid fa-star" : "fa-regular fa-star"}></i>
-                </button>
-                <button type="button" className="p-1" aria-label="More options">
-                    <i className="fa-solid fa-ellipsis-vertical"></i>
-                </button>
+        <form onSubmit={handleSubmit}  className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
+            <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700">
+                <div className="" > {/* navigation container */}  
+                    <button onClick={()=> setActiveNote(false)} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
+                </div> 
+                {/* title container */}
+                <div className={"flex items-center [&_*]:font-mono [&_*]:mb-1"} > {/* title section */}
+                    <input type="text" placeholder="title..." value={title} onChange={(e) => setTitle(e.target.value)} className="flex-1 pl-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.4em] outline-none"></input>
+                </div>
+                {showEditMetadata && 
+                <div className=""> {/*TODO: on hover hidden */}
+                    <button type="button"  className="max-w-fit pl-2 font-bold" aria-label="Favorite">
+                        Set as favorite:
+                        <i onClick={() => setIsFavorite(!isFavorite)} className={isFavorite? "fa-solid fa-star pl-3" : "fa-regular fa-star pl-3"}></i>
+                    </button>
+                    <div className="flex justify-start">
+                        <h3 className=" rounded-xl w-fit px-2 text-center font-bold">Tags: </h3>
+                        {/* load all valid tags */}
+                        <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1">
+                            <li>tags1</li>
+                            <li>tags1</li>
+                            <li>tags1</li>
+                            <li>tags1</li>
+                        </ol>
+                    </div>
+                    <p className="flex-1 text-[1em] pl-2 font-bold">Created date: {date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</p>
+                </div>
+                }
+                <button className="ml-3" onClick={(e)=> editMetadata(e)}><i className={showEditMetadata? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150": "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
             </div>
-            <p className="font-light text-[0.9em] mb-[6px]   overflow-hidden [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]">lorem ipsum dolor sit amet,asdhfjajklsdhfl;ajsdlkfjal;sdkjfl;kasjdfl;kjasdl;kfja;sldkjf;laksjd;flkj;alskdfjl;kasdjf consectetur adipiscing elit. asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf</p> {/* implement rest if the description length is reaching a certain point */}
-            <div className="flex items-center "> {/* tag section */}
-                <p className="flex-1 text-[0.8em] font-bold">jan 1, 2025</p>
-                <h3 className="border-[1px] border-black rounded-xl px-2 text-center text-[0.8em]">Tags!</h3>
-            </div>
-        </div>
+            <textarea type="text" placeholder="write your notes here..." className="flex-1 font-light overflow-auto text-[1em] pl-5 mb-[6px] outline-none pt-4 h-full"></textarea> {/* implement rest if the description length is reaching a certain point */}
+        </form>
 
 
     </>)
