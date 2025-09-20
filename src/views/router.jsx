@@ -25,17 +25,13 @@ function Apps() {
     const AppContext = createContext();
     const [jwt, setJwt] = useState(null);
     useEffect(() => { // minta jwt token pertama kali, jika punya refresh token
-        try {
-            // Tambahkan withCredentials: true agar cookie (refreshToken) dikirim
-            axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, { withCredentials: true })
-                .then(res => {
-                    setJwt(res.data.accessToken);
-                }).catch(err => {
-                    console.log("No active session found or refresh token is invalid.");
-                })
-        } catch (err) {
-            console.error("Error during silent login:", err);
-        }
+        // Tambahkan withCredentials: true agar cookie (refreshToken) dikirim
+        axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, { withCredentials: true })
+            .then(res => {
+                setJwt(res.data.accessToken);
+            }).catch(err => {
+                console.error("No active session found or refresh token is invalid.", err);
+            })
     }, []);
 
     const router = createBrowserRouter([
