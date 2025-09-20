@@ -24,12 +24,12 @@ export default function ({ activeNote, setActiveNote }) {
 
     // mini components
     function addExistingTags() {
-        const tags = ["tag1", "tag2", "tag3"];
+        const tags = ["tag1", "tag2", "tag3"]; // filter matching tags according to user input
         return <>
             <div> { /* implement search  */}
-                <ol className="border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit">
+                <ol className="absolute bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer">
                     {tags.map((tag, index) => {
-                        return <li onClick={() => {setTags([...tags, tag]); setNewTagValue("");}} key={index}>{tag}</li>
+                        return <li onClick={() => {setTags([...tags, tag]); setNewTagValue("");}} key={tag}>{tag}</li>
                     })}
                 </ol>
             </div>
