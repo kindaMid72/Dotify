@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createContext, useEffect, useState } from 'react';
-import { createBrowserRouter, Link, RouterProvider, useNavigate } from 'react-router-dom';
+import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom';
 
 // landing page
 import Front_Faq from './Landing_Page/Faq.jsx';
@@ -21,8 +21,8 @@ import Notes_App from './Main_Apps/Notes_App.jsx';
 
 
 function Apps() {
-    // shared variable
-    const AppContext = createContext();
+    // AppContext diekspor agar bisa diimpor di komponen lain
+
     const [jwt, setJwt] = useState(null);
     useEffect(() => { // minta jwt token pertama kali, jika punya refresh token
         // Tambahkan withCredentials: true agar cookie (refreshToken) dikirim
@@ -52,6 +52,8 @@ function Apps() {
             element: <Protected_Route jwt={jwt} />, // if user is authenticate, will send the Outlet for element placeholder
             children: [
                 { index: true, element: <Notes_App /> } // will have a child too
+                // setting page
+                // profile page
             ]
 
         },
@@ -66,4 +68,5 @@ function Apps() {
 
 }
 
+export const AppContext = createContext();
 export default Apps;

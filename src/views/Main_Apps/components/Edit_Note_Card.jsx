@@ -12,7 +12,7 @@ export default function ({ activeNote, setActiveNote }) {
     const [newTagValue, setNewTagValue] = useState("");
 
     function handleSubmit(e) {
-        e.target.preventDefault();
+        e.preventDefault();
     }
 
     // utils function
@@ -35,9 +35,9 @@ export default function ({ activeNote, setActiveNote }) {
             </div>
         </>
     }
-
+    // FIXME: enter key trigger reload
     return (<>
-        <form onSubmit={handleSubmit} className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
+        <form onSubmit={(e) => handleSubmit(e)} className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
             <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700">
                 <div className="" > {/* navigation container */}
                     <button onClick={() => setActiveNote(false)} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
@@ -64,7 +64,7 @@ export default function ({ activeNote, setActiveNote }) {
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
-                                <div className="flex items-start"> {/* TODO: dynamic length input */}
+                                <div className="flex items-start" onSubmit={(e) => {e.preventDefault(); setNewTag(!newTag); setNewTagValue("");}}> {/* TODO: dynamic length input */}
                                     <div>
                                         <input 
                                             style={{width: newTagValue.length + "ch"}}
@@ -77,7 +77,7 @@ export default function ({ activeNote, setActiveNote }) {
                                         {newTagValue && addExistingTags()} {/* hnya tampil saat ada user type in */}
                                     </div>
                                     <br></br>
-                                    {newTagValue && <i className="fa-solid fa-check ml-2 mt-[1px]"></i>}
+                                    {newTagValue && <button type="submit"><i onClick={() => {setTags([...tags, newTagValue]); setNewTagValue("");}} className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
 
                                 </div>
                             </ol>
