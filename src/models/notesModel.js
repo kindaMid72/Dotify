@@ -1,13 +1,13 @@
 import db from '../config/database.js';
 
-async function createNote({ userId, title, content, is_favorite = 0, is_archived = 0 }) {
+async function createNote({ userId, title = 'untitled', content = '', is_favorite = 0, is_archive = 0, created_at = Date.now(), updated_at = Date.now() }) {
     const sql = `
-        INSERT INTO notes (user_id, title, content, is_favorite, is_archived) 
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO notes (user_id, title, content, is_favorite, is_archive, created_at, updated_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     try {
-        const [result] = await db.query(sql, [userId, title, content, is_favorite, is_archived]);
-        return result.insertId;
+        const [result] = await db.query(sql, [userId, title, content, is_favorite, is_archive, created_at, updated_at]);
+        return result.insertId && result.affectedRows > 0;
     } catch (err) {
         console.error(err);
         throw new Error('Gagal membuat catatan: ' + err.message);
@@ -106,19 +106,19 @@ async function updateLastEdited(params) {
 // return list of notes information
 async function getAllNotesInfo({ userId }) {
     const sql = "SELECT title, content, is_favorite, is_archived FROM notes WHERE user_id = ?";
-    try{
+    try {
         const [result] = await db.query(sql, [userId]);
         return result; // return all rows
-    }catch(err){
+    } catch (err) {
         throw new Error("Gagal mengambil ringkasan catatan: " + err.message);
     }
 }
-async function getNoteContent({noteId}) {
+async function getNoteContent({ noteId }) {
     const sql = "SELECT content FROM notes WHERE id = ?";
-    try{
+    try {
         const [result] = await db.query(sql, [noteId]);
         return result;
-    }catch(err){
+    } catch (err) {
         throw new Error("Gagal mengambil ringkasan catatan: " + err.message);
     }
 }
@@ -133,4 +133,4 @@ export default {
     updateLastEdited, 
     getAllNotesInfo, 
     getNoteContent 
-};
+}; // Jangan lupa ekspor router agar bisa digunakan

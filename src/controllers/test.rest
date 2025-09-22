@@ -1,10 +1,12 @@
+##################### AUTH
+
 ### login
 POST http://localhost:3000/api/db/users/login
 Content-Type: application/json
 
 {
-    "email": "kingahmadilyas010@gmail.com",
-    "password": "jawirgoreng"
+    "email": "test",
+    "password": "test"
 }
 
 ### create new user
@@ -22,4 +24,15 @@ POST http://localhost:3000/api/db/users/logout
 
 ### refresh token
 GET http://localhost:3000/api/db/users/refresh-token
+
+
+###################### NOTES
+
+POST http://localhost:3000/api/db/notes/create_note
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOltdLCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1MzUzNjEsImV4cCI6MTc1ODUzNTk2MX0.ZcsTiCwhYKzqJQZl-ixlza2pyPqwikETVtxRYEFr6Fo
+
+{
+    "userId": "15"
+}
 

@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 
 // pages
 
@@ -25,8 +26,7 @@ function Notes_App() {
   const [selectedNote, setSelectedNote] = useState(null); // contain current selected note
   const [selectedNotesTag, setSelectedNotesTag] = useState([]); // contain current selected notes tag
 
-
-
+  // credentials
   const { jwt } = useContext(AppContext); // ambil jwt dari provider global
 
   useEffect(() => {
@@ -34,8 +34,9 @@ function Notes_App() {
     if (jwt) {
       console.log(`Fetching data for category: ${activeCategory}`);
       // TODO: Implement data fetching logic here based on activeCategory
+
       if (activeCategory === 'all') {
-        // fetch all notes
+        const data = axios.get()
       } else if (activeCategory === 'favorite') {
         // fetch favorite notes
       } else if (activeCategory === 'archived') {

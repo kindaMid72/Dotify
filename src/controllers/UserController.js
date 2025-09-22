@@ -35,12 +35,11 @@ route.post('/create_user', async (req, res) => {
     }
 });
 
-
 route.post('/login', async (req, res) => {
     try {
         const COOKIE_NAME = 'refreshToken';
         const REFREST_TOKEN_AGE = 7; // 7 days
-        const ACCESS_TOKEN_AGE = '30s'; // 30 seconds
+        const ACCESS_TOKEN_AGE = '10m'; // 10 minutes
         const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
         const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
@@ -55,8 +54,10 @@ route.post('/login', async (req, res) => {
         const isCorrect = await bcrypt.compare(password, hashedPassword);
         if (isCorrect) {
             console.log('login successfull, password match');
-            const accessToken = jwt.sign({ email: email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
-            const refreshToken = jwt.sign({ email: email }, REFRESH_TOKEN_SECRET);
+            // TODO: get user id by email and pass it to jwt
+            const userId = await userModels.getIdByEmail({ email });
+            const accessToken = jwt.sign({ userId: userId, email: email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
+            const refreshToken = jwt.sign({ userId: userId, email: email }, REFRESH_TOKEN_SECRET);
 
             // store refresh token in db
             const storeToken = await sectionModel.storeSectionToken({ section_id: refreshToken });
