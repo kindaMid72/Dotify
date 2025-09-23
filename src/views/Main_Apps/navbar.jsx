@@ -22,12 +22,12 @@ function Navbar (props) {
             </li>
             <li className="border-2 border-black rounded-full bg-gray-100 size-[35px] p-1.5 flex justify-center items-center">
                 <Link to="#">
-                    <i class="fa-solid fa-sliders"></i>
+                    <i className="fa-solid fa-sliders"></i>
                 </Link>
             </li>
             <li className="border-2 border-black rounded-full bg-gray-100 size-[35px] p-1.5 flex justify-center items-center">
                 <Link to="#" >
-                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    <i className="fa-solid fa-circle-half-stroke"></i>
                 </Link>
             </li>
             <li id="user-profile" className="border-2 border-black bg-gray-100 rounded-full size-[35px] p-1.5 flex justify-center items-center">

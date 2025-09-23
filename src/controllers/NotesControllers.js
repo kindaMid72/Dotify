@@ -45,12 +45,12 @@ route.get('/get_all_notes_info', async (req, res) => {
     }
 });
 
-route.get('/get_note_content', async (req, res) => {
+route.get('/get_note_content/:noteId', async (req, res) => {
     try {
         const verify = jwt.verify(req.headers.authorization.split(' ')[1], ACCESS_TOKEN_SECRET);
         if (!verify) return res.status(403).json({ message: "invalid token" })
         const userId = verify.userId;
-        const noteId = req.body.noteId;
+        const noteId = req.params.noteId;
         const result = await notesModel.getNoteContent({ userId, noteId });
         res.status(200).json({ content: result });
     } catch (err) {

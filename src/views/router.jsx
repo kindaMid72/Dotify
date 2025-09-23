@@ -12,6 +12,7 @@ import Front_Why_Us from './Landing_Page/Why.jsx';
 // login page
 import Login_Page from './Registration_Page/Main_Login.jsx';
 import Sign_In from './Registration_Page/Sign_In.jsx';
+export const authToken = createContext(); // shared token context
 
 //components 
 import Protected_Route from './components/Protected_Route.jsx';
@@ -21,8 +22,6 @@ import Notes_App from './Main_Apps/Notes_App.jsx';
 
 
 function Apps() {
-    // AppContext diekspor agar bisa diimpor di komponen lain
-
     const [jwt, setJwt] = useState(null);
     useEffect(() => { // minta jwt token pertama kali, jika punya refresh token
         // Tambahkan withCredentials: true agar cookie (refreshToken) dikirim
@@ -61,12 +60,11 @@ function Apps() {
     ]);
 
     return (<>
-        <AppContext.Provider value={{ jwt, setJwt }}>
+        <authToken.Provider value={{ jwt, setJwt }}>
             <RouterProvider router={router} />
-        </AppContext.Provider>
+        </authToken.Provider>
     </>);
 
 }
 
-export const AppContext = createContext();
 export default Apps;

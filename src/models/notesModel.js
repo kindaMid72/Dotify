@@ -102,7 +102,7 @@ async function updateLastEdited({ noteId, userId }) {
 
 // return list of notes information
 async function getAllNotesInfo({ userId }) { 
-    const sql = "SELECT id, title, is_favorite, is_archive FROM notes WHERE user_id = ?";
+    const sql = "SELECT id, title, is_favorite, is_archive, is_trash, created_at, updated_at FROM notes WHERE user_id = ?";
     try {
         const [result] = await db.query(sql, [userId]);
         return result; // return all rows

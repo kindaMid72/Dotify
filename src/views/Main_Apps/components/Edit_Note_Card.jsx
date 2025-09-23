@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { sharedContext } from "../Notes_App.jsx";
 
-export default function ({ activeNote, setActiveNote }) {
+export default function () {
+    //shared context
+    const { activeNote, setActiveNote, selectedNote } = useContext(sharedContext);
+
     const [isFavorite, setIsFavorite] = useState(false);
     const [title, setTitle] = useState(""); // 
     const [isArchived, setIsArchived] = useState(false);
@@ -29,7 +33,7 @@ export default function ({ activeNote, setActiveNote }) {
             <div> { /* implement search  */}
                 <ol className="absolute bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer">
                     {tags.map((tag, index) => {
-                        return <li onClick={() => {setTags([...tags, tag]); setNewTagValue("");}} key={tag}>{tag}</li>
+                        return <li onClick={() => { setTags([...tags, tag]); setNewTagValue(""); }} key={tag}>{tag}</li>
                     })}
                 </ol>
             </div>
@@ -64,20 +68,20 @@ export default function ({ activeNote, setActiveNote }) {
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
-                                <div className="flex items-start" onSubmit={(e) => {e.preventDefault(); setNewTag(!newTag); setNewTagValue("");}}> {/* TODO: dynamic length input */}
+                                <div className="flex items-start" onSubmit={(e) => { e.preventDefault(); setNewTag(!newTag); setNewTagValue(""); }}> {/* TODO: dynamic length input */}
                                     <div>
-                                        <input 
-                                            style={{width: newTagValue.length + "ch"}}
-                                            type="text" 
-                                            className={`outline-none min-w-[5ch] `} 
-                                            value={newTagValue} 
-                                            onChange={(e) => { setNewTagValue(e.target.value);}} 
-                                            placeholder="new...">    
+                                        <input
+                                            style={{ width: newTagValue.length + "ch" }}
+                                            type="text"
+                                            className={`outline-none min-w-[5ch] `}
+                                            value={newTagValue}
+                                            onChange={(e) => { setNewTagValue(e.target.value); }}
+                                            placeholder="new...">
                                         </input>
                                         {newTagValue && addExistingTags()} {/* hnya tampil saat ada user type in */}
                                     </div>
                                     <br></br>
-                                    {newTagValue && <button type="submit"><i onClick={() => {setTags([...tags, newTagValue]); setNewTagValue("");}} className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
+                                    {newTagValue && <button type="submit"><i onClick={() => { setTags([...tags, newTagValue]); setNewTagValue(""); }} className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
 
                                 </div>
                             </ol>

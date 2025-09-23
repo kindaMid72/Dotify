@@ -7,7 +7,6 @@ export default () => {
                     <h1 className="text-[1.2em] font-bold font-mono">All Notes</h1> {/* based on sidebar selection */}
                     <p className="font-mono">24 notes</p> {/* based on the number of notes available on that category */}
                 </div>
-
                 <div className="flex border-2 border-black h-[40px] justify-around items-center rounded-xl"> {/* view mode section (grid/list) */}
                     <i className="fa-solid fa-grip m-2 px-0.5"></i>
                     <div className="h-full border-black border-r-2 w-[0.5px]"></div>
@@ -21,8 +20,5 @@ export default () => {
                     </select>
                 </div>
             </div>
-
-
-
         </>)
 }
