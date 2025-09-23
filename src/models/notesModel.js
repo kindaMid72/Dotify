@@ -1,12 +1,12 @@
 import db from '../config/database.js';
 
-async function createNote({ userId, title = 'untitled', content = '', is_favorite = 0, is_archive = 0, created_at = Date.now(), updated_at = Date.now() }) {
+async function createNote({ userId, title = 'untitled', content = '', is_favorite = 0, is_archive = 0, is_trash, created_at = Date.now(), updated_at = Date.now() }) {
     const sql = `
-        INSERT INTO notes (user_id, title, content, is_favorite, is_archive, created_at, updated_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO notes (user_id, title, content, is_favorite, is_archive, is_trash, created_at, updated_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     try {
-        const [result] = await db.query(sql, [userId, title, content, is_favorite, is_archive, created_at, updated_at]);
+        const [result] = await db.query(sql, [userId, title, content, is_favorite, is_archive, is_trash, created_at, updated_at]);
         return result.insertId && result.affectedRows > 0;
     } catch (err) {
         console.error(err);
@@ -14,10 +14,10 @@ async function createNote({ userId, title = 'untitled', content = '', is_favorit
     }
 }
 
-async function deleteNote({ noteId }) {
-    const sql = "DELETE FROM notes WHERE id = ?";
+async function deleteNote({ userId, noteId }) {
+    const sql = "DELETE FROM notes WHERE id = ? AND user_id = ?";
     try {
-        const [result] = await db.query(sql, [noteId]);
+        const [result] = await db.query(sql, [noteId, userId]);
         return result.affectedRows > 0;
     } catch (err) {
         console.error(err);
@@ -25,45 +25,36 @@ async function deleteNote({ noteId }) {
     }
 
 }
-async function editTitle(params) {
-    // params: notesId
-    const noteId = params.noteId;
-    const newTitle = params.title;
-
-    const sql = "UPDATE notes SET title = ? WHERE id = ?";
+async function editTitle({ noteId, title, userId }) {
+    // params: noteId, title, userId
+    const sql = "UPDATE notes SET title = ? WHERE id = ? AND user_id = ?";
     try {
-        const [result] = await db.query(sql, [newTitle, noteId]);
-        updateLastEdited(noteId);
+        const [result] = await db.query(sql, [title, noteId, userId]);
+        if (result.affectedRows > 0) updateLastEdited({ noteId, userId });
         return result.affectedRows > 0;
     } catch (err) {
         console.error(err);
         throw new Error('Gagal mengupdate catatan: ' + err.message);
     }
 }
-async function editContent(params) {
-    // params: notesId
-    const noteId = params.noteId;
-    const newContent = params.content;
-
-    const sql = "UPDATE notes SET content = ? WHERE id = ?";
+async function editContent({ noteId, content, userId }) {
+    // params: noteId, content (string), userId
+    const sql = "UPDATE notes SET content = ? WHERE id = ? AND user_id = ?";
     try {
-        const [result] = await db.query(sql, [newContent, noteId]);
-        updateLastEdited(noteId);
+        const [result] = await db.query(sql, [content, noteId, userId]);
+        if (result.affectedRows > 0) updateLastEdited({ noteId, userId });
         return result.affectedRows > 0;
     } catch (err) {
         console.error(err);
         throw new Error("Gagal mengupdate catatan: " + err.message);
     }
 }
-async function setFavorite(params) {
-    // params: notesId
-    const noteId = params.noteId;
-    const isFavorite = params.isFavorite;
-
-    const sql = "UPDATE notes SET is_favorite = ? WHERE id = ?";
+async function setFavorite({ noteId, isFavorite, userId }) {
+    // params: noteId, isFavorite (boolean), userId
+    const sql = "UPDATE notes SET is_favorite = ? WHERE id = ? AND user_id = ?";
     try {
-        const [result] = await db.query(sql, [isFavorite, noteId]);
-        updateLastEdited(noteId);
+        const [result] = await db.query(sql, [isFavorite, noteId, userId]);
+        if (result.affectedRows > 0) updateLastEdited({ noteId, userId });
         return result.affectedRows > 0;
 
     } catch (err) {
@@ -71,27 +62,33 @@ async function setFavorite(params) {
         throw new Error("Gagal mengupdate catatan: " + err.message);
     }
 }
-async function setArchive(params) {
-    // params: note id
-    const noteId = params.noteId;
-    const isArchive = params.isArchive; // boolean
-
-    const sql = "UPDATE notes SET is_archive = ? WHERE id = ?";
+async function setArchive({ noteId, isArchive, userId }) {
+    // params: noteId, isArchive (boolean), userId
+    const sql = "UPDATE notes SET is_archive = ? WHERE id = ? AND user_id = ?";
     try {
-        const [result] = await db.query(sql, [isArchive, noteId]);
-        updateLastEdited(noteId);
+        const [result] = await db.query(sql, [isArchive, noteId, userId]);
+        if (result.affectedRows > 0) updateLastEdited({ noteId, userId });
         return result.affectedRows > 0;
     } catch (err) {
         console.error(err);
         throw new Error('Gagal mengambil ringkasan catatan: ' + err.message);
     }
 }
-async function updateLastEdited(params) {
-    const noteId = params.noteId;
-    const updated_at = Date.now();
-    const sql = "UPDATE notes SET updated_at = ? WHERE id = ?";
+async function setTrash({ noteId, isTrash, userId }) {
+    const sql = "UPDATE notes SET is_trash = ? WHERE id = ? AND user_id = ?";
     try {
-        const [result] = await db.query(sql, [updated_at, noteId]);
+        const [result] = await db.query(sql, [isTrash, noteId, userId]);
+        return result.affectedRows > 0;
+    } catch (err) {
+        console.error(err);
+        throw new Error("Gagal mengupdate catatan: " + err.message);
+    }
+}
+async function updateLastEdited({ noteId, userId }) {
+    const updated_at = Date.now();
+    const sql = "UPDATE notes SET updated_at = ? WHERE id = ? AND user_id = ?";
+    try {
+        const [result] = await db.query(sql, [updated_at, noteId, userId]);
         if (result.affectedRows > 0) {
             return true;
         } else {
@@ -104,8 +101,8 @@ async function updateLastEdited(params) {
 }
 
 // return list of notes information
-async function getAllNotesInfo({ userId }) {
-    const sql = "SELECT title, content, is_favorite, is_archived FROM notes WHERE user_id = ?";
+async function getAllNotesInfo({ userId }) { 
+    const sql = "SELECT id, title, is_favorite, is_archive FROM notes WHERE user_id = ?";
     try {
         const [result] = await db.query(sql, [userId]);
         return result; // return all rows
@@ -113,24 +110,26 @@ async function getAllNotesInfo({ userId }) {
         throw new Error("Gagal mengambil ringkasan catatan: " + err.message);
     }
 }
-async function getNoteContent({ noteId }) {
-    const sql = "SELECT content FROM notes WHERE id = ?";
+async function getNoteContent({ userId, noteId}) {
+    const sql = "SELECT content FROM notes WHERE id = ? AND user_id = ?";
     try {
-        const [result] = await db.query(sql, [noteId]);
-        return result;
+        const [result] = await db.query(sql, [noteId, userId]);
+        return result[0].content;
     } catch (err) {
         throw new Error("Gagal mengambil ringkasan catatan: " + err.message);
     }
 }
 
-export default { 
-    createNote, 
-    deleteNote, 
-    editTitle, 
-    editContent, 
-    setFavorite, 
-    setArchive, 
-    updateLastEdited, 
-    getAllNotesInfo, 
-    getNoteContent 
+
+export default {
+    createNote,
+    deleteNote,
+    editTitle,
+    editContent,
+    setFavorite,
+    setArchive,
+    updateLastEdited,
+    getAllNotesInfo,
+    getNoteContent,
+    setTrash
 }; // Jangan lupa ekspor router agar bisa digunakan

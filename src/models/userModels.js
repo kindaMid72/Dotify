@@ -1,8 +1,4 @@
-import dotenv from 'dotenv';
 import db from '../config/database.js';
-// Anda tidak perlu mengimpor dotenv di sini jika sudah dipanggil di file utama (server.js atau database.js)
-
-dotenv.config(); // env configuration
 
 
 async function createUser({ email, passwordHashed, name, profile_url, current_time }) {
@@ -22,7 +18,7 @@ async function editUser(params) {
 
 }
 async function deleteUser(params) {
-    
+
 }
 async function getUserById(params) {
     const id = params.id;
@@ -36,13 +32,13 @@ async function getUserByEmail(params) {
     const [result] = await db.query(sql, [email]);
     return result.length > 0 ? true : false; // check apakah user dengan email sudah ada atau tidak 
 }
-async function getIdByEmail(params){
+async function getIdByEmail(params) {
     const email = params.email;
-    const sql = "SELECT id FROM users WHERE id = ?";
-    try{
+    const sql = "SELECT id FROM users WHERE email = ?";
+    try {
         const [result] = await db.query(sql, [email]);
-        return result;
-    }catch(err){
+        return result[0].id;
+    } catch (err) {
         console.log(err);
         throw new Error("failed to get user id by email", err.message);
     }

@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -7,7 +6,12 @@ import jwt from 'jsonwebtoken';
 import sectionModel from '../models/sectionModel.js';
 import userModels from '../models/userModels.js';
 
-dotenv.config();
+// Panggil dotenv.config() hanya di file server.js
+const COOKIE_NAME = 'refreshToken';
+const ACCESS_TOKEN_AGE = '30m';
+const REFRESH_TOKEN_AGE_DAYS = 7; // Definisikan umur refresh token dalam hari
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 const route = express.Router();
 
@@ -37,12 +41,6 @@ route.post('/create_user', async (req, res) => {
 
 route.post('/login', async (req, res) => {
     try {
-        const COOKIE_NAME = 'refreshToken';
-        const REFREST_TOKEN_AGE = 7; // 7 days
-        const ACCESS_TOKEN_AGE = '10m'; // 10 minutes
-        const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
-        const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
-
         // check credentials
         const { email, password } = req.body;
         const hashedPassword = await userModels.getHashedPasswordByEmail({ email }); // get hashed password by email for comparison
@@ -66,10 +64,10 @@ route.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // true di produksi, false di development
                 sameSite: 'strict',
-                maxAge: (REFREST_TOKEN_AGE * 24 * 60 * 60 * 1000) // day to millisecond 
+                maxAge: REFRESH_TOKEN_AGE_DAYS * 24 * 60 * 60 * 1000 // day to millisecond 
             })
             res.status(200).json(
-                { message: "login successfull", accessToken: accessToken }
+                { message: "login successfull", userId: userId, email: email, accessToken: accessToken }
             )
         } else {
             res.status(400).json(
@@ -78,7 +76,7 @@ route.post('/login', async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(403).json({ message: err.massage });
+        res.status(401).json({ message: err.massage });
     }
 });
 
@@ -111,45 +109,43 @@ route.post('/logout', async (req, res) => {
     }
 });
 
-route.get('/check-token', async (req, res) =>{
+route.get('/check-token', async (req, res) => {
     // req -> accessToken
-    const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
-    const token = req.body.accessToken;
-
-    if(!token) return res.sendStatus(401);
-    if(jwt.verify(token, ACCESS_TOKEN_SECRET)){
-        res.sendStatus(200); // authorize
-    }else{
-        res.sendStatus(403); // unautohorize
+    try{
+        const token =  req.headers.authorization?.split(' ')[1] || req.body.accessToken;
+        if (!token) return res.sendStatus(401);
+        if (jwt.verify(token, ACCESS_TOKEN_SECRET)) {
+            res.sendStatus(200); // authorize
+        } else {
+            res.sendStatus(401); // unautohorize
+        }
+    }catch(err){
+        res.sendStatus(401); // unauthorize
+        throw new Error(err.message);
     }
 
 });
 
 route.get('/refresh-token', async (req, res) => { // pass
-    const COOKIE_NAME = 'refreshToken';
     const refreshToken = req.cookies?.[COOKIE_NAME];
-    const ACCESS_TOKEN_AGE = '15s';
-    const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
-    const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
-
     if (!refreshToken) return res.sendStatus(401); // unauthorized\
     try {
         const checkToken = await sectionModel.checkSectionToken({ section_id: refreshToken });
         if (checkToken && checkToken[0].expired_time > Date.now()) { // token valid
             const verify = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET); // mengembalikan object berisi email
             if (verify) {
-                const newAccessToken = jwt.sign({ email: verify.email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
-                res.status(200).json({ email: verify.email, accessToken: newAccessToken })
+                const newAccessToken = jwt.sign({userId: verify.userId, email: verify.email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
+                res.status(200).json({userId: verify.userId, email: verify.email, accessToken: newAccessToken })
             } else {
-                res.status(403).json({ message: "token expired or invalid, please login again" });
+                res.status(401).json({ message: "token expired or invalid, please login again" });
             }
         } else {
             // delete expired token from database
             sectionModel.deleteSectionToken({ section_id: refreshToken });
             if (sectionModel) {
-                res.status(403).json({ message: "token expired, please login again" });
+                res.status(401).json({ message: "token expired, please login again" });
             }
-            res.sendStatus(403); // forbidden
+            res.sendStatus(401); // forbidden
         }
     } catch (err) {
         console.log(err);

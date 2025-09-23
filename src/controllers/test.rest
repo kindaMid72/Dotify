@@ -1,14 +1,5 @@
 ##################### AUTH
 
-### login
-POST http://localhost:3000/api/db/users/login
-Content-Type: application/json
-
-{
-    "email": "test",
-    "password": "test"
-}
-
 ### create new user
 POST http://localhost:3000/api/db/users/create_user
 Content-Type: application/json
@@ -19,20 +10,104 @@ Content-Type: application/json
     "name" : "testAcc"
 }
 
+### login
+POST http://localhost:3000/api/db/users/login
+Content-Type: application/json
+
+{
+    "email": "test",
+    "password": "test"
+}
+
+
 ### logout
 POST http://localhost:3000/api/db/users/logout
 
 ### refresh token
 GET http://localhost:3000/api/db/users/refresh-token
 
+### check token
+GET http://localhost:3000/api/db/users/check-token
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
 
 ###################### NOTES
 
+### create new note
 POST http://localhost:3000/api/db/notes/create_note
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOltdLCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1MzUzNjEsImV4cCI6MTc1ODUzNTk2MX0.ZcsTiCwhYKzqJQZl-ixlza2pyPqwikETVtxRYEFr6Fo
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+
+### get all notes info PASS
+GET http://localhost:3000/api/db/notes/get_all_notes_info
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+### get note content by id 
+GET http://localhost:3000/api/db/notes/get_note_content
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
 
 {
-    "userId": "15"
+    "noteId": 1
+}
+
+### update note content by id 
+PUT http://localhost:3000/api/db/notes/edit_content
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+{
+    "noteId" : 1,
+    "content" : "hidup jokowi"
+}
+
+### update note title by id 
+PUT http://localhost:3000/api/db/notes/edit_title
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+{
+    "noteId" : 1,
+    "title" : "konze"
+}
+
+### set favorite
+PUT http://localhost:3000/api/db/notes/set_favorite
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+{
+    "noteId" : 1,
+    "isFavorite": 1
+}
+
+### set archive PASS
+PUT http://localhost:3000/api/db/notes/set_archive
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+{
+    "noteId" : 1,
+    "isArchive": 1
+}
+
+### set trash PASS
+PUT http://localhost:3000/api/db/notes/set_trash
+Content-Type: application/json 
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+{
+    "noteId" : 1,
+    "isTrash": 1
+}
+
+### delete note PASSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+DELETE http://localhost:3000/api/db/notes/delete_note
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg1OTI2MTIsImV4cCI6MTc1ODU5NDQxMn0.1bfE5lyIsLVAYbn9mjzBScIxof11Yt6KTvqNHg9g-L8
+
+{
+    "noteId" : 2
 }
 
