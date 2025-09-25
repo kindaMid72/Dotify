@@ -28,25 +28,25 @@ GET http://localhost:3000/api/db/users/refresh-token
 
 ### check token
 GET http://localhost:3000/api/db/users/check-token
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 ###################### NOTES
 
 ### create new note
 POST http://localhost:3000/api/db/notes/create_note
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 
 ### get all notes info PASS
 GET http://localhost:3000/api/db/notes/get_all_notes_info
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 ### get note content by id 
 GET http://localhost:3000/api/db/notes/get_note_content
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 {
     "noteId": 1
@@ -55,7 +55,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlb
 ### update note content by id 
 PUT http://localhost:3000/api/db/notes/edit_content
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 {
     "noteId" : 1,
@@ -65,7 +65,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlb
 ### update note title by id 
 PUT http://localhost:3000/api/db/notes/edit_title
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 {
     "noteId" : 1,
@@ -75,7 +75,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlb
 ### set favorite
 PUT http://localhost:3000/api/db/notes/set_favorite
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 {
     "noteId" : 1,
@@ -85,7 +85,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlb
 ### set archive PASS
 PUT http://localhost:3000/api/db/notes/set_archive
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 {
     "noteId" : 1,
@@ -95,17 +95,30 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlb
 ### set trash PASS
 PUT http://localhost:3000/api/db/notes/set_trash
 Content-Type: application/json 
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 {
     "noteId" : 1,
     "isTrash": 1
 }
 
+### set note metadata by id
+PUT http://localhost:3000/api/db/notes/edit_note_metadata
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
+
+{
+    "noteId" : 1,
+    "title": "make apa ni orang? nyabukah?",
+    "isFavorite": 1,
+    "isArchive": 1,
+    "isTrash": 1
+}
+
 ### delete note PASSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 DELETE http://localhost:3000/api/db/notes/delete_note
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg2MzA2NzQsImV4cCI6MTc1ODYzMjQ3NH0.zO66XN1DYflypdo5D-9-03kIr5W8nBae9bUQXKaVEUg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg3NTU1ODMsImV4cCI6MTc1ODc1NzM4M30.aD2KZs8izNxB3YqBH7EzppMa1tEISnSiFOPKoBWG93c
 
 {
     "noteId" : 2

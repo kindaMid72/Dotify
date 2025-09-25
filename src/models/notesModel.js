@@ -25,6 +25,16 @@ async function deleteNote({ userId, noteId }) {
     }
 
 }
+async function editNoteMetadata({userId, noteId, title, isFavorite, isArchive, isTrash, updated_at}) {
+    const sql = "UPDATE notes SET title = ?, is_favorite = ?, is_archive = ?, is_trash = ?, updated_at = ? WHERE id = ? AND user_id = ?";
+    try{
+        const [result] = await db.query(sql, [title, isFavorite, isArchive, isTrash, updated_at, noteId, userId]);
+        return result.affectedRows > 0;
+    }catch(err){
+        console.error(err);
+        throw new Error("Gagal mengupdate catatan: " + err.message);
+    }
+}
 async function editTitle({ noteId, title, userId }) {
     // params: noteId, title, userId
     const sql = "UPDATE notes SET title = ? WHERE id = ? AND user_id = ?";
@@ -121,6 +131,7 @@ async function getNoteContent({ userId, noteId}) {
 }
 
 
+
 export default {
     createNote,
     deleteNote,
@@ -131,5 +142,6 @@ export default {
     updateLastEdited,
     getAllNotesInfo,
     getNoteContent,
-    setTrash
+    setTrash,
+    editNoteMetadata
 }; // Jangan lupa ekspor router agar bisa digunakan

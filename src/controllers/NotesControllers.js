@@ -164,6 +164,26 @@ route.put('/update_last_edited', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+route.put('/edit_note_metadata', async (req, res) => {
+    try {
+        const verify = jwt.verify(req.headers.authorization.split(' ')[1], ACCESS_TOKEN_SECRET);
+        if (!verify) return res.status(403).json({ message: "invalid token" });
+        const userId = verify.userId;
+        const noteId = req.body.noteId;
+        const title = req.body.title;
+        const isFavorite = req.body.isFavorite;
+        const isArchive = req.body.isArchive;
+        const isTrash = req.body.isTrash;
+        const result = await notesModel.editNoteMetadata({ userId, noteId, title, isFavorite, isArchive, isTrash, updated_at: Date.now() });
+        if (result) {
+            res.status(200).json({ message: "note metadata updated successfully" });
+        } else {
+            res.status(404).json({ message: "Note not found or you don't have permission" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 //delete data in db
 route.delete('/delete_note', async (req, res) => {

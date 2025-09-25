@@ -24,10 +24,9 @@ function Notes_App() {
   const [activeSort, setActiveSort] = useState('date_desc'); // Pengurutan default: 'date_desc', 'date_asc', 'title_asc', dll.
 
   // data state storage, all data from server will be stored here
-  const [notesViewData, setNoteViewData] = useState([]); // store all notes info data
-  const [notes, setNotes] = useState([]); // store active(interacable) notes
+  const [notesViewData, setNoteViewData] = useState({}); // store all notes info data as an object
   const [tags, setTags] = useState([]); // store active(interacable) tags
-  const [selectedNote, setSelectedNote] = useState(null); // contain current selected note
+  const [selectedNote, setSelectedNote] = useState({}); // contain current selected note
   const [selectedNotesTag, setSelectedNotesTag] = useState([]); // contain current selected notes tag
 
   // imported context
@@ -46,7 +45,12 @@ function Notes_App() {
           withCredentials: true
         }
         );
-        setNoteViewData(response.data);
+        const notesObject = response.data.reduce((container, nextVal) => {
+          if (!nextVal) return container; // Skip null or undefined entries
+          container[nextVal.id] = nextVal;
+          return container;
+        }, {}); // mulai  dengan container kosong
+        setNoteViewData(notesObject);
       };
       fetchData();
     }
@@ -57,7 +61,6 @@ function Notes_App() {
       <sharedContext.Provider value={
         {
           notesViewData, setNoteViewData,
-          notes, setNotes,
           tags, setTags,
           selectedNote, setSelectedNote,
           selectedNotesTag, setSelectedNotesTag,

@@ -5,9 +5,10 @@ import { useContext } from "react";
 import { authToken } from "../../router.jsx";
 import { sharedContext } from "../Notes_App.jsx";
 
-export default ({ noteId, title, isFavorite, isArchive, tags }) => {
+export default ({ noteId, title, isFavorite, isArchive, tags, created_at, updated_at }) => {
     const { activeNote, setActiveNote, selectedNote, setSelectedNote } = useContext(sharedContext);
     const { jwt, setJwt } = useContext(authToken);
+    
 
     async function editNote(e) {
         setActiveNote(noteId);
@@ -17,8 +18,17 @@ export default ({ noteId, title, isFavorite, isArchive, tags }) => {
             },
             withCredentials: true
         }).then(res => res.data); // get the note content from data
-        setSelectedNote({ noteId: noteId, title: title, isFavorite : isFavorite,isArchive : isArchive,tags : tags, content:response.content });
-        console.log(noteId, title, isFavorite, isArchive, tags, response.content);
+        setSelectedNote({ 
+            noteId: noteId,
+            title: title, 
+            isFavorite : isFavorite, 
+            isArchive : isArchive,
+            // note tags here 
+            content:response.content,
+            createdAt: created_at,
+            updatedAt: updated_at
+        });
+        console.log(selectedNote);
     }
 
     return (

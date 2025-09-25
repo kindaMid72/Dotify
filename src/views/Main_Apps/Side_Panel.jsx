@@ -1,3 +1,7 @@
+/**
+ * FIXME: new button: cannot be interact with
+ */
+
 import { useState } from "react";
 
 function Side_Panel({ activeNote, setActiveNote, activeCategory, setActiveCategory }) {
