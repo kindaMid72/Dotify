@@ -26,7 +26,7 @@ export default function () {
     const [newTag, setNewTag] = useState(false);
     const [newTagValue, setNewTagValue] = useState("");
     const [showEditMetadata, setShowEditMetadata] = useState(false);
-    const [delay, setDelay] = useState(1500);
+    const isFirstRender = useRef(false);
 
     //custom hooks
     function useDebounce(value, delay) {
@@ -55,7 +55,7 @@ export default function () {
         isArchive: selectedNote.isArchive,
         isTrash: selectedNote.isTrash
         // TODO: add tags dependency here
-    }, delay);
+    }, 1000);
     useEffect(() => { // use effect for metadata update
         if (!debounceMetadata.noteId) {
             return;
@@ -101,7 +101,7 @@ export default function () {
     }, [debounceMetadata, jwt])
 
     // content debouncer
-    const debouncedContent = useDebounce(selectedNote.content, delay);
+    const debouncedContent = useDebounce(selectedNote.content, 1500);
     useEffect(() => {
         if (!debouncedContent) { // onpage load, selectNote is still undefine
             return; // then if this code will prevent unintended api calls updater
@@ -147,7 +147,7 @@ export default function () {
         e.preventDefault();
         setShowEditMetadata(!showEditMetadata);
     }
-    async function handleSaveClosedNote(){
+    async function handleSaveClosedNote() {
         const content = selectedNote.content;
         const title = selectedNote.title;
         const noteId = selectedNote.noteId;
@@ -159,33 +159,37 @@ export default function () {
         const updatedAt = Date.now();
 
         // update all content to server
-        try{
-            const response1 = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_content`,{
-                noteId: noteId,
-                content: content
-            })
-            const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_note_metadata`,
+        try {
+            const response1 = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_content`,
+                { // body request
+                    noteId: noteId,
+                    content: content
+                },
+                { // headers
+                    headers: { 'Authorization': `Bearer ${jwt || "null"}` },
+                    withCredentials: true
+                });
+            const response2 = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_note_metadata`,
                 {
                     noteId: noteId,
                     title: title,
                     isFavorite: isFavorite,
                     isArchive: isArchive,
                     isTrash: isTrash,
-                    created_at: createdAt,
-                    updated_at: Date.now()
+                    // TODO: add tags update
                 },
                 {
                     headers: { 'Authorization': `Bearer ${jwt || "null"}` },
                     withCredentials: true
                 }
             );
-        }catch(err){
+        } catch (err) {
             setJwt(''); // trigger jwt refresh
             console.error(err)
         }
-        setSelectedNote(null);
-        setActiveNote(false);
         setShowEditMetadata(false);
+        setActiveNote(false);
+        setSelectedNote({});
     }
 
     // mini components
@@ -206,7 +210,7 @@ export default function () {
         <form onSubmit={(e) => handleSubmit(e)} className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
             <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700">
                 <div className="" > {/* navigation container */}
-                    <button onClick={() => { setActiveNote(false); setDelay(0);}} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
+                    <button onClick={() => { handleSaveClosedNote(); }} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
                 </div>
                 {/* title container */}
                 <div className={"flex items-center [&_*]:font-mono [&_*]:mb-1"} > {/* title section */}
@@ -216,12 +220,12 @@ export default function () {
                     <div className="">
                         <button type="button" onClick={() => setSelectedNote({ ...selectedNote, isFavorite: !selectedNote.isFavorite })} className="max-w-fit pl-2 font-bold" aria-label="Favorite">
                             Set as favorite:
-                            <i className={selectedNote.isFavorite || false ? "fa-solid fa-star pl-3" : "fa-regular fa-star pl-3"}></i>
+                            <i className={selectedNote.isFavorite || false ? "fa-solid fa-square-check pl-3" : "fa-regular fa-square pl-3"}></i>
                         </button>
                         <br></br>
                         <button type="button" onClick={() => setSelectedNote({ ...selectedNote, isArchive: !selectedNote.isArchive })} className="max-w-fit pl-2 font-bold" aria-label="Archive">
                             Set as Archived:
-                            <i className={selectedNote.isArchive || false ? "fa-solid fa-box-archive pl-3" : "fa-regular fa-box-archive pl-3"}></i>
+                            <i className={selectedNote.isArchive || false ? "fa-solid fa-square-check pl-3" : "fa-regular fa-square pl-3"}></i>
                         </button>
                         <div className="flex justify-start">
                             <h3 className=" rounded-xl w-fit px-2 text-center font-bold">Tags: </h3>
