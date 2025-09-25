@@ -9,26 +9,32 @@ export default ({ noteId, title, isFavorite, isArchive, tags, created_at, update
     const { activeNote, setActiveNote, selectedNote, setSelectedNote } = useContext(sharedContext);
     const { jwt, setJwt } = useContext(authToken);
     
-
     async function editNote(e) {
-        setActiveNote(noteId);
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/notes/get_note_content/${noteId}`, {
-            headers: {
-                'Authorization': `Bearer ${jwt}`
-            },
-            withCredentials: true
-        }).then(res => res.data); // get the note content from data
-        setSelectedNote({ 
-            noteId: noteId,
-            title: title, 
-            isFavorite : isFavorite, 
-            isArchive : isArchive,
-            // note tags here 
-            content:response.content,
-            createdAt: created_at,
-            updatedAt: updated_at
-        });
-        console.log(selectedNote);
+        try{
+            setActiveNote(noteId);
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/notes/get_note_content/${noteId}`, {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
+                },
+                withCredentials: true
+            }).then(res => res.data) // get the note content from data
+            .catch(err => {
+                setJwt(''); // trigger jwt refresh
+            });
+            setSelectedNote({ 
+                noteId: noteId,
+                title: title, 
+                isFavorite : isFavorite, 
+                isArchive : isArchive,
+                // note tags here 
+                content:response.content,
+                createdAt: created_at,
+                updatedAt: updated_at
+            });
+        }catch(err){
+            setJwt(''); // trigger jwt refresh
+            console.error(err);
+        }
     }
 
     return (

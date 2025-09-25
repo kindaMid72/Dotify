@@ -31,7 +31,7 @@ function Apps() {
             }).catch(err => {
                 console.error("No active session found or refresh token is invalid.", err);
             })
-    }, []);
+    }, [jwt]);
 
     const router = createBrowserRouter([
         {

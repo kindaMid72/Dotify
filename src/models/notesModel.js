@@ -25,12 +25,12 @@ async function deleteNote({ userId, noteId }) {
     }
 
 }
-async function editNoteMetadata({userId, noteId, title, isFavorite, isArchive, isTrash, updated_at}) {
+async function editNoteMetadata({ userId, noteId, title, isFavorite, isArchive, isTrash, updated_at }) {
     const sql = "UPDATE notes SET title = ?, is_favorite = ?, is_archive = ?, is_trash = ?, updated_at = ? WHERE id = ? AND user_id = ?";
-    try{
+    try {
         const [result] = await db.query(sql, [title, isFavorite, isArchive, isTrash, updated_at, noteId, userId]);
         return result.affectedRows > 0;
-    }catch(err){
+    } catch (err) {
         console.error(err);
         throw new Error("Gagal mengupdate catatan: " + err.message);
     }
@@ -111,7 +111,7 @@ async function updateLastEdited({ noteId, userId }) {
 }
 
 // return list of notes information
-async function getAllNotesInfo({ userId }) { 
+async function getAllNotesInfo({ userId }) {
     const sql = "SELECT id, title, is_favorite, is_archive, is_trash, created_at, updated_at FROM notes WHERE user_id = ?";
     try {
         const [result] = await db.query(sql, [userId]);
@@ -120,7 +120,7 @@ async function getAllNotesInfo({ userId }) {
         throw new Error("Gagal mengambil ringkasan catatan: " + err.message);
     }
 }
-async function getNoteContent({ userId, noteId}) {
+async function getNoteContent({ userId, noteId }) {
     const sql = "SELECT content FROM notes WHERE id = ? AND user_id = ?";
     try {
         const [result] = await db.query(sql, [noteId, userId]);
