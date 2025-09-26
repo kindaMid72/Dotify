@@ -1,4 +1,5 @@
 import db from '../config/database.js';
+import jwt from 'jsonwebtoken';
 
 async function createTag({userId, name, slug}) {
     const sql = "INSERT INTO tags (user_id, name, slug) VALUES (?, ?, ?)";

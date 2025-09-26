@@ -1,3 +1,7 @@
+/**
+ * 
+ */
+
 import axios from 'axios';
 import { useContext } from "react";
 
@@ -8,6 +12,14 @@ import { sharedContext } from "../Notes_App.jsx";
 export default ({ noteId, title, isFavorite, isArchive, tags, created_at, updated_at }) => {
     const { activeNote, setActiveNote, selectedNote, setSelectedNote } = useContext(sharedContext);
     const { jwt, setJwt } = useContext(authToken);
+
+    // display
+    let date = new Date(Number(created_at));
+    // console.log(typeof(created_at));
+    // console.log(date);
+    // console.log(typeof(date));
+    // date is still a Date object
+    date = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
     
     async function editNote(e) {
         try{
@@ -51,7 +63,7 @@ export default ({ noteId, title, isFavorite, isArchive, tags, created_at, update
                 </div>
                 {/* TODO: implement tags display */}
                 <h3 className="border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]">Tags!</h3>
-                <p className="flex-1 text-[0.8em] font-bold">jan 1, 2025</p>
+                <p className="flex-1 text-[0.8em] font-bold">{date}</p>
             </div>
 
         </>

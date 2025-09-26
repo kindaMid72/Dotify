@@ -1,9 +1,7 @@
 /**
- * FIXME: update db for metadata triggered every second, content debounce is kinda fine
- *  FIXME: enter key trigger reload
- * FIXME: some error occur when load
+ *  FIXME: enter key in metadata trigger reload
+ * FIXME: onclick back button, date get reset to NaN, locally db its not effected
  * TODO: add tags to note
- * TODO: notes content edits
  * 
  */
 
@@ -53,7 +51,9 @@ export default function () {
         title: selectedNote.title,
         isFavorite: selectedNote.isFavorite,
         isArchive: selectedNote.isArchive,
-        isTrash: selectedNote.isTrash
+        isTrash: selectedNote.isTrash,
+        createdAt: selectedNote.createdAt,
+        updatedAt: selectedNote.updatedAt
         // TODO: add tags dependency here
     }, 1000);
     useEffect(() => { // use effect for metadata update
@@ -142,7 +142,7 @@ export default function () {
     }, [debouncedContent, jwt]);
 
 
-    // utils function
+    // handler function
     function editMetadata(e) {
         e.preventDefault();
         setShowEditMetadata(!showEditMetadata);

@@ -32,11 +32,20 @@ async function getNoteTags({noteId}){
         throw new Error("Gagal mengambil hubungan catatan-tag: " + err.message);
     }
 }
-
-
+async function addNoteTagRelation({noteId, tagId}) {
+    const sql = "INSERT INTO note_tags (note_id, tag_id) VALUES (?, ?)";
+    try{
+        const [result] = await db.query(sql, [noteId, tagId]);
+        return result.affectedRows > 0;
+    }catch(err){
+        console.error(err);
+        throw new Error("Gagal menambahkan tag ke catatan: " + err.message);
+    }
+}
 
 export default {
     createNoteTagRelation,
     deleteNoteTagRelation,
-    getNoteTags
+    getNoteTags,
+    addNoteTagRelation
 }
