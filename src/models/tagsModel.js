@@ -33,14 +33,14 @@ async function getAllUserTags({ userId }) {
     }
 }
 
-async function getTagBySlug({ userId, slug }) {
+async function checkSlugExists({ userId, slug }) {
     const sql = "SELECT slug FROM tags WHERE user_id = ? AND slug = ?";
     try {
         const [result] = await db.query(sql, [userId, slug]);
-        return result.length > 0;
+        return result.length;
     } catch (err) {
         console.error(err);
-        throw new Error("Gagal mengambil tag berdasarkan slug: " + err.message);
+        throw new Error("Gagal memeriksa slug: " + err.message);
     }
 }
 
@@ -48,5 +48,5 @@ export default {
     createTag,
     deleteTag,
     getAllUserTags,
-    getTagBySlug
+    checkSlugExists
 }

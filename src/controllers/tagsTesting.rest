@@ -1,0 +1,71 @@
+### login
+POST http://localhost:3000/api/db/users/login
+Content-Type: application/json
+
+{
+    "email": "test",
+    "password": "test"
+}
+
+
+### logout
+POST http://localhost:3000/api/db/users/logout
+
+### refresh token
+GET http://localhost:3000/api/db/users/refresh-token
+
+### check token
+GET http://localhost:3000/api/db/users/check-token
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+
+##############################################################################
+# TAG
+### get all tags PASS
+GET http://localhost:3000/api/db/tags/get_all_user_tags
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+
+### create tag PASS
+POST http://localhost:3000/api/db/tags/create_tag
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Content-Type: application/json
+
+{
+    "name" : "yukon1",
+    "userId": 15
+}
+
+### delete tag
+DELETE http://localhost:3000/api/db/tags/delete_tag
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+
+{
+    "tagId": 6
+}
+
+
+##############################################################################
+# TAG NOTE RELATION
+### get all note tags PASS
+GET http://localhost:3000/api/db/note_tags_relation/get_all_note_tags_relation
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+
+### create note tags PASS   
+POST http://localhost:3000/api/db/note_tags_relation/create_note_tags_relation
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Content-Type: application/json
+
+{
+    "noteId": 3,
+    "tagId": 2
+}
+
+### delete note tags PASS
+DELETE http://localhost:3000/api/db/note_tags_relation/delete_note_tags_relation
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Content-Type: application/json
+
+{
+    "noteId": 3,
+    "tagId": 2
+}
