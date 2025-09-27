@@ -1,9 +1,9 @@
 import db from '../config/database.js';
 
-async function createNoteTagRelation({noteId, tagId}){
-    const sql = "INSERT INTO note_tags (note_id, tag_id) VALUES (?, ?);";
+async function createNoteTagRelation({noteId, tagId, userId}){
+    const sql = "INSERT INTO note_tags (note_id, tag_id, userId) VALUES (?, ?, ?);";
     try{
-        const [result] = await db.query(sql, [noteId, tagId]);
+        const [result] = await db.query(sql, [noteId, tagId, userId]);
         return result.affectedRows > 0;
     }catch(err){
         console.error(err);
@@ -11,10 +11,10 @@ async function createNoteTagRelation({noteId, tagId}){
     }
 }
 
-async function deleteNoteTagRelation({noteId, tagId}){
-    const sql = "DELETE FROM note_tags WHERE note_id = ? AND tag_id = ?";
+async function deleteNoteTagRelation({noteId, tagId, userId}){
+    const sql = "DELETE FROM note_tags WHERE note_id = ? AND tag_id = ? AND user_id = ?";
     try{
-        const [result] = db.query(sql, [noteId, tagId]);
+        const [result] = db.query(sql, [noteId, tagId, userId]);
         return result.affectedRows > 0;
     }catch(err){
         console.error(err);
@@ -22,24 +22,24 @@ async function deleteNoteTagRelation({noteId, tagId}){
     }
 }
 
-async function getNoteTags({noteId}){
-    const sql = "SELECT * FROM note_tags WHERE note_id = ?";
+async function getNoteTags({noteId, userId}){
+    const sql = "SELECT * FROM note_tags WHERE note_id = ? AND user_id = ?";
     try{
-        const [result] = await db.query(sql, [noteId]);
+        const [result] = await db.query(sql, [noteId, userId]);
         return result;
     }catch(err){
         console.error(err);
         throw new Error("Gagal mengambil hubungan catatan-tag: " + err.message);
     }
 }
-async function addNoteTagRelation({noteId, tagId}) {
-    const sql = "INSERT INTO note_tags (note_id, tag_id) VALUES (?, ?)";
+async function getAllNoteTags({userId}) {
+    const sql = "SELECT * FROM note_tags WHERE user_id = ?";
     try{
-        const [result] = await db.query(sql, [noteId, tagId]);
-        return result.affectedRows > 0;
+        const [result] = await db.query(sql, [userid]);
+        return result;
     }catch(err){
         console.error(err);
-        throw new Error("Gagal menambahkan tag ke catatan: " + err.message);
+        throw new Error("Gagal mengambil semua hubungan catatan-tag: " + err.message);
     }
 }
 
@@ -47,5 +47,5 @@ export default {
     createNoteTagRelation,
     deleteNoteTagRelation,
     getNoteTags,
-    addNoteTagRelation
+    getAllNoteTags
 }
