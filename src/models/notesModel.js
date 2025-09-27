@@ -7,7 +7,7 @@ async function createNote({ userId, title = 'untitled', content = '', is_favorit
     `;
     try {
         const [result] = await db.query(sql, [userId, title, content, is_favorite, is_archive, is_trash, created_at, updated_at]);
-        return result.insertId && result.affectedRows > 0;
+        return result.affectedRows > 0 ? result.insertId : null;
     } catch (err) {
         console.error(err);
         throw new Error('Gagal membuat catatan: ' + err.message);

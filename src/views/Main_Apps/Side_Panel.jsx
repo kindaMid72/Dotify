@@ -1,26 +1,81 @@
 /**
- * FIXME: new button: cannot be interact with
+ * FIXME: + note button work and rederect to open page, but title did not updated when edited
+ *  
  * 
  */
 
-import { useState } from "react";
+import axios from 'axios';
+import { useContext, useState } from "react";
+import { authToken } from '../router.jsx';
+import { sharedContext } from "./Notes_App";
 
-function Side_Panel({ activeNote, setActiveNote, activeCategory, setActiveCategory }) {
 
+function Side_Panel() {
+
+    // shared context
+    const { jwt, setJwt } = useContext(authToken);
+    const { activeCategory, setActiveCategory, activeNote, setActiveNote, notesViewData, setNoteViewData, selectedNote, setSelectedNote} = useContext(sharedContext);
     function category(type) { // all, favorite, archive, ect
         setActiveCategory(type);
     }
+
+    // state
+    const [focusTags, setFocusTags] = useState('hidden');
+
+    // handler
     function setActiveClass(type) {
         return type === activeCategory ?
             "hover:rounded-md hover:p-1 origin-left w-full bg-blue-200 border-2 !border-blue-300"
             :
             "hover:bg-gray-300 hover:rounded-md hover:p-1 origin-left w-full";
     }
-    const [focusTags, setFocusTags] = useState('hidden');
+    async function handleAddNewNote() {
+        // fetch: request add new note
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/notes/create_note`,
+                {},
+                {
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    withCredentials: true,
+                }
+            ).then(res => res.data);
+            setActiveNote(response.noteId);
+            setNoteViewData(prevNoteViewData => {
+                return { // add new note to noteViewData, update the main content views
+                    ...prevNoteViewData,
+                    [response.noteId]: {
+                        id: response.noteId,
+                        title: "",
+                        is_favorite: 0,
+                        is_archive: 0,
+                        is_trash: 0,
+                        // TODO: add tags
+                        created_at: Date.now(),
+                        updated_at: Date.now()
+                    }
+                }
+            });
+            setSelectedNote({
+                noteId: response.noteId,
+                title: "",
+                isFavorite: false,
+                isArchive: false,
+                // TODO: add tags
+                content: "",
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            })
+        } catch (err) {
+            setJwt(''); // trigger jwt refresh
+            console.error(err);
+        }
+    }
 
     return <>
         <div className=' p-3 w-[250px] flex flex-col items-center border-gray-300 border-r-2 pl-6 [&_*]:mb-1 [&_*]:font-mono [&_*]:font-extrabold [&_*]:cursor-pointer bg-gray-100 [&_li]:p-1 [&_li]:rounded-md [&_li]:border-2 [&_li]:border-transparent [&_li]:transition-color [&_li]:ease-in [&_li]:duration-200 '>
-            <button onClick={() => setActiveNote(true)} className='border-2 w-full border-transparent rounded-md px-2 py-1 bg-blue-950 text-white font-mono font-[900] !mb-5 hover:bg-blue-800 transition-colors ease-in duration-200'>+ New Note</button>
+            <button onClick={() => handleAddNewNote()} className='border-2 w-full border-transparent rounded-md px-2 py-1 bg-blue-950 text-white font-mono font-[900] !mb-5 hover:bg-blue-800 transition-colors ease-in duration-200'>+ New Note</button>
             <ol className=' flex flex-col justify-start w-[200px] items-start gap-2 [&_i]:mr-2 overflow-auto'>
                 <li onClick={() => category('all')} className={setActiveClass('all')}><i className="fa-solid fa-clipboard "></i>All Notes</li>
                 <li onClick={() => category('favorite')} className={setActiveClass('favorite')}><i className="fa-solid fa-star "></i>Favorite</li>

@@ -20,9 +20,9 @@ route.post('/create_note', async (req, res) => {
         if (!verify) return res.status(403).json({ message: "invalid token" });
         const userId = verify.userId;
         // data all null
-        const result = await notesModel.createNote({ userId: userId });
-        if (result) {
-            res.status(201).json({ message: "note created successfully" });
+        const newNoteId = await notesModel.createNote({ userId: userId });
+        if (newNoteId) {
+            res.status(201).json({ message: "note created successfully", noteId: newNoteId });
         } else {
             res.status(500).json({ message: "failed to create note" });
         }
@@ -82,7 +82,7 @@ route.put('/edit_title', async (req, res) => {
 route.put('/edit_content', async (req, res) => {
     // params: noteId, 
     try {
-        const verify = jwt.verify(req.headers.authorization.split(' ')[1], ACCESS_TOKEN_SECRET);
+        const verifafy = jwt.verify(req.headers.authorization.split(' ')[1], ACCESS_TOKEN_SECRET);
         if (!verify) return res.status(403).json({ message: "invalid token" });
         const userId = verify.userId;
         const noteId = req.body.noteId;
