@@ -1,13 +1,13 @@
 /**
  *  FIXME: enter key in metadata trigger reload
  * FIXME: content didnot updated when close, content cannot be fetched
- * FIXME: grid missing after editing notes
+ * FIXME: grid that selected missing after editing notes
  * 
  * 
  */
 
 import axios from 'axios';
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { sharedContext } from "../Notes_App.jsx";
 
 // shared context
@@ -16,7 +16,7 @@ import { authToken } from "../../router.jsx";
 export default function () {
     //shared context
     const { activeNote, setActiveNote, selectedNote, setSelectedNote, noteViewData, setNoteViewData } = useContext(sharedContext);
-    const { jwt, setJwt } = useContext(authToken);
+    const { jwt, requestUpdateJwt } = useContext(authToken);
 
     const date = new Date(selectedNote.createdAt);
 
@@ -25,7 +25,6 @@ export default function () {
     const [newTag, setNewTag] = useState(false);
     const [newTagValue, setNewTagValue] = useState("");
     const [showEditMetadata, setShowEditMetadata] = useState(false);
-    const isFirstRender = useRef(false);
 
     //custom hooks
     function useDebounce(value, delay) {
@@ -95,6 +94,7 @@ export default function () {
                 //     console.log("Note metadata updated successfully:", response.data);
                 // }
             } catch (err) {
+                await requestUpdateJwt();
                 console.error("Failed to update note:", err.response?.data || err.message);
             }
         }
@@ -136,11 +136,13 @@ export default function () {
                 //     console.log(response.data);
                 // }
             } catch (err) {
+                await requestUpdateJwt();
                 console.error("Failed to update note content:", err.response?.data || err.message);
             }
         }
         updateNote();
     }, [debouncedContent, jwt]);
+    console.log(selectedNote);
 
 
     // handler function
@@ -161,51 +163,54 @@ export default function () {
 
         // update all content to server
         try {
-            const response1 = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_content`,
-                { // body request
-                    noteId: noteId,
-                    content: content
-                },
-                { // headers
-                    headers: { 'Authorization': `Bearer ${jwt || "null"}` },
-                    withCredentials: true
-                });
-            const response2 = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_note_metadata`,
-                {
-                    noteId: noteId,
-                    title: title,
-                    isFavorite: isFavorite,
-                    isArchive: isArchive,
-                    isTrash: isTrash,
-                    // TODO: add tags update
-                },
-                {
-                    headers: { 'Authorization': `Bearer ${jwt || "null"}` },
-                    withCredentials: true
+            await Promise.all([
+                axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_content`,
+                    { // body request
+                        noteId: noteId,
+                        content: content
+                    },
+                    { // headers
+                        headers: { 'Authorization': `Bearer ${jwt || "expired token"}` },
+                        withCredentials: true
+                    }),
+                axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_note_metadata`,
+                    {
+                        noteId: noteId,
+                        title: title,
+                        isFavorite: isFavorite,
+                        isArchive: isArchive,
+                        isTrash: isTrash,
+                        // TODO: add tags update
+                    },
+                    {
+                        headers: { 'Authorization': `Bearer ${jwt || "expired token"}` },
+                        withCredentials: true
+                    }
+                )
+            ])
+            setNoteViewData(prevNoteViewData => {
+                return {
+                    ...prevNoteViewData,
+                    [selectedNote.noteId]: {
+                        id: selectedNote.noteId,
+                        title: selectedNote.title || "untitled",
+                        is_favorite: selectedNote.isFavorite,
+                        is_archive: selectedNote.isArchive,
+                        is_trash: selectedNote.isTrash,
+                        // TODO: add tags
+                        created_at: selectedNote.createdAt,
+                        updated_at: Date.now()
+                    }
                 }
-            );
+            })
         } catch (err) {
-            setJwt(''); // trigger jwt refresh
+            await requestUpdateJwt();
             console.error(err)
+        } finally {
+            setShowEditMetadata(false);
+            setActiveNote(false);
+            setSelectedNote({});
         }
-        setNoteViewData(prevNoteViewData => {
-            return {
-                ...prevNoteViewData,
-                [selectedNote.noteId]: {
-                    id: selectedNote.noteId,
-                    title: selectedNote.title || "untitled",
-                    is_favorite: selectedNote.isFavorite,
-                    is_archive: selectedNote.isArchive,
-                    is_trash: selectedNote.isTrash,
-                    // TODO: add tags
-                    created_at: selectedNote.createdAt,
-                    updated_at: Date.now()
-                }
-            }
-        })
-        setShowEditMetadata(false);
-        setActiveNote(false);
-        setSelectedNote({});
     }
 
     // mini components

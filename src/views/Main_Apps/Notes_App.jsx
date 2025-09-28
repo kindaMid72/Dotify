@@ -54,11 +54,11 @@ function Notes_App() {
           return container;
         }, {}); // mulai  dengan container kosong
         setNoteViewData(notesObject);
+        console.log(notesObject);
       };
       fetchData();
     }
-  }, [jwt]); // Jalankan effect ini jika jwt atau activeCategory berubah
-
+  }, [jwt]); // Jalankan effect ini jika jwt
   return (
     <>
       <sharedContext.Provider value={

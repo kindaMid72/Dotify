@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { authToken } from "../../router.jsx";
 import { sharedContext } from "../Notes_App.jsx";
 
-export default ({ noteId, title, isFavorite, isArchive, tags, created_at, updated_at }) => {
+export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_at, updated_at }) => {
     const { activeNote, setActiveNote, selectedNote, setSelectedNote } = useContext(sharedContext);
     const { jwt, setJwt } = useContext(authToken);
 
@@ -38,6 +38,7 @@ export default ({ noteId, title, isFavorite, isArchive, tags, created_at, update
                 title: title, 
                 isFavorite : isFavorite, 
                 isArchive : isArchive,
+                isTrash: isTrash,
                 // note tags here 
                 content:response.content,
                 createdAt: created_at,
