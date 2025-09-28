@@ -1,5 +1,5 @@
 /**TODO: pass tags argument
- * TODO: filter based on category
+ * FIXME: when note category get edited, the view does not updated, on selected category the note is missing because the category filter it, but when we open the new category that its pointing to, its not there
  */
 
 import { useContext, useEffect, useState } from "react";
@@ -13,10 +13,10 @@ export default () => {
     const [selectedCategoryView, setSelectedCategoryView] = useState({}); // containt selected category view for main content
     useEffect(() => {
         if (activeCategory === 'all') { // all category, exclude trashed note, PASS
-            const newView = Object.values(notesViewData).filter(note => note.is_trash === 0);
+            const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
+                                                        .filter(note => note.is_archive === 0);
             setSelectedCategoryView({
                 ...newView.reduce((container, nextVal) => {
-                    if (!nextVal) return container; // Skip null or undefined entries
                     container[nextVal.id] = nextVal;
                     return container;
                 }, {})
@@ -24,10 +24,10 @@ export default () => {
 
         } else if (activeCategory === 'favorite') { // all favorite note, exclue trashed note
             const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
-                                                        .filter(note => note.is_favorite === 1);
+                                                        .filter(note => note.is_favorite === 1)
+                                                        .filter(note => note.is_archive === 0);
             setSelectedCategoryView({
                 ...newView.reduce((container, nextVal) => {
-                    if (!nextVal) return container; // Skip null or undefined entries
                     container[nextVal.id] = nextVal;
                     return container;
                 }, {})
@@ -37,7 +37,6 @@ export default () => {
                                                         .filter(note => note.is_archive === 1);
             setSelectedCategoryView({
                 ...newView.reduce((container, nextVal) => {
-                    if (!nextVal) return container; // Skip null or undefined entries
                     container[nextVal.id] = nextVal;
                     return container;
                 }, {})
@@ -46,7 +45,6 @@ export default () => {
             const newView = Object.values(notesViewData).filter(note => note.is_trash === 1);
             setSelectedCategoryView({
                 ...newView.reduce((container, nextVal) => {
-                    if (!nextVal) return container; // Skip null or undefined entries
                     container[nextVal.id] = nextVal;
                     return container;
                 }, {})

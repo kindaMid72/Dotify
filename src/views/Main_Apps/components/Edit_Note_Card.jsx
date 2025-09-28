@@ -1,7 +1,5 @@
 /**
  *  FIXME: enter key in metadata trigger reload
- * FIXME: content didnot updated when close, content cannot be fetched
- * FIXME: grid that selected missing after editing notes
  * 
  * 
  */
@@ -76,26 +74,26 @@ export default function () {
                         withCredentials: true
                     }
                 );
-
-                setNoteViewData(prevNoteViewData => ({
-                    ...prevNoteViewData,
-                    [debounceMetadata.noteId]: {
-                        id: debounceMetadata.noteId,
-                        title: debounceMetadata.title || "untitled",
-                        is_favorite: debounceMetadata.isFavorite,
-                        is_archive: debounceMetadata.isArchive,
-                        is_trash: debounceMetadata.isTrash,
-                        // TODO: add tags
-                        created_at: debounceMetadata.createdAt,
-                        updated_at: Date.now()
-                    }
-                }));
                 // if(response.status <= 300){
                 //     console.log("Note metadata updated successfully:", response.data);
                 // }
             } catch (err) {
                 await requestUpdateJwt();
                 console.error("Failed to update note:", err.response?.data || err.message);
+            }finally{
+                // Konversi boolean ke angka sebelum update state
+                setNoteViewData(prevNoteViewData => ({
+                    ...prevNoteViewData,
+                    [debounceMetadata.noteId]: {
+                        ...prevNoteViewData[debounceMetadata.noteId],
+                        id: debounceMetadata.noteId,
+                        title: debounceMetadata.title || "untitled",
+                        is_favorite: debounceMetadata.isFavorite ? 1 : 0,
+                        is_archive: debounceMetadata.isArchive ? 1 : 0,
+                        is_trash: debounceMetadata.isTrash ? 1 : 0,
+                        updated_at: Date.now()
+                    }
+                }));
             }
         }
         updateNote();
@@ -121,6 +119,16 @@ export default function () {
                         withCredentials: true
                     }
                 );
+
+                // if (response.status <= 399) {
+                //     console.log("Note content updated successfully:", response.data);
+                // } else {
+                //     console.log(response.data);
+                // }
+            } catch (err) {
+                await requestUpdateJwt();
+                console.error("Failed to update note content:", err.response?.data || err.message);
+            }finally{
                 setSelectedNote((pref) => {
                     return (
                         {
@@ -130,20 +138,10 @@ export default function () {
                         }
                     )
                 })
-                // if (response.status <= 399) {
-                //     console.log("Note content updated successfully:", response.data);
-                // } else {
-                //     console.log(response.data);
-                // }
-            } catch (err) {
-                await requestUpdateJwt();
-                console.error("Failed to update note content:", err.response?.data || err.message);
             }
         }
         updateNote();
     }, [debouncedContent, jwt]);
-    console.log(selectedNote);
-
 
     // handler function
     function editMetadata(e) {
@@ -188,27 +186,27 @@ export default function () {
                     }
                 )
             ])
+        } catch (err) {
+            await requestUpdateJwt();
+            console.error("Failed to save note on close:", err);
+        } finally {
+            // Konversi boolean ke angka sebelum update state
             setNoteViewData(prevNoteViewData => {
                 return {
                     ...prevNoteViewData,
-                    [selectedNote.noteId]: {
-                        id: selectedNote.noteId,
-                        title: selectedNote.title || "untitled",
-                        is_favorite: selectedNote.isFavorite,
-                        is_archive: selectedNote.isArchive,
-                        is_trash: selectedNote.isTrash,
-                        // TODO: add tags
-                        created_at: selectedNote.createdAt,
+                    [noteId]: {
+                        ...prevNoteViewData[noteId],
+                        id: noteId,
+                        title: title || "untitled",
+                        is_favorite: isFavorite ? 1 : 0,
+                        is_archive: isArchive ? 1 : 0,
+                        is_trash: isTrash ? 1 : 0,
                         updated_at: Date.now()
                     }
                 }
             })
-        } catch (err) {
-            await requestUpdateJwt();
-            console.error(err)
-        } finally {
             setShowEditMetadata(false);
-            setActiveNote(false);
+            setActiveNote(null);
             setSelectedNote({});
         }
     }

@@ -68,6 +68,5 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
             </div>
 
         </>
-
     );
 }
