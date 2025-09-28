@@ -1,3 +1,6 @@
+/**
+ * FIXME: useEffect, something wrong with it
+ */
 import axios from 'axios';
 import { createContext, useContext, useEffect, useState } from 'react';
 
@@ -54,7 +57,7 @@ function Notes_App() {
       };
       fetchData();
     }
-  }, [jwt, activeCategory]); // Jalankan effect ini jika jwt atau activeCategory berubah
+  }, [jwt]); // Jalankan effect ini jika jwt atau activeCategory berubah
 
   return (
     <>

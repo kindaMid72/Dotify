@@ -82,7 +82,7 @@ route.put('/edit_title', async (req, res) => {
 route.put('/edit_content', async (req, res) => {
     // params: noteId, 
     try {
-        const verifafy = jwt.verify(req.headers.authorization.split(' ')[1], ACCESS_TOKEN_SECRET);
+        const verify = jwt.verify(req.headers.authorization.split(' ')[1], ACCESS_TOKEN_SECRET);
         if (!verify) return res.status(403).json({ message: "invalid token" });
         const userId = verify.userId;
         const noteId = req.body.noteId;
@@ -91,7 +91,7 @@ route.put('/edit_content', async (req, res) => {
         if (result) {
             res.status(200).json({ message: "content updated successfully" });
         } else {
-            res.status(500).json({ message: "failed to update content" });
+            res.status(405).json({ message: "failed to update content" });
         }
     } catch (err) {
         res.status(500).json({ message: err.message });

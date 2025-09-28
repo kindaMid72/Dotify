@@ -1,19 +1,65 @@
 /**TODO: pass tags argument
- * 
+ * TODO: filter based on category
  */
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Notes_Card from "./components/Notes_Card_Grid.jsx";
 import { sharedContext } from "./Notes_App.jsx";
 
 
 export default () => {
     const { activeNote, setActiveNote, activeCategory, setActiveCategory, notesViewData, setNoteViewData } = useContext(sharedContext);
+    // TODO:
+    const [selectedCategoryView, setSelectedCategoryView] = useState({}); // containt selected category view for main content
+    useEffect(() => {
+        if (activeCategory === 'all') { // all category, exclude trashed note, PASS
+            const newView = Object.values(notesViewData).filter(note => note.is_trash === null || note.is_trash === 0);
+            setSelectedCategoryView({
+                ...newView.reduce((container, nextVal) => {
+                    if (!nextVal) return container; // Skip null or undefined entries
+                    container[nextVal.id] = nextVal;
+                    return container;
+                }, {})
+            })
+
+        } else if (activeCategory === 'favorite') { // all favorite note, exclue trashed note
+            const newView = Object.values(notesViewData).filter(note => note.is_trash === null || note.is_trash === 0)
+                                                        .filter(note => note.is_favorite === 1);
+            setSelectedCategoryView({
+                ...newView.reduce((container, nextVal) => {
+                    if (!nextVal) return container; // Skip null or undefined entries
+                    container[nextVal.id] = nextVal;
+                    return container;
+                }, {})
+            })
+        } else if (activeCategory === 'archive') { // all archived note, exclue trashed note
+            const newView = Object.values(notesViewData).filter(note => note.is_trash === null || note.is_trash === 0)
+                                                        .filter(note => note.is_archive === 1);
+            setSelectedCategoryView({
+                ...newView.reduce((container, nextVal) => {
+                    if (!nextVal) return container; // Skip null or undefined entries
+                    container[nextVal.id] = nextVal;
+                    return container;
+                }, {})
+            })
+        } else {  // trash category, exclude all except trashed note
+            const newView = Object.values(notesViewData).filter(note => note.is_trash === true);
+            setSelectedCategoryView({
+                ...newView.reduce((container, nextVal) => {
+                    if (!nextVal) return container; // Skip null or undefined entries
+                    container[nextVal.id] = nextVal;
+                    return container;
+                }, {})
+            })
+        }
+
+    }, [notesViewData, activeCategory]);
+
     return (
         <div className="p-3 flex flex-wrap justify-start content-start items-start gap-2 overflow-auto">
-            {Object.values(notesViewData).map((element) => { // TODO: pass tags argument
+            {Object.values(selectedCategoryView).map((element) => { // TODO: pass tags argument
                 return <Notes_Card key={element.id}
-                    noteId={element.id}
+                    noteId={element.id} D
                     title={element.title}
                     isFavorite={element.is_favorite}
                     isArchive={element.is_archive}

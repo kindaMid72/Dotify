@@ -23,7 +23,7 @@ import Notes_App from './Main_Apps/Notes_App.jsx';
 
 function Apps() {
     const [jwt, setJwt] = useState(null);
-    useEffect(() => { // minta jwt token pertama kali, jika punya refresh token
+    useEffect(() => { // Minta access token saat aplikasi pertama kali dimuat, jika punya refresh token
         // Tambahkan withCredentials: true agar cookie (refreshToken) dikirim
         axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, { withCredentials: true })
             .then(res => {
@@ -31,7 +31,8 @@ function Apps() {
             }).catch(err => {
                 console.error("No active session found or refresh token is invalid.", err);
             })
-    }, [jwt]);
+
+    }, []); // Dependency array kosong agar effect ini hanya berjalan sekali saat komponen mount
 
     const router = createBrowserRouter([
         {

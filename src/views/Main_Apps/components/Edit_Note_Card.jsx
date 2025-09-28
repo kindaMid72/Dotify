@@ -1,7 +1,8 @@
 /**
  *  FIXME: enter key in metadata trigger reload
- * FIXME: onclick back button, date get reset to NaN, locally db its not effected
- * TODO: add tags to note
+ * FIXME: content didnot updated when close, content cannot be fetched
+ * FIXME: grid missing after editing notes
+ * 
  * 
  */
 
@@ -66,7 +67,7 @@ export default function () {
                 const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_note_metadata`,
                     {
                         noteId: debounceMetadata.noteId,
-                        title: debounceMetadata.title,
+                        title: debounceMetadata.title || "untitled",
                         isFavorite: debounceMetadata.isFavorite,
                         isArchive: debounceMetadata.isArchive,
                         isTrash: debounceMetadata.isTrash
@@ -81,7 +82,7 @@ export default function () {
                     ...prevNoteViewData,
                     [debounceMetadata.noteId]: {
                         id: debounceMetadata.noteId,
-                        title: debounceMetadata.title,
+                        title: debounceMetadata.title || "untitled",
                         is_favorite: debounceMetadata.isFavorite,
                         is_archive: debounceMetadata.isArchive,
                         is_trash: debounceMetadata.isTrash,
@@ -187,6 +188,21 @@ export default function () {
             setJwt(''); // trigger jwt refresh
             console.error(err)
         }
+        setNoteViewData(prevNoteViewData => {
+            return {
+                ...prevNoteViewData,
+                [selectedNote.noteId]: {
+                    id: selectedNote.noteId,
+                    title: selectedNote.title || "untitled",
+                    is_favorite: selectedNote.isFavorite,
+                    is_archive: selectedNote.isArchive,
+                    is_trash: selectedNote.isTrash,
+                    // TODO: add tags
+                    created_at: selectedNote.createdAt,
+                    updated_at: Date.now()
+                }
+            }
+        })
         setShowEditMetadata(false);
         setActiveNote(false);
         setSelectedNote({});

@@ -88,7 +88,7 @@ function Side_Panel() {
                         <li className={setActiveClass('tag3')} onClick={() => setActiveCategory('tag3')}>tag3</li>
                     </ol>
                 </li>
-                <li onClick={() => category('archived')} className={setActiveClass('archived')}><i className="fa-solid fa-box-archive"></i>Archived</li>
+                <li onClick={() => category('archive')} className={setActiveClass('archive')}><i className="fa-solid fa-box-archive"></i>Archived</li>
                 <li onClick={() => category('trash')} className={setActiveClass('trash')}><i className="fa-solid fa-trash"></i>Trash</li>
             </ol>
         </div>
