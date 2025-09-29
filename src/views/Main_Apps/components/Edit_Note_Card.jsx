@@ -80,7 +80,7 @@ export default function () {
             } catch (err) {
                 await requestUpdateJwt();
                 console.error("Failed to update note:", err.response?.data || err.message);
-            }finally{
+            } finally {
                 // Konversi boolean ke angka sebelum update state
                 setNoteViewData(prevNoteViewData => ({
                     ...prevNoteViewData,
@@ -128,7 +128,7 @@ export default function () {
             } catch (err) {
                 await requestUpdateJwt();
                 console.error("Failed to update note content:", err.response?.data || err.message);
-            }finally{
+            } finally {
                 setSelectedNote((pref) => {
                     return (
                         {
@@ -229,7 +229,7 @@ export default function () {
         <form onSubmit={(e) => handleSubmit(e)} className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
             <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700">
                 <div className="" > {/* navigation container */}
-                    <button onClick={() => { handleSaveClosedNote(); }} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
+                    <button type="button" onClick={() => { handleSaveClosedNote(); }} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
                 </div>
                 {/* title container */}
                 <div className={"flex items-center [&_*]:font-mono [&_*]:mb-1"} > {/* title section */}
@@ -254,7 +254,7 @@ export default function () {
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
                                 <li>tags1 <i className="fa-solid fa-xmark"></i></li>
-                                <div className="flex items-start" onSubmit={(e) => { e.preventDefault(); setNewTag(!newTag); setNewTagValue(""); }}> {/* TODO: dynamic length input */}
+                                <div className="flex items-start"> {/* TODO: dynamic length input */}
                                     <div>
                                         <input
                                             style={{ width: newTagValue.length + "ch" }}
@@ -267,7 +267,7 @@ export default function () {
                                         {newTagValue && addExistingTags()} {/* hnya tampil saat ada user type in */}
                                     </div>
                                     <br></br>
-                                    {newTagValue && <button type="submit"><i onClick={() => { setTags([...tags, newTagValue]); setNewTagValue(""); }} className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
+                                    {newTagValue && <button type="button" onClick={() => { setTags([...tags, newTagValue]); setNewTagValue(""); }}><i className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
 
                                 </div>
                             </ol>
@@ -275,7 +275,7 @@ export default function () {
                         <p className="flex-1 text-[1em] pl-2 font-bold">Created date: <i className="font-light">{date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</i></p>
                     </div>
                 }
-                <button className="ml-3" onClick={(e) => editMetadata(e)}><i className={showEditMetadata ? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150" : "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
+                <button type="button" className="ml-3" onClick={(e) => editMetadata(e)}><i className={showEditMetadata ? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150" : "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
             </div>
             <textarea value={selectedNote.content || ""} onChange={(e) => setSelectedNote(prev => ({ ...prev, content: e.target.value }))} type="text" placeholder="write your notes here..." className="flex-1 font-light overflow-auto text-[1em] pl-5 mb-[6px] outline-none pt-4 h-full"></textarea> {/* implement rest if the description length is reaching a certain point */}
         </form>

@@ -1,5 +1,5 @@
 /**TODO: pass tags argument
- * FIXME: when note category get edited, the view does not updated, on selected category the note is missing because the category filter it, but when we open the new category that its pointing to, its not there
+ * FIXME: 
  */
 
 import { useContext, useEffect, useState } from "react";
