@@ -31,6 +31,8 @@ function Notes_App() {
   const [tags, setTags] = useState([]); // store active(interacable) tags
   const [selectedNote, setSelectedNote] = useState({}); // contain current selected note
   const [selectedNotesTag, setSelectedNotesTag] = useState([]); // contain current selected notes tag
+  const [selectedCategoryView, setSelectedCategoryView] = useState({}); // contain notes for selected category view for main content
+
 
   // imported context
   const { jwt } = useContext(authToken); // ambil jwt dari provider global
@@ -69,7 +71,8 @@ function Notes_App() {
           activeNote, setActiveNote,
           activeCategory, setActiveCategory,
           activeView, setActiveView,
-          activeSort, setActiveSort
+          activeSort, setActiveSort,
+          selectedCategoryView, setSelectedCategoryView
         }
       }>
         <div className='flex flex-col h-screen bg-gray-50'>

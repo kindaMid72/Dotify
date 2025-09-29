@@ -2,15 +2,16 @@
  * FIXME: 
  */
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, createContext, useEffect, useState } from "react";
 import Notes_Card from "./components/Notes_Card_Grid.jsx";
 import { sharedContext } from "./Notes_App.jsx";
 
 
 export default () => {
-    const { activeNote, setActiveNote, activeCategory, setActiveCategory, notesViewData, setNoteViewData } = useContext(sharedContext);
+    // share context
+
+    const {activeNote, setActiveNote, activeCategory, setActiveCategory, notesViewData, setNoteViewData, selectedCategoryView, setSelectedCategoryView } = useContext(sharedContext);
     // TODO:
-    const [selectedCategoryView, setSelectedCategoryView] = useState({}); // containt selected category view for main content
     useEffect(() => {
         if (activeCategory === 'all') { // all category, exclude trashed note, PASS
             const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
@@ -69,7 +70,6 @@ export default () => {
             })}
 
         </div>
-
 
 
     );

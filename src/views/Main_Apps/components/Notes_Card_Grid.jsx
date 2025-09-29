@@ -10,7 +10,7 @@ import { authToken } from "../../router.jsx";
 import { sharedContext } from "../Notes_App.jsx";
 
 export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_at, updated_at }) => {
-    const { activeNote, setActiveNote, selectedNote, setSelectedNote, noteViewData, setNoteViewData } = useContext(sharedContext);
+    const { activeNote, activeView, setActiveNote, selectedNote, setSelectedNote, noteViewData, setNoteViewData } = useContext(sharedContext);
     const { jwt, setJwt, requestUpdateJwt } = useContext(authToken);
 
     // display
@@ -79,28 +79,59 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
         e.preventDefault();
         e.stopPropagation();
         try {
-            const response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/db/notes/delete_note`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${jwt}`
-                },
-                data: { // Kirim noteId di dalam properti 'data'
-                    noteId: noteId,
-                },
-                withCredentials: true
-            }
-            );
-            if (response.status <= 300) { // hapus note dari view jika delete berhasil
-                setNoteViewData(prevNoteViewData => {
-                    return {
-                        ...Object.values(prevNoteViewData).reduce((container, nextVal) => {
-                            if (nextVal.id !== noteId) {
-                                container[nextVal.id] = nextVal;
+            // set delete permanent or delayed delete
+            let response;
+
+            if (isTrash === 1) { // if its already in trash, erase it from database
+                response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/db/notes/delete_note`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    data: { // Kirim noteId di dalam properti 'data'
+                        noteId: noteId,
+                    },
+                    withCredentials: true
+                }
+                ).then(res => {
+                    // Hapus note dari view setelah berhasil dihapus dari DB
+                    if (res.status <= 300) {
+                        setNoteViewData(prevNoteViewData => {
+                            const newViewData = { ...prevNoteViewData };
+                            delete newViewData[noteId];
+                            return newViewData;
+                        });
+                    }
+                    return res;
+                });
+            } else { // move to trashed category
+                response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/set_trash`,
+                    { // Kirim noteId di dalam properti 'data'
+                        noteId: noteId,
+                        isTrash: isTrash ? 0 : 1
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            'Authorization': `Bearer ${jwt}`
+                        },
+                        withCredentials: true
+                    }
+                ).then(res => {
+                    // Update status is_trash di view setelah berhasil di DB
+                    if (res.status <= 300) {
+                        setNoteViewData(prevNoteViewData => {
+                            return {
+                                ...prevNoteViewData,
+                                [String(noteId)]: {
+                                    ...prevNoteViewData[noteId],
+                                    is_trash: 1
+                                }
                             }
-                            return container;
-                        }, {})
-                    } // mulai dengan empty object
-                })
+                        });
+                    }
+                    return res;
+                });
             }
 
         } catch (err) {
@@ -141,10 +172,44 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
             console.error(err);
         }
     }
+    async function setRestore(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/set_trash`,
+                    { // Kirim noteId di dalam properti 'data'
+                        noteId: noteId,
+                        isTrash: isTrash ? 0 : 1
+                    },
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            'Authorization': `Bearer ${jwt}`
+                        },
+                        withCredentials: true
+                    }
+                ).then(res => {
+                    if(res.status <= 300){
+                        setNoteViewData(prevNoteViewData => {
+                            return {
+                                ...prevNoteViewData,
+                                [String(noteId)]: {
+                                    ...prevNoteViewData[noteId],
+                                    is_trash: 0
+                                }
+                            }
+                        })
+                    }
+                })
+        }catch(err){
+            requestUpdateJwt();
+            console.error(err);
+        }
+    }
     async function setFavorite(e) {
         e.preventDefault();
         e.stopPropagation();
-        try{
+        try {
             const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/set_favorite`,
                 {
                     noteId: noteId,
@@ -158,7 +223,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                     withCredentials: true,
                 }
             )
-            if(response.status <= 400){
+            if (response.status <= 400) {
                 setNoteViewData(prevNoteViewData => {
                     return {
                         ...prevNoteViewData,
@@ -169,41 +234,73 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                     }
                 })
             }
-        }catch(err){
+        } catch (err) {
             requestUpdateJwt();
             console.error(err);
         }
     }
 
     return (
-        <>  {/* onClick redirect to edit note page */}
-            <div onClick={() => editNote()} className="w-[230px] border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer">
-                <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
-                    <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
-                    <button onClick={(e) => {setFavorite(e);}} type="button" className="p-1" aria-label="Favorite">
-                        <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
-                    </button>
-                    {/* 3. Bungkus tombol dan menu dengan div yang memiliki ref */}
-                    <div ref={menuRef} className="relative">
-                        <button type="button" onClick={(e) => {
-                            e.stopPropagation(); // Hentikan event bubbling agar tidak memicu editNote()
-                            setShowMenu(!showMenu);
-                        }} className="p-1" aria-label="More options">
-                            <i className="fa-solid fa-ellipsis-vertical"></i>
+        <>
+            {/** grid view */}
+            {activeView === 'grid' &&
+                <div onClick={() => editNote()} className="w-[230px] border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer">
+                    <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
+                        <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
+                        <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
+                            <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
                         </button>
-                        {/* Pindahkan menu ke sini dan pastikan posisinya benar */}
-                        <ol className={showMenu ? "absolute right-0 mt-2 z-10 bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-105 [&_li]:transition-transform [&_li]:ease-in-out [&_li]:duration-200 [&_li]:cursor-pointer" : "hidden"}>
-                            <li className='text-red-600' onClick={(e) => deleteNote(e)}>Delete</li>
-                            <li onClick={() => editNote()}>Edit</li>
-                            <li onClick={(e) => { archiveNote(e); }}>{isArchive ? "Unarchive" : "Archive"}</li>
-                        </ol>
+                        {/* 3. Bungkus tombol dan menu dengan div yang memiliki ref */}
+                        <div ref={menuRef} className="relative">
+                            <button type="button" onClick={(e) => {
+                                e.stopPropagation(); // Hentikan event bubbling agar tidak memicu editNote()
+                                setShowMenu(!showMenu);
+                            }} className="p-1" aria-label="More options">
+                                <i className="fa-solid fa-ellipsis-vertical mt-2"></i>
+                            </button>
+                            {/* Pindahkan menu ke sini dan pastikan posisinya benar */}
+                            <ol className={showMenu ? "absolute right-0 mt-2 z-10 bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-105 [&_li]:transition-transform [&_li]:ease-in-out [&_li]:duration-200 [&_li]:cursor-pointer" : "hidden"}>
+                                <li className='text-red-600' onClick={(e) => deleteNote(e)}>Delete</li>
+                                <li onClick={() => editNote()}>Edit</li>
+                                <li onClick={(e) => { archiveNote(e); }}>{isArchive ? "Unarchive" : "Archive"}</li>
+                                {isTrash ? <li onClick={(e) => {setRestore(e);}}> restore</li> : ""}
+                            </ol>
+                        </div>
                     </div>
+                    {/* TODO: implement tags display */}
+                    <h3 className="border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]">Tags!</h3>
+                    <p className="flex-1 text-[0.8em] font-bold">{date}</p>
                 </div>
-                {/* TODO: implement tags display */}
-                <h3 className="border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]">Tags!</h3>
-                <p className="flex-1 text-[0.8em] font-bold">{date}</p>
-            </div>
-
+            }
+            {/** list view */}
+            {activeView === 'list' &&
+                <div onClick={() => editNote()} className="w-full border-2 [&_*]:mx-[2px] border-gray-700 p-4 rounded-xl flex flex-col justify-center [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer">
+                    <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
+                        <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
+                        <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
+                            <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
+                        </button>
+                        <h3 className="border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]">Tags!</h3>
+                        <p className="pl-3 text-[1.1em] font-bold">{date}</p>
+                        <div ref={menuRef} className="relative flex items-center">
+                            <button type="button" onClick={(e) => {
+                                e.stopPropagation(); // Hentikan event bubbling agar tidak memicu editNote()
+                                setShowMenu(!showMenu);
+                            }} className="p-1" aria-label="More options">
+                                <i className="fa-solid fa-ellipsis-vertical mt-2"></i>
+                            </button>
+                            {/* Pindahkan menu ke sini dan pastikan posisinya benar */}
+                            <ol className={showMenu ? "absolute right-0 top-7 mt-2 z-10 bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-105 [&_li]:transition-transform [&_li]:ease-in-out [&_li]:duration-200 [&_li]:cursor-pointer" : "hidden"}>
+                                <li className='text-red-600' onClick={(e) => deleteNote(e)}>Delete</li>
+                                <li onClick={() => editNote()}>Edit</li>
+                                <li onClick={(e) => { archiveNote(e); }}>{isArchive ? "Unarchive" : "Archive"}</li>
+                                {isTrash ? <li onClick={(e) => {setRestore(e);}}> restore</li> : ""}
+                            </ol>
+                        </div>
+                    </div>
+                    {/* TODO: implement tags display */}
+                </div>
+            }
         </>
     );
 }
