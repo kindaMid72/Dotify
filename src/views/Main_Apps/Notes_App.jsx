@@ -54,11 +54,10 @@ function Notes_App() {
           return container;
         }, {}); // mulai  dengan container kosong
         setNoteViewData(notesObject);
-        console.log(notesObject);
       };
       fetchData();
     }
-  }, [jwt]); // Jalankan effect ini jika jwt
+  }, []); // 
   return (
     <>
       <sharedContext.Provider value={
@@ -82,10 +81,10 @@ function Notes_App() {
                 activeNote ?
                   <Edit_Note_Card />
                   :
-                  <>
+                  <div className='flex flex-col w-full h-full overflow-auto'>
                     <Main_Header />
                     <Main_Content />
-                  </>
+                  </div>
               }
               {/* router based content (dependency: search, category, sort, view) */}
 

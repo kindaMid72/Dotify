@@ -54,7 +54,7 @@ export default () => {
     }, [notesViewData, activeCategory]);
 
     return (
-        <div className="p-3 flex flex-wrap justify-start content-start items-start gap-2 overflow-auto">
+        <div className="p-3 flex flex-1 flex-wrap justify-start content-start items-start gap-2 overflow-auto">
             {Object.values(selectedCategoryView).map((element) => { // TODO: pass tags argument
                 return <Notes_Card key={element.id}
                     noteId={element.id}
