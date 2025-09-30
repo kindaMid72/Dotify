@@ -110,7 +110,7 @@ export default function () {
                 const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/edit_content`,
                     { // body request
                         noteId: selectedNote.noteId,
-                        content: debouncedContent
+                        content: selectedNote.content
                     },
                     { // headers
                         headers: {

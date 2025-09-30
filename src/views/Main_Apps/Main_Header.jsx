@@ -1,16 +1,22 @@
-import {useState, useEffect, useContext} from 'react';
+import { useContext } from 'react';
 import { sharedContext } from './Notes_App';
 
 export default () => {
-    const { activeCategory, setActiveCategory, activeView, setActiveView, activeSort, setActiveSort, selectedCategoryView, setSelectedCategoryView } = useContext(sharedContext);
+    const {
+        activeCategory, setActiveCategory,
+        activeView, setActiveView,
+        activeSort, setActiveSort,
+        tagsViewData, setTagsViewData,
+        selectedCategoryView, setSelectedCategoryView
+    } = useContext(sharedContext);
 
 
     // handler
     return (
         <>
             <div id="Header" className="flex items-center w-full h-20 border-b-2 border-gray-300">
-                <div className="pl-4 pt-4 flex-1"> {/* category section */}
-                    <h1 className="text-[1.2em] font-bold font-mono">{activeCategory} note</h1> {/* based on sidebar selection */}
+                <div className="pl-4 pt-4 flex-1"> {/* category section */}        
+                    <h1 className="text-[1.2em] font-bold font-mono capitalize">{isNaN(activeCategory) ? activeCategory : tagsViewData[activeCategory]?.name} Note</h1> {/* based on sidebar selection */}
                     <p className="font-mono">{Object.values(selectedCategoryView).length} notes</p> {/* based on the number of notes available on that category */}
                 </div>
                 <div className="flex border-2 border-black h-[40px] justify-around items-center rounded-xl"> {/* view mode section (grid/list) */}

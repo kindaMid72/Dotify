@@ -1,5 +1,5 @@
-/**TODO: pass tags argument
- * FIXME: 
+/**TODO: filter on tags category
+ *
  */
 
 import { useContext, createContext, useEffect, useState } from "react";
@@ -10,7 +10,13 @@ import { sharedContext } from "./Notes_App.jsx";
 export default () => {
     // share context
 
-    const {activeNote, setActiveNote, activeCategory, setActiveCategory, notesViewData, setNoteViewData, selectedCategoryView, setSelectedCategoryView } = useContext(sharedContext);
+    const {
+        activeNote, setActiveNote, 
+        activeCategory, setActiveCategory, 
+        notesViewData, setNoteViewData, 
+        selectedCategoryView, setSelectedCategoryView,
+        tagsViewData, setTagsViewData
+     } = useContext(sharedContext);
     // TODO:
     useEffect(() => {
         console.log({notesViewData});
@@ -43,8 +49,18 @@ export default () => {
                     return container;
                 }, {})
             })
-        } else {  // trash category, exclude all except trashed note
+        } else if(activeCategory === 'trash'){  // trash category, exclude all except trashed note
             const newView = Object.values(notesViewData).filter(note => note.is_trash === 1);
+            setSelectedCategoryView({
+                ...newView.reduce((container, nextVal) => {
+                    container[nextVal.id] = nextVal;
+                    return container;
+                }, {})
+            })
+        }else{ // TODO: view based on tags category
+            const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
+                                                        .filter(note => note.is_archive === 0)
+                                                        .filter(note => note.tags[activeCategory]); // note.tags[tag_id]
             setSelectedCategoryView({
                 ...newView.reduce((container, nextVal) => {
                     container[nextVal.id] = nextVal;
@@ -64,7 +80,7 @@ export default () => {
                     isFavorite={element.is_favorite}
                     isArchive={element.is_archive}
                     isTrash={element.is_trash}
-                    tags={element.tags || null}
+                    tags={element.tags || {}} // pass empty object if no tags
                     created_at={element.created_at}
                     updated_at={element.updated_at}
                 />

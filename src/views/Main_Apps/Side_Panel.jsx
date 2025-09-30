@@ -90,8 +90,8 @@ function Side_Panel() {
                     <div className="border-x-1 border-black mr-2"></div>
                     <ol className="flex flex-1 flex-col overflow-hidden [&_li]:overflow-hidden [&_li]:whitespace-nowrap [&_li]:text-ellipsis">
                         {Object.values(tagsViewData).map((tag) => {
-                            return (
-                                <li key={tag.slug} className={setActiveClass(tag.name)} onClick={() => setActiveCategory(tag.name)}>{tag.name}</li>
+                            return (                        //   chante the active category to the current active tags
+                                <li key={tag.slug} className={setActiveClass(tag.id)} onClick={() => setActiveCategory(tag.id)}>{tag.name}</li>
                             )
                         })}
                     </ol>

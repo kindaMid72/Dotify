@@ -1,5 +1,5 @@
 /**
- * FIXME: on click eclipse trigger the screen to overflow
+ * 
  */
 
 import axios from 'axios';

@@ -39,10 +39,11 @@ function Notes_App() {
 
   useEffect(() => {
     if (jwt) {
-      try{
+      try {
         console.log(`Fetching data for category: ${activeCategory}`);
-        let container = {};
-        
+        let containerNote = {};
+        let containerTags = {};
+
         const fetchData = async () => {
 
           // fetch all note info, return array of object key[index]: value
@@ -52,17 +53,16 @@ function Notes_App() {
             },
             withCredentials: true
           })
-          .then(res => {
-            const notesObject = res.data.reduce((container, nextVal) => {
-              if (!nextVal) return container; // Skip null or undefined entries
-              container[nextVal.id] = nextVal;
-              return container;
-            }, {}); // mulai  dengan container kosong
-            container = notesObject;
-          })
-          .catch(err => {
-            throw new Error("notes fetch error:", err);
-          });
+            .then(res => {
+              containerNote = res.data.reduce((container, nextVal) => {
+                if (!nextVal) return container; // Skip null or undefined entries
+                container[nextVal.id] = nextVal;
+                return container;
+              }, {}); // mulai  dengan container kosong
+            })
+            .catch(err => {
+              throw new Error("notes fetch error:", err);
+            });
 
           // fetch all tags info, return array of object key[index]: value
           await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/tags/get_all_user_tags`, {
@@ -71,62 +71,65 @@ function Notes_App() {
             },
             withCredentials: true
           })
-          .then(res => res.data)
-          .then(res => {
-            const tags = res.reduce((container, nextVal) => {
-              if(!nextVal) return container;
-              container[nextVal.id] = {
-                id: nextVal.id,
-                name: nextVal.name,
-                slug: nextVal.slug
-              }
-              return container;
-            }, {})
-            setTagsViewData(tags);
-          }).catch(err => {
-            throw new Error("tags fetch error:", err);
-          })
+            .then(res => res.data)
+            .then(res => {
+              containerTags = res.reduce((container, nextVal) => {
+                if (!nextVal) return container;
+                container[nextVal.id] = {
+                  id: nextVal.id,
+                  name: nextVal.name,
+                  slug: nextVal.slug
+                }
+                return container;
+              }, {})
+
+            })
+            .catch(err => {
+              throw new Error("tags fetch error:", err);
+            })
+            .finally(() =>
+              setTagsViewData(containerTags)
+            );
 
           // fetch note relation with tags, return array of object {note_id, tag_id}
           await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/get_all_note_tags_relation`,
             {
-              headers:{
+              headers: {
                 'Authorization': `Bearer ${jwt}`
               },
               withCredentials: true
             }
           )
-          .then(res => res.data)
-          .then(res => {
-            // return ---> note_id : {tag_id: true}
-            const formattedData = res.reduce((container, nextVal) => {
-              if(!nextVal) return container;
-              container[nextVal.note_id] = {
-                ...container[nextVal.note_id],
-                [nextVal.tag_id]: true
-              };
-              return container;
-            }, {});
-              container = {...Object.values(container).reduce((container, nextVal) => {
-                  if(!nextVal) return container;
+            .then(res => res.data)
+            .then(res => {
+              // return ---> note_id : {}
+              const formattedData = res.reduce((container, nextVal) => {
+                container[nextVal.note_id] = {
+                  ...container[nextVal.note_id],
+                  [nextVal.tag_id]: containerTags[nextVal.tag_id].name
+                };
+                return container;
+              }, {});
+              containerNote = {
+                ...Object.values(containerNote).reduce((container, nextVal) => {
                   container[nextVal.id] = {
                     ...nextVal, // check if the current note have tags
-                    tags: formattedData[nextVal.id] || false // TODO: feturn array of tags
+                    tags: formattedData[nextVal.id] || {} // TODO: feturn array of tags
                   };
                   return container;
                 }, {})
               }
-          })
-          .catch(err => {
-            throw new Error("tags fetch error:", err);
-          })
-          .finally(() => {
-            setNoteViewData(container);
-          });
+            })
+            .catch(err => {
+              throw new Error("tags fetch error:", err);
+            })
+            .finally(() => {
+              setNoteViewData(containerNote);
+            });
 
         };
         fetchData();
-      }catch(err){
+      } catch (err) {
         console.err(err);
         requestUpdateJwt();
       }
