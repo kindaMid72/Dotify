@@ -1,5 +1,5 @@
 /**
- * TODO: fetch note tags relation data
+ * FIXME: notes tag relation fetch success but error when syncronize
  */
 import axios from 'axios';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -41,8 +41,11 @@ function Notes_App() {
     if (jwt) {
       try{
         console.log(`Fetching data for category: ${activeCategory}`);
+        let container = {};
         
         const fetchData = async () => {
+
+          // fetch all note info, return array of object key[index]: value
           await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/notes/get_all_notes_info`, {
             headers: {
               'Authorization': `Bearer ${jwt}`
@@ -55,7 +58,7 @@ function Notes_App() {
               container[nextVal.id] = nextVal;
               return container;
             }, {}); // mulai  dengan container kosong
-            setNoteViewData(notesObject);
+            container = notesObject;
           })
           .catch(err => {
             throw new Error("notes fetch error:", err);
@@ -95,26 +98,37 @@ function Notes_App() {
           )
           .then(res => res.data)
           .then(res => {
-            const noteTags = res.reduce((container, nextVal) => {
+            // return ---> note_id : {tag_id: true}
+            const formattedData = res.reduce((container, nextVal) => {
               if(!nextVal) return container;
-              container[nextVal.note_id] = nextVal.tag_id;
+              container[nextVal.note_id] = {
+                ...container[nextVal.note_id],
+                [nextVal.tag_id]: true
+              };
               return container;
-            }, {})
-            // TODO: store the note tags relation in data container (notesViewData)
-            
-
+            }, {});
+              container = {...Object.values(container).reduce((container, nextVal) => {
+                  if(!nextVal) return container;
+                  container[nextVal.id] = {
+                    ...nextVal, // check if the current note have tags
+                    tags: formattedData[nextVal.id] || false // TODO: feturn array of tags
+                  };
+                  return container;
+                }, {})
+              }
           })
           .catch(err => {
             throw new Error("tags fetch error:", err);
           })
+          .finally(() => {
+            setNoteViewData(container);
+          });
 
         };
         fetchData();
       }catch(err){
         console.err(err);
         requestUpdateJwt();
-      }finally{
-
       }
     }
   }, []); // 

@@ -10,9 +10,8 @@ import { authToken } from "../../router.jsx";
 import { sharedContext } from "../Notes_App.jsx";
 
 export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_at, updated_at }) => {
-    const { activeNote, activeView, setActiveNote, selectedNote, setSelectedNote, noteViewData, setNoteViewData } = useContext(sharedContext);
+    const { activeNote, setActiveNote, activeView, selectedNote, setSelectedNote, noteViewData, setNoteViewData } = useContext(sharedContext);
     const { jwt, setJwt, requestUpdateJwt } = useContext(authToken);
-
     // display
     let date = new Date(Number(created_at));
     // console.log(typeof(created_at));
@@ -66,6 +65,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                 isArchive: isArchive,
                 isTrash: isTrash,
                 // note tags here 
+                tags: tags,
                 content: response.content,
                 createdAt: created_at,
                 updatedAt: updated_at
@@ -177,31 +177,31 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
         e.stopPropagation();
         try {
             const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/db/notes/set_trash`,
-                    { // Kirim noteId di dalam properti 'data'
-                        noteId: noteId,
-                        isTrash: isTrash ? 0 : 1
+                { // Kirim noteId di dalam properti 'data'
+                    noteId: noteId,
+                    isTrash: isTrash ? 0 : 1
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${jwt}`
                     },
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            'Authorization': `Bearer ${jwt}`
-                        },
-                        withCredentials: true
-                    }
-                ).then(res => {
-                    if(res.status <= 300){
-                        setNoteViewData(prevNoteViewData => {
-                            return {
-                                ...prevNoteViewData,
-                                [String(noteId)]: {
-                                    ...prevNoteViewData[noteId],
-                                    is_trash: 0
-                                }
+                    withCredentials: true
+                }
+            ).then(res => {
+                if (res.status <= 300) {
+                    setNoteViewData(prevNoteViewData => {
+                        return {
+                            ...prevNoteViewData,
+                            [String(noteId)]: {
+                                ...prevNoteViewData[noteId],
+                                is_trash: 0
                             }
-                        })
-                    }
-                })
-        }catch(err){
+                        }
+                    })
+                }
+            })
+        } catch (err) {
             requestUpdateJwt();
             console.error(err);
         }
@@ -263,7 +263,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                                 <li className='text-red-600' onClick={(e) => deleteNote(e)}>Delete</li>
                                 <li onClick={() => editNote()}>Edit</li>
                                 <li onClick={(e) => { archiveNote(e); }}>{isArchive ? "Unarchive" : "Archive"}</li>
-                                {isTrash ? <li onClick={(e) => {setRestore(e);}}> restore</li> : ""}
+                                {isTrash ? <li onClick={(e) => { setRestore(e); }}> restore</li> : ""}
                             </ol>
                         </div>
                     </div>
@@ -294,7 +294,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                                 <li className='text-red-600' onClick={(e) => deleteNote(e)}>Delete</li>
                                 <li onClick={() => editNote()}>Edit</li>
                                 <li onClick={(e) => { archiveNote(e); }}>{isArchive ? "Unarchive" : "Archive"}</li>
-                                {isTrash ? <li onClick={(e) => {setRestore(e);}}> restore</li> : ""}
+                                {isTrash ? <li onClick={(e) => { setRestore(e); }}> restore</li> : ""}
                             </ol>
                         </div>
                     </div>
