@@ -28,36 +28,71 @@ function Notes_App() {
 
   // data state storage, all data from server will be stored here
   const [notesViewData, setNoteViewData] = useState({}); // store all notes info data as an object
-  const [tags, setTags] = useState([]); // store active(interacable) tags
+  const [tagsViewData, setTagsViewData] = useState([]); // store active(interacable) tags
   const [selectedNote, setSelectedNote] = useState({}); // contain current selected note
   const [selectedNotesTag, setSelectedNotesTag] = useState([]); // contain current selected notes tag
   const [selectedCategoryView, setSelectedCategoryView] = useState({}); // contain notes for selected category view for main content
 
 
   // imported context
-  const { jwt } = useContext(authToken); // ambil jwt dari provider global
+  const { jwt, requestUpdateJwt } = useContext(authToken); // ambil jwt dari provider global
 
   useEffect(() => {
-
     if (jwt) {
-      console.log(`Fetching data for category: ${activeCategory}`);
-      // TODO: Implement data fetching logic here based on activeCategory
-      const fetchData = async () => {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/notes/get_all_notes_info`, {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          },
-          withCredentials: true
-        }
-        );
-        const notesObject = response.data.reduce((container, nextVal) => {
-          if (!nextVal) return container; // Skip null or undefined entries
-          container[nextVal.id] = nextVal;
-          return container;
-        }, {}); // mulai  dengan container kosong
-        setNoteViewData(notesObject);
-      };
-      fetchData();
+      try{
+
+        console.log(`Fetching data for category: ${activeCategory}`);
+        
+        const fetchData = async () => {
+          await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/notes/get_all_notes_info`, {
+            headers: {
+              'Authorization': `Bearer ${jwt}`
+            },
+            withCredentials: true
+          })
+          .then(res => {
+            const notesObject = res.data.reduce((container, nextVal) => {
+              if (!nextVal) return container; // Skip null or undefined entries
+              container[nextVal.id] = nextVal;
+              return container;
+            }, {}); // mulai  dengan container kosong
+            setNoteViewData(notesObject);
+          })
+          .catch(err => {
+            throw new Error("notes fetch error:", err);
+          });
+
+          // fetch all tags info, return array of object key[index]: value
+          await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/tags/get_all_user_tags`, {
+            headers: {
+              'Authorization': `Bearer ${jwt}`
+            },
+            withCredentials: true
+          })
+          .then(res => res.data)
+          .then(res => {
+            const tags = res.reduce((container, nextVal) => {
+              if(!nextVal) return container;
+              container[nextVal.id] = {
+                id: nextVal.id,
+                name: nextVal.name,
+                slug: nextVal.slug
+              }
+              return container;
+            }, {})
+            setTagsViewData(tags);
+            console.log({tags});
+          }).catch(err => {
+            throw new Error("tags fetch error:", err);
+          })
+        };
+        fetchData();
+      }catch(err){
+        console.err(err);
+        requestUpdateJwt();
+      }finally{
+
+      }
     }
   }, []); // 
   return (
@@ -65,7 +100,7 @@ function Notes_App() {
       <sharedContext.Provider value={
         {
           notesViewData, setNoteViewData,
-          tags, setTags,
+          tagsViewData, setTagsViewData,
           selectedNote, setSelectedNote,
           selectedNotesTag, setSelectedNotesTag,
           activeNote, setActiveNote,

@@ -16,17 +16,17 @@ GET http://localhost:3000/api/db/users/refresh-token
 
 ### check token
 GET http://localhost:3000/api/db/users/check-token
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTkxOTcwMTMsImV4cCI6MTc1OTE5ODgxM30.2oFfzTPUcleF99MBsOERits0qNE2aNXhExctWYkad3I
 
 ##############################################################################
 # TAG
 ### get all tags PASS
 GET http://localhost:3000/api/db/tags/get_all_user_tags
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTkxOTcwMTMsImV4cCI6MTc1OTE5ODgxM30.2oFfzTPUcleF99MBsOERits0qNE2aNXhExctWYkad3I
 
 ### create tag PASS
 POST http://localhost:3000/api/db/tags/create_tag
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTkxOTcwMTMsImV4cCI6MTc1OTE5ODgxM30.2oFfzTPUcleF99MBsOERits0qNE2aNXhExctWYkad3I
 Content-Type: application/json
 
 {
@@ -37,7 +37,7 @@ Content-Type: application/json
 ### delete tag
 DELETE http://localhost:3000/api/db/tags/delete_tag
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTkxOTcwMTMsImV4cCI6MTc1OTE5ODgxM30.2oFfzTPUcleF99MBsOERits0qNE2aNXhExctWYkad3I
 
 {
     "tagId": 6
@@ -48,21 +48,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlb
 # TAG NOTE RELATION
 ### get all note tags PASS
 GET http://localhost:3000/api/db/note_tags_relation/get_all_note_tags_relation
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTkxOTcwMTMsImV4cCI6MTc1OTE5ODgxM30.2oFfzTPUcleF99MBsOERits0qNE2aNXhExctWYkad3I
 
 ### create note tags PASS   
 POST http://localhost:3000/api/db/note_tags_relation/create_note_tags_relation
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTkxOTcwMTMsImV4cCI6MTc1OTE5ODgxM30.2oFfzTPUcleF99MBsOERits0qNE2aNXhExctWYkad3I
 Content-Type: application/json
 
 {
-    "noteId": 3,
-    "tagId": 2
+    "noteId": 7,
+    "tagId": 5
 }
 
 ### delete note tags PASS
 DELETE http://localhost:3000/api/db/note_tags_relation/delete_note_tags_relation
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTg5NjM1NjIsImV4cCI6MTc1ODk2NTM2Mn0.tHyNVbtU2GzixaSrY53bMj14SdKPa0sCzCnIgLtc5u4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE1LCJlbWFpbCI6InRlc3QiLCJpYXQiOjE3NTkxOTcwMTMsImV4cCI6MTc1OTE5ODgxM30.2oFfzTPUcleF99MBsOERits0qNE2aNXhExctWYkad3I
 Content-Type: application/json
 
 {

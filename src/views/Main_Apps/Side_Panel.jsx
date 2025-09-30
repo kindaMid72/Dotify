@@ -14,7 +14,13 @@ function Side_Panel() {
 
     // shared context
     const { jwt, setJwt } = useContext(authToken);
-    const { activeCategory, setActiveCategory, activeNote, setActiveNote, notesViewData, setNoteViewData, selectedNote, setSelectedNote} = useContext(sharedContext);
+    const { 
+        activeCategory, setActiveCategory, 
+        tagsViewData, setTagsViewData, 
+        activeNote, setActiveNote, 
+        notesViewData, setNoteViewData, 
+        selectedNote, setSelectedNote
+    } = useContext(sharedContext);
     function category(type) { // all, favorite, archive, ect
         setActiveCategory(type);
     }
@@ -83,9 +89,11 @@ function Side_Panel() {
                 <li className={`${focusTags} w-full !pl-3 flex`}>
                     <div className="border-x-1 border-black mr-2"></div>
                     <ol className="flex flex-1 flex-col overflow-hidden [&_li]:overflow-hidden [&_li]:whitespace-nowrap [&_li]:text-ellipsis">
-                        <li className={setActiveClass('tag1')} onClick={() => setActiveCategory('tag1')}>tag1</li>
-                        <li className={setActiveClass('tag2')} onClick={() => setActiveCategory('tag2')}>tag2</li>
-                        <li className={setActiveClass('tag3')} onClick={() => setActiveCategory('tag3')}>tag3</li>
+                        {Object.values(tagsViewData).map((tag, index) => {
+                            return (
+                                <li className={setActiveClass(tag.name)} onClick={() => setActiveCategory(tag.name)}>{tag.name}</li>
+                            )
+                        })}
                     </ol>
                 </li>
                 <li onClick={() => category('archive')} className={setActiveClass('archive')}><i className="fa-solid fa-box-archive"></i>Archived</li>

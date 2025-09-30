@@ -23,7 +23,7 @@ async function deleteTag({ userId, tagId }) {
 }
 
 async function getAllUserTags({ userId }) {
-    const sql = "SELECT * FROM tags WHERE user_id = ?";
+    const sql = "SELECT id, name, slug  FROM tags WHERE user_id = ?";
     try {
         const [result] = await db.query(sql, [userId]);
         return result;
