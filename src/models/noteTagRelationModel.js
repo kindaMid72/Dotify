@@ -33,7 +33,7 @@ async function getNoteTags({ noteId, userId }) {
     }
 }
 async function getAllNoteTags({ userId }) {
-    const sql = "SELECT * FROM note_tags WHERE user_id = ?";
+    const sql = "SELECT tag_id, note_id FROM note_tags WHERE user_id = ?";
     try {
         const [result] = await db.query(sql, [userId]);
         return result;

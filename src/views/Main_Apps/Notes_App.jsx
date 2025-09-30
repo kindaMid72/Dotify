@@ -1,5 +1,5 @@
 /**
- * FIXME: useEffect, something wrong with it
+ * TODO: fetch note tags relation data
  */
 import axios from 'axios';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -40,7 +40,6 @@ function Notes_App() {
   useEffect(() => {
     if (jwt) {
       try{
-
         console.log(`Fetching data for category: ${activeCategory}`);
         
         const fetchData = async () => {
@@ -81,10 +80,34 @@ function Notes_App() {
               return container;
             }, {})
             setTagsViewData(tags);
-            console.log({tags});
           }).catch(err => {
             throw new Error("tags fetch error:", err);
           })
+
+          // fetch note relation with tags, return array of object {note_id, tag_id}
+          await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/get_all_note_tags_relation`,
+            {
+              headers:{
+                'Authorization': `Bearer ${jwt}`
+              },
+              withCredentials: true
+            }
+          )
+          .then(res => res.data)
+          .then(res => {
+            const noteTags = res.reduce((container, nextVal) => {
+              if(!nextVal) return container;
+              container[nextVal.note_id] = nextVal.tag_id;
+              return container;
+            }, {})
+            // TODO: store the note tags relation in data container (notesViewData)
+            
+
+          })
+          .catch(err => {
+            throw new Error("tags fetch error:", err);
+          })
+
         };
         fetchData();
       }catch(err){
