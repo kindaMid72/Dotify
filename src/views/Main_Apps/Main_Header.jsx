@@ -16,7 +16,7 @@ export default () => {
         <>
             <div id="Header" className="flex items-center w-full h-20 border-b-2 border-gray-300">
                 <div className="pl-4 pt-4 flex-1"> {/* category section */}        
-                    <h1 className="text-[1.2em] font-bold font-mono capitalize">{isNaN(activeCategory) ? activeCategory : tagsViewData[activeCategory]?.name} Note</h1> {/* based on sidebar selection */}
+                    <h1 className="text-[1.2em] font-bold font-mono capitalize">{isNaN(activeCategory) ? activeCategory : (tagsViewData[activeCategory]?.name || activeCategory)} Note</h1> {/* based on sidebar selection */}
                     <p className="font-mono">{Object.values(selectedCategoryView).length} notes</p> {/* based on the number of notes available on that category */}
                 </div>
                 <div className="flex border-2 border-black h-[40px] justify-around items-center rounded-xl"> {/* view mode section (grid/list) */}

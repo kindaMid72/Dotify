@@ -10,7 +10,13 @@ import { authToken } from "../../router.jsx";
 import { sharedContext } from "../Notes_App.jsx";
 
 export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_at, updated_at }) => {
-    const { activeNote, setActiveNote, activeView, selectedNote, setSelectedNote, noteViewData, setNoteViewData } = useContext(sharedContext);
+    const { 
+        activeNote, setActiveNote, 
+        activeView, 
+        selectedNote, setSelectedNote, 
+        noteViewData, setNoteViewData,
+        tagsViewData, setTagsViewData
+     } = useContext(sharedContext);
     const { jwt, setJwt, requestUpdateJwt } = useContext(authToken);
     // display
     let date = new Date(Number(created_at));
@@ -64,7 +70,6 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                 isFavorite: isFavorite,
                 isArchive: isArchive,
                 isTrash: isTrash,
-                // note tags here 
                 tags: tags,
                 content: response.content,
                 createdAt: created_at,
@@ -247,7 +252,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                 <div onClick={() => editNote()} className="w-[230px] border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer">
                     <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
                         <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
-                        <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
+                        <button onClick={(e) => {setFavorite(e);}} type="button" className="p-1" aria-label="Favorite">
                             <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
                         </button>
                         {/* 3. Bungkus tombol dan menu dengan div yang memiliki ref */}
@@ -267,8 +272,11 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                             </ol>
                         </div>
                     </div>
-                    {/* TODO: implement tags display */}
-                    <h3 className="border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]">Tags!</h3>
+                    <ol className='flex gap-2 items-center w-full overflow-hidden whitespace-nowrap text-ellipsis'>
+                        {Object.values(tags).map((tag) =>{
+                            return <li key={tag} className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]'>{tag}</li>
+                        })}
+                    </ol>
                     <p className="flex-1 text-[0.8em] font-bold">{date}</p>
                 </div>
             }
@@ -280,7 +288,12 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                         <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
                             <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
                         </button>
-                        <h3 className="border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]">Tags!</h3>
+                        {/* TODO: tags */}
+                        <ol className='flex gap-2 items-center '>
+                            {Object.values(tags).map((tag) =>{
+                                return <li className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]'>{tag}</li>
+                            })}
+                        </ol>
                         <p className="pl-3 text-[1.1em] font-bold">{date}</p>
                         <div ref={menuRef} className="relative flex items-center">
                             <button type="button" onClick={(e) => {
@@ -298,7 +311,6 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                             </ol>
                         </div>
                     </div>
-                    {/* TODO: implement tags display */}
                 </div>
             }
         </>

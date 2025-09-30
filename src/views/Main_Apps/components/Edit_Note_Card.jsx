@@ -13,7 +13,12 @@ import { authToken } from "../../router.jsx";
 
 export default function () {
     //shared context
-    const { activeNote, setActiveNote, selectedNote, setSelectedNote, noteViewData, setNoteViewData } = useContext(sharedContext);
+    const { 
+        activeNote, setActiveNote, 
+        selectedNote, setSelectedNote, 
+        noteViewData, setNoteViewData,
+        tagsViewData, setTagsViewData
+    } = useContext(sharedContext);
     const { jwt, requestUpdateJwt } = useContext(authToken);
 
     const date = new Date(selectedNote.createdAt);
@@ -148,6 +153,63 @@ export default function () {
         e.preventDefault();
         setShowEditMetadata(!showEditMetadata);
     }
+    async function handleDeleteNoteTags(e, deletedTagId){
+        e.preventDefault();
+        e.stopPropagation();
+        try{
+            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/delete_note_tags_relation`,
+            {
+                data: {
+                    noteId: selectedNote.noteId,
+                    tagId: deletedTagId
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${jwt}`
+                },
+                withCredentials: true
+            })
+            .then(res => {
+                if(res.status <= 300){
+                    // update the global state if the deletion si success
+                    setSelectedNote(prev => {
+                        return {
+                            ...prev,
+                            tags: Object.entries(prev.tags).reduce((container, [id, name]) => {
+                                    if(id !== deletedTagId){
+                                        container[id] = name;
+                                    }
+                                    return container;
+                                }, {})
+                        }
+                    })
+                    setNoteViewData(prevNoteViewData => {
+                        return {
+                            ...prevNoteViewData,
+                            [selectedNote.noteId]: {
+                                ...prevNoteViewData[selectedNote.noteId],
+                                tags: Object.entries(prevNoteViewData[selectedNote.noteId].tags).reduce((container, [id, name]) => {
+                                    if(id !== deletedTagId){
+                                        container[id] = name;
+                                    }
+                                    return container;
+                                }, {})
+                            }
+                        }
+                    })
+                }
+            })
+            .catch(err => {
+                requestUpdateJwt();
+                console.error(err);
+            })
+            
+        }catch(err){
+
+        }finally{
+
+        }
+    }
     async function handleSaveClosedNote() {
         const content = selectedNote.content;
         const title = selectedNote.title;
@@ -217,7 +279,7 @@ export default function () {
         return <>
             <div> { /* implement search  */}
                 <ol className="absolute bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer">
-                    {tags.map((tag, index) => {
+                    {tags.map((tag) => {
                         return <li onClick={() => { setTags([...tags, tag]); setNewTagValue(""); }} key={tag}>{tag}</li>
                     })}
                 </ol>
@@ -251,9 +313,13 @@ export default function () {
                             {/* load all valid tags */}
                             <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1 [&_li]:w-fit">
                                 {/*TODO: dynamic tag will be mounted here */}
-                                <li>tags1 <i className="fa-solid fa-xmark"></i></li>
-                                <li>tags1 <i className="fa-solid fa-xmark"></i></li>
-                                <li>tags1 <i className="fa-solid fa-xmark"></i></li>
+                                {Object.entries(selectedNote.tags).map(([key, value]) => {
+                                    return (                                        
+                                        <li key={key} onClick={(e) => {handleDeleteNoteTags(e, key)}}> {/* pass tagId */}
+                                            {value} <i key={key} className='fa-solid fa-xmark cursor-pointer'></i>
+                                        </li>
+                                    )
+                                })}
                                 <div className="flex items-start"> {/* TODO: dynamic length input */}
                                     <div>
                                         <input
