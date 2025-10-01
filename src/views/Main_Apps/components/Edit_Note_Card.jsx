@@ -1,11 +1,11 @@
 /**
- *  FIXME: enter key in metadata trigger reload
+ *  TODO: add new tag features
  * 
  * 
  */
 
 import axios from 'axios';
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { sharedContext } from "../Notes_App.jsx";
 
 // shared context
@@ -13,9 +13,9 @@ import { authToken } from "../../router.jsx";
 
 export default function () {
     //shared context
-    const { 
-        activeNote, setActiveNote, 
-        selectedNote, setSelectedNote, 
+    const {
+        activeNote, setActiveNote,
+        selectedNote, setSelectedNote,
         noteViewData, setNoteViewData,
         tagsViewData, setTagsViewData
     } = useContext(sharedContext);
@@ -153,62 +153,66 @@ export default function () {
         e.preventDefault();
         setShowEditMetadata(!showEditMetadata);
     }
-    async function handleDeleteNoteTags(e, deletedTagId){
+    async function handleDeleteNoteTags(e, deletedTagId) {
         e.preventDefault();
         e.stopPropagation();
-        try{
+        try {
             await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/delete_note_tags_relation`,
-            {
-                data: {
-                    noteId: selectedNote.noteId,
-                    tagId: deletedTagId
-                },
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${jwt}`
-                },
-                withCredentials: true
-            })
-            .then(res => {
-                if(res.status <= 300){
-                    // update the global state if the deletion si success
-                    setSelectedNote(prev => {
-                        return {
-                            ...prev,
-                            tags: Object.entries(prev.tags).reduce((container, [id, name]) => {
-                                    if(id !== deletedTagId){
-                                        container[id] = name;
-                                    }
-                                    return container;
-                                }, {})
-                        }
-                    })
-                    setNoteViewData(prevNoteViewData => {
-                        return {
-                            ...prevNoteViewData,
-                            [selectedNote.noteId]: {
-                                ...prevNoteViewData[selectedNote.noteId],
-                                tags: Object.entries(prevNoteViewData[selectedNote.noteId].tags).reduce((container, [id, name]) => {
-                                    if(id !== deletedTagId){
+                {
+                    data: {
+                        noteId: selectedNote.noteId,
+                        tagId: deletedTagId
+                    },
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    withCredentials: true
+                })
+                .then(res => {
+                    if (res.status <= 300) {
+                        // update the global state if the deletion si success
+                        setSelectedNote(prev => {
+                            return {
+                                ...prev,
+                                tags: Object.entries(prev.tags).reduce((container, [id, name]) => {
+                                    if (id !== deletedTagId) {
                                         container[id] = name;
                                     }
                                     return container;
                                 }, {})
                             }
-                        }
-                    })
-                }
-            })
-            .catch(err => {
-                requestUpdateJwt();
-                console.error(err);
-            })
-            
-        }catch(err){
+                        })
+                        setNoteViewData(prevNoteViewData => {
+                            return {
+                                ...prevNoteViewData,
+                                [selectedNote.noteId]: {
+                                    ...prevNoteViewData[selectedNote.noteId],
+                                    tags: Object.entries(prevNoteViewData[selectedNote.noteId].tags).reduce((container, [id, name]) => {
+                                        if (id !== deletedTagId) {
+                                            container[id] = name;
+                                        }
+                                        return container;
+                                    }, {})
+                                }
+                            }
+                        })
+                    }
+                })
+                .catch(err => {
+                    requestUpdateJwt();
+                    console.error(err);
+                })
 
-        }finally{
-
+        } catch (err) {
+            requestUpdateJwt();
+            console.error(err);
         }
+    }
+    async function handleAddNewNoteTags(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
     }
     async function handleSaveClosedNote() {
         const content = selectedNote.content;
@@ -275,17 +279,30 @@ export default function () {
 
     // mini components
     function addExistingTags() {
-        const tags = ["tag1", "tag2", "tag3"]; // filter matching tags according to user input
+        let children = 0;
+        const showTags = Object.entries(tagsViewData)
+                        .filter(([id, data]) =>
+                            !selectedNote.tags[id] && // Filter tag yang belum ada di note
+                            data.name.toLowerCase().includes(newTagValue.toLowerCase()) // Filter berdasarkan input user
+                        )
+                        .map(([id, data]) => {
+                            children++;
+                            return <li
+                                onClick={() => {
+                                    setSelectedNote({ ...selectedNote, tags: { ...selectedNote.tags, [id]: data.name } });
+                                    setNewTagValue("");
+                                }} key={id}>{data.name}</li>
+                        })
         return <>
-            <div> { /* implement search  */}
-                <ol className="absolute bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer">
-                    {tags.map((tag) => {
-                        return <li onClick={() => { setTags([...tags, tag]); setNewTagValue(""); }} key={tag}>{tag}</li>
-                    })}
+            {children > 0 &&
+                <ol className="absolute bg-gray-200 min-w-[90px] min-h-[20px] border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer">
+                    {/* filter if the input and the nametag match */}
+                    {showTags}
                 </ol>
-            </div>
+            }
         </>
     }
+
     //
     return (<>
         <form onSubmit={(e) => handleSubmit(e)} className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
@@ -314,8 +331,8 @@ export default function () {
                             <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1 [&_li]:w-fit">
                                 {/*TODO: dynamic tag will be mounted here */}
                                 {Object.entries(selectedNote.tags).map(([key, value]) => {
-                                    return (                                        
-                                        <li key={key} onClick={(e) => {handleDeleteNoteTags(e, key)}}> {/* pass tagId */}
+                                    return (
+                                        <li key={key} onClick={(e) => { handleDeleteNoteTags(e, key) }}> {/* pass tagId */}
                                             {value} <i key={key} className='fa-solid fa-xmark cursor-pointer'></i>
                                         </li>
                                     )
@@ -330,7 +347,9 @@ export default function () {
                                             onChange={(e) => { setNewTagValue(e.target.value); }}
                                             placeholder="new...">
                                         </input>
-                                        {newTagValue && addExistingTags()} {/* hnya tampil saat ada user type in */}
+                                        {
+                                            newTagValue && addExistingTags()
+                                        } {/* hnya tampil saat ada user type in */}
                                     </div>
                                     <br></br>
                                     {newTagValue && <button type="button" onClick={() => { setTags([...tags, newTagValue]); setNewTagValue(""); }}><i className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
