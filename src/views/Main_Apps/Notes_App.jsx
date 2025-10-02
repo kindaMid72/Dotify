@@ -41,7 +41,6 @@ function Notes_App() {
   useEffect(() => {
     if (jwt) {
       try {
-        console.log(`Fetching data for category: ${activeCategory}`);
         let containerNote = {};
         let containerTags = {};
 
@@ -83,12 +82,12 @@ function Notes_App() {
                 }
                 return container;
               }, {})
-            // Build tagNamesLookup for quick access
-            const newTagNamesLookup = {};
-            Object.values(containerTags).forEach(tag => {
-              newTagNamesLookup[tag.name] = tag;
-            });
-            setTagNamesLookup(newTagNamesLookup);
+              // Build tagNamesLookup for quick access
+              const newTagNamesLookup = {};
+              Object.values(containerTags).forEach(tag => {
+                newTagNamesLookup[tag.name] = tag;
+              });
+              setTagNamesLookup(newTagNamesLookup);
             
             })
             .catch(err => {

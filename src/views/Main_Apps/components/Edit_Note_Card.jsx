@@ -1,5 +1,7 @@
 /**
- *  TODO: add existing tag via selected matching list of tags name
+ * FIXME: tag double after close the edit page, occur frequently
+ *        figure out what trigger this bug,
+ *        this trigger because the button pressed2 times
  * 
  * 
  */
@@ -282,8 +284,10 @@ export default function () {
         // if(!exist) create new tags, save it to local state & db, create note_tag relation with new tags
 
         // check if the new tag value is already exist (by name) via tagsNameLookup
-        const newTagLowercase = newTagValue.trim(); // only filter the extra spaces, this section is case sensitive
+        const newVal = newTagValue;
+        const newTagLowercase = newVal.trim(); // only filter the extra spaces, this section is case sensitive
         const isExist = tagNamesLookup[newTagLowercase]; // O(1) complexity, return valid tags data
+        setNewTagValue('');
         if (isExist) { 
             // create note tag relation with existing tags
             const existedTagId = isExist.id;
@@ -334,7 +338,7 @@ export default function () {
             // create new tags and return id
             const newTagId = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/tags/create_tag`, 
                 {
-                    name: newTagValue.trim() // only filter the extra spaces, this section is case sensitive
+                    name: newVal.trim() // only filter the extra spaces, this section is case sensitive
                 },
                 {
                     headers: {
@@ -371,7 +375,7 @@ export default function () {
                         ...prev,
                         tags: {
                             ...prev.tags,
-                            [newTagId]: newTagValue
+                            [newTagId]: newVal
                         }
                     }
                 })
@@ -383,8 +387,27 @@ export default function () {
                             ...prevNoteViewData[selectedNote.noteId],
                             tags: {
                                 ...prevNoteViewData[selectedNote.noteId].tags,
-                                [newTagId]: newTagValue
+                                [newTagId]: newVal
                             }
+                        }
+                    }
+                })
+                // update tags lookup and global view state
+                setTagNamesLookup(prev => {
+                    return {
+                        ...prev,
+                        [newTagId]: {
+                            id: newTagId,
+                            name: newVal
+                        }
+                    }
+                })
+                setTagsViewData(prev => {
+                    return {
+                        ...prev,
+                        [newTagId]: {
+                            id: newTagId,
+                            name: newVal,
                         }
                     }
                 })
@@ -396,7 +419,6 @@ export default function () {
 
             
         }
-        setNewTagValue('');
 
     }
     async function createNewNoteExistTags(tagId) {

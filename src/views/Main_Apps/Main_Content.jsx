@@ -19,7 +19,6 @@ export default () => {
      } = useContext(sharedContext);
     // TODO:
     useEffect(() => {
-        console.log({notesViewData});
         if (activeCategory === 'all') { // all category, exclude trashed note, PASS
             const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
                                                         .filter(note => note.is_archive === 0);

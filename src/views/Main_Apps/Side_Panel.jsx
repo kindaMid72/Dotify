@@ -1,6 +1,6 @@
 /**
- * FIXME: + note button work and rederect to open page, but title did not updated when edited
- *  
+ * FIXME: tag deletion success in server, but error when syncronize to global apps state
+ * 
  * 
  */
 
@@ -13,27 +13,29 @@ import { sharedContext } from "./Notes_App";
 function Side_Panel() {
 
     // shared context
-    const { jwt, setJwt } = useContext(authToken);
-    const { 
-        activeCategory, setActiveCategory, 
-        tagsViewData, setTagsViewData, 
-        activeNote, setActiveNote, 
-        notesViewData, setNoteViewData, 
-        selectedNote, setSelectedNote
+    const { jwt, setJwt, requestUpdateJwt } = useContext(authToken);
+    const {
+        activeCategory, setActiveCategory,
+        tagsViewData, setTagsViewData,
+        activeNote, setActiveNote,
+        notesViewData, setNoteViewData,
+        selectedNote, setSelectedNote,
+        tagNamesLookup, setTagNamesLookup
     } = useContext(sharedContext);
-    function category(type) { // all, favorite, archive, ect
-        setActiveCategory(type);
-    }
+
 
     // state
     const [focusTags, setFocusTags] = useState('hidden');
 
     // handler
+    function category(type) { // all, favorite, archive, ect
+        setActiveCategory(type);
+    }
     function setActiveClass(type) {
         return type === activeCategory ?
-            "hover:rounded-md hover:p-1 origin-left w-full bg-blue-200 border-2 !border-blue-300"
+            "hover:rounded-md hover:p-1 origin-left w-full bg-blue-200 border-2 !border-blue-300 flex items-center max-w-full"
             :
-            "hover:bg-gray-300 hover:rounded-md hover:p-1 origin-left w-full";
+            "hover:bg-gray-300 hover:rounded-md hover:p-1 origin-left w-full flex items-center max-w-full";
     }
     async function handleAddNewNote() {
         // fetch: request add new note
@@ -78,6 +80,53 @@ function Side_Panel() {
             console.error(err);
         }
     }
+    async function deleteTag(e, tagId) {
+        e.preventDefault();
+        e.stopPropagation();
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/db/tags/delete_tag`,
+            {
+                data: {
+                    tagId: tagId
+                },
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
+                },
+                withCredentials: true
+            }
+        )
+            .then(res => {
+                // update global tags view state
+                setTagsViewData(prev => {
+                    const { [tagId]: deletedTag, ...rest } = prev; // take all prev value but exclude the deleted tag
+                    // Also update tagNamesLookup
+                    if (deletedTag) {
+                        setTagNamesLookup(prevLookup => {
+                            const { [deletedTag.name]: deleted, ...restLookup } = prevLookup;
+                            return restLookup;
+                        });
+                    }
+                    return rest;
+                });
+
+                setNoteViewData(prevNoteViewData => {
+                    const newNoteViewData = { ...prevNoteViewData };
+                    for (const noteId in newNoteViewData) {
+                        // Check if the note has the tag to be deleted
+                        if (newNoteViewData[noteId].tags && newNoteViewData[noteId].tags[tagId]) {
+                            // Create a new tags object without the deleted tag
+                            const { [tagId]: deletedTag, ...restTags } = newNoteViewData[noteId].tags;
+                            // Update the note with the new tags object
+                            newNoteViewData[noteId] = { ...newNoteViewData[noteId], tags: restTags };
+                        }
+                    }
+                    return newNoteViewData;
+                });
+            })
+            .catch(err => {
+                requestUpdateJwt();
+                console.error(err);
+            })
+    }
 
     return <>
         <div className=' p-3 w-[250px] flex flex-col items-center border-gray-300 border-r-2 pl-6 [&_*]:mb-1 [&_*]:font-mono [&_*]:font-extrabold [&_*]:cursor-pointer bg-gray-100 [&_li]:p-1 [&_li]:rounded-md [&_li]:border-2 [&_li]:border-transparent [&_li]:transition-color [&_li]:ease-in [&_li]:duration-200 '>
@@ -91,7 +140,10 @@ function Side_Panel() {
                     <ol className="flex flex-1 flex-col overflow-hidden [&_li]:overflow-hidden [&_li]:whitespace-nowrap [&_li]:text-ellipsis">
                         {Object.values(tagsViewData).map((tag) => {
                             return (                        //   chante the active category to the current active tags
-                                <li key={tag.slug} className={setActiveClass(tag.id)} onClick={() => setActiveCategory(tag.id)}>{tag.name}</li>
+                                <li key={tag.slug} className={setActiveClass(tag.id)} onClick={() => setActiveCategory(tag.id)}>
+                                    <p className='flex-1 overflow-hidden whitespace-nowrap text-ellipsis text-sm'>{tag.name}</p>
+                                    <i className='fa-solid fa-xmark cursor-pointer ' onClick={(e) => { deleteTag(e, tag.id); }}></i>
+                                </li>
                             )
                         })}
                     </ol>
