@@ -30,6 +30,7 @@ function Notes_App() {
   const [notesViewData, setNoteViewData] = useState({}); // store all notes info data as an object
   const [tagsViewData, setTagsViewData] = useState([]); // store active(interacable) tags
   const [selectedNote, setSelectedNote] = useState({}); // contain current selected note
+  const [tagNamesLookup, setTagNamesLookup] = useState({}); // store tags for quick lookup by name
   const [selectedNotesTag, setSelectedNotesTag] = useState([]); // contain current selected notes tag
   const [selectedCategoryView, setSelectedCategoryView] = useState({}); // contain notes for selected category view for main content
 
@@ -82,7 +83,13 @@ function Notes_App() {
                 }
                 return container;
               }, {})
-
+            // Build tagNamesLookup for quick access
+            const newTagNamesLookup = {};
+            Object.values(containerTags).forEach(tag => {
+              newTagNamesLookup[tag.name] = tag;
+            });
+            setTagNamesLookup(newTagNamesLookup);
+            
             })
             .catch(err => {
               throw new Error("tags fetch error:", err);
@@ -139,7 +146,8 @@ function Notes_App() {
     <>
       <sharedContext.Provider value={
         {
-          notesViewData, setNoteViewData,
+          notesViewData, setNoteViewData, 
+          tagNamesLookup, setTagNamesLookup,
           tagsViewData, setTagsViewData,
           selectedNote, setSelectedNote,
           selectedNotesTag, setSelectedNotesTag,

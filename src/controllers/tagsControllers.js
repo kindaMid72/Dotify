@@ -51,7 +51,7 @@ route.post('/create_tag', async (req, res) => {
 
         // Gunakan finalSlug yang sudah dijamin unik untuk membuat tag
         const result = await tagsModel.createTag({ userId, name, slug: finalSlug });
-        if (result) res.status(201).json({ message: "tag created successfully", name, slug: finalSlug });
+        if (result) res.status(201).json({ message: "tag created successfully", tagId: result.insertId });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "failed to create tag" });

@@ -4,7 +4,7 @@ async function createTag({ userId, name, slug }) {
     const sql = "INSERT INTO tags (user_id, name, slug) VALUES (?, ?, ?)";
     try {
         const [result] = await db.query(sql, [userId, name, slug]);
-        return result.affectedRows > 0;
+        return result;
     } catch (err) {
         console.error(err);
         throw new Error("Gagal membuat tag: " + err.message);

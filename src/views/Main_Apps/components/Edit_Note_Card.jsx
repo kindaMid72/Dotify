@@ -1,11 +1,11 @@
 /**
- *  TODO: add new tag features
+ *  TODO: add existing tag via selected matching list of tags name
  * 
  * 
  */
 
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { sharedContext } from "../Notes_App.jsx";
 
 // shared context
@@ -17,7 +17,8 @@ export default function () {
         activeNote, setActiveNote,
         selectedNote, setSelectedNote,
         noteViewData, setNoteViewData,
-        tagsViewData, setTagsViewData
+        tagsViewData, setTagsViewData,
+        tagNamesLookup, setTagNamesLookup // Ambil tagNamesLookup dari context
     } = useContext(sharedContext);
     const { jwt, requestUpdateJwt } = useContext(authToken);
 
@@ -276,21 +277,191 @@ export default function () {
             setSelectedNote({});
         }
     }
+    async function createNewNoteTags() {
+        //  if (exist) create note_tag relation with existing tags
+        // if(!exist) create new tags, save it to local state & db, create note_tag relation with new tags
+
+        // check if the new tag value is already exist (by name) via tagsNameLookup
+        const newTagLowercase = newTagValue.trim(); // only filter the extra spaces, this section is case sensitive
+        const isExist = tagNamesLookup[newTagLowercase]; // O(1) complexity, return valid tags data
+        if (isExist) { 
+            // create note tag relation with existing tags
+            const existedTagId = isExist.id;
+            console.log(existedTagId);
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/create_note_tags_relation`,
+                {
+                    noteId: selectedNote.noteId,
+                    tagId: existedTagId
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    withCredentials: true
+                }
+            )
+            .then(res => {
+                // update local state
+                setSelectedNote(prev => {
+                    return {
+                        ...prev,
+                        tags: {
+                            ...prev.tags,
+                            [existedTagId]: isExist.name
+                        }
+                    }
+                })
+                // update global state
+                setNoteViewData(prevNoteViewData => {
+                    return {
+                        ...prevNoteViewData,
+                        [selectedNote.noteId]: {
+                            ...prevNoteViewData[selectedNote.noteId],
+                            tags: {
+                                ...prevNoteViewData[selectedNote.noteId].tags,
+                                [existedTagId]: isExist.name
+                            }
+                        }
+                    }
+                })
+            })
+            .catch(err => {
+                requestUpdateJwt();
+                console.error(err);
+            })
+
+        } else {
+            // create new tags and return id
+            const newTagId = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/tags/create_tag`, 
+                {
+                    name: newTagValue.trim() // only filter the extra spaces, this section is case sensitive
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    withCredentials: true
+                }
+            )
+            .then(res => {
+                return res.data.tagId; // parse 
+            })
+            .catch(err => {
+                requestUpdateJwt();
+                console.error(err);
+            })
+
+            // create note tag relation with new tagId
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/create_note_tags_relation`,
+                {
+                    noteId: selectedNote.noteId,
+                    tagId: newTagId
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    withCredentials: true
+                }
+            )// update tags local state
+            .then(res => {
+                // update local state
+                setSelectedNote(prev => {
+                    return {
+                        ...prev,
+                        tags: {
+                            ...prev.tags,
+                            [newTagId]: newTagValue
+                        }
+                    }
+                })
+                // update global state
+                setNoteViewData(prevNoteViewData => {
+                    return {
+                        ...prevNoteViewData,
+                        [selectedNote.noteId]: {
+                            ...prevNoteViewData[selectedNote.noteId],
+                            tags: {
+                                ...prevNoteViewData[selectedNote.noteId].tags,
+                                [newTagId]: newTagValue
+                            }
+                        }
+                    }
+                })
+            })
+            .catch(err => {
+                requestUpdateJwt();
+                console.error(err);
+            });
+
+            
+        }
+        setNewTagValue('');
+
+    }
+    async function createNewNoteExistTags(tagId) {
+        // TODO: create note tags relation based on existing tag, pass tagId
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/create_note_tags_relation`,
+                {
+                    noteId: selectedNote.noteId,
+                    tagId: tagId
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    },
+                    withCredentials: true
+                }
+            )
+            // update global state
+            .then(res => {
+                setSelectedNote(prev => {
+                    return {
+                        ...prev,
+                        tags: {
+                            ...prev.tags,
+                            [tagId]: tagsViewData[tagId].name
+                        }
+                    }
+                })
+                // update global state
+                setNoteViewData(prevNoteViewData => {
+                    return {
+                        ...prevNoteViewData,
+                        [selectedNote.noteId]: {
+                            ...prevNoteViewData[selectedNote.noteId],
+                            tags: {
+                                ...prevNoteViewData[selectedNote.noteId].tags,
+                                [tagId]: tagsViewData[tagId].name
+                            }
+                        }
+                    }
+                })
+            })
+            .catch(err => {
+                requestUpdateJwt();
+                console.error(err);
+            })
+            .finally(() => {
+                setNewTagValue('');
+            })
+        
+    }
 
     // mini components
     function addExistingTags() {
         const showTags = Object.entries(tagsViewData)
-                        .filter(([id, data]) =>
-                            !selectedNote.tags[id] && // Filter tag yang belum ada di note
-                            data.name.toLowerCase().includes(newTagValue.toLowerCase()) // Filter berdasarkan input user
-                        )
-                        .map(([id, data]) => {
-                            return <li
-                                onClick={() => {
-                                    setSelectedNote({ ...selectedNote, tags: { ...selectedNote.tags, [id]: data.name } });
-                                    setNewTagValue("");
-                                }} key={id}>{data.name}</li>
-                        })
+            .filter(([id, data]) =>
+                !selectedNote.tags[id] && // Filter tag yang belum ada di note
+                data.name.toLowerCase().includes(newTagValue.toLowerCase()) // Filter berdasarkan input user
+            )
+            .map(([id, data]) => {
+                return <li
+                    onClick={() => {
+                        // TODO: create note tags relation based on existing tag
+                        createNewNoteExistTags(id);
+                    }} key={id}>{data.name}</li>
+            })
         const children = showTags.length;
         return <>
             {children > 0 &&
@@ -328,15 +499,14 @@ export default function () {
                             <h3 className=" rounded-xl w-fit px-2 text-center font-bold">Tags: </h3>
                             {/* load all valid tags */}
                             <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1 [&_li]:w-fit">
-                                {/*TODO: dynamic tag will be mounted here */}
                                 {Object.entries(selectedNote.tags).map(([key, value]) => {
                                     return (
-                                        <li key={key} onClick={(e) => { handleDeleteNoteTags(e, key) }}> {/* pass tagId */}
+                                        <li key={key} onClick={(e) => { handleDeleteNoteTags(e, key); }}> {/* pass tagId */}
                                             {value} <i key={key} className='fa-solid fa-xmark cursor-pointer'></i>
                                         </li>
                                     )
                                 })}
-                                <div className="flex items-start"> {/* TODO: dynamic length input */}
+                                <div className="flex items-start">
                                     <div>
                                         <input
                                             style={{ width: newTagValue.length + "ch" }}
@@ -351,7 +521,11 @@ export default function () {
                                         } {/* hnya tampil saat ada user type in */}
                                     </div>
                                     <br></br>
-                                    {newTagValue && <button type="button" onClick={() => { setTags([...tags, newTagValue]); setNewTagValue(""); }}><i className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
+                                    {/** TODO: implement new tag post
+                                         * if tag already exist (if any maching name, or existed tag being selected), create connection between tags and selected note
+                                         * if tag didnt exist , create tags and create connection between tags and selected note
+                                         */}                                { /* this is accept button, implement note save on click */}
+                                    {newTagValue && <button type="button" onClick={() => { createNewNoteTags(); }}><i className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
 
                                 </div>
                             </ol>
