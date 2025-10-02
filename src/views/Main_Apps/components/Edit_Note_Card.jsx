@@ -279,20 +279,19 @@ export default function () {
 
     // mini components
     function addExistingTags() {
-        let children = 0;
         const showTags = Object.entries(tagsViewData)
                         .filter(([id, data]) =>
                             !selectedNote.tags[id] && // Filter tag yang belum ada di note
                             data.name.toLowerCase().includes(newTagValue.toLowerCase()) // Filter berdasarkan input user
                         )
                         .map(([id, data]) => {
-                            children++;
                             return <li
                                 onClick={() => {
                                     setSelectedNote({ ...selectedNote, tags: { ...selectedNote.tags, [id]: data.name } });
                                     setNewTagValue("");
                                 }} key={id}>{data.name}</li>
                         })
+        const children = showTags.length;
         return <>
             {children > 0 &&
                 <ol className="absolute bg-gray-200 min-w-[90px] min-h-[20px] border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer">
