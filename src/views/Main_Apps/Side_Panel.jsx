@@ -128,10 +128,10 @@ function Side_Panel() {
             })
     }
 
-    return <>
-        <div className=' p-3 w-[250px] flex flex-col items-center border-gray-300 border-r-2 pl-6 [&_*]:mb-1 [&_*]:font-mono [&_*]:font-extrabold [&_*]:cursor-pointer bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 [&_li]:p-1 [&_li]:rounded-md [&_li]:border-2 [&_li]:border-transparent [&_li]:transition-color [&_li]:ease-in [&_li]:duration-200 '>
+    return (
+        <div className=' absolute h-full overflow-hidden md:relative md:h-full z-50 no-scrollbar p-3 w-[250px] flex flex-col items-center border-gray-300 border-r-2 pl-6 [&_*]:mb-1 [&_*]:font-mono [&_*]:font-extrabold [&_*]:cursor-pointer bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 [&_li]:p-1 [&_li]:rounded-md [&_li]:border-2 [&_li]:border-transparent [&_li]:transition-color [&_li]:ease-in [&_li]:duration-200 '>
             <button onClick={() => handleAddNewNote()} className='border-2 w-full border-transparent rounded-md px-2 py-1 bg-blue-600 text-white font-mono font-[900] !mb-5 hover:bg-blue-700 transition-colors ease-in duration-200 dark:bg-blue-700 dark:hover:bg-blue-600'>+ New Note</button>
-            <ol className=' flex flex-col justify-start w-[200px] items-start gap-2 [&_i]:mr-2 overflow-auto'>
+            <ol className='no-scrollbar flex flex-col justify-start w-[200px] items-start gap-2 [&_i]:mr-2 overflow-auto'>
                 <li onClick={() => category('all')} className={setActiveClass('all')}><i className="fa-solid fa-clipboard "></i>All Notes</li>
                 <li onClick={() => category('favorite')} className={setActiveClass('favorite')}><i className="fa-solid fa-star "></i>Favorite</li>
                 <li onClick={() => focusTags === 'hidden' ? setFocusTags('block') : setFocusTags('hidden')} className={setActiveClass('')}><i className="fa-solid fa-tags"></i>Tags</li>
@@ -152,9 +152,7 @@ function Side_Panel() {
                 <li onClick={() => category('trash')} className={setActiveClass('trash')}><i className="fa-solid fa-trash"></i>Trash</li>
             </ol>
         </div>
-
-
-    </>
+    )
 }
 
 export default Side_Panel;

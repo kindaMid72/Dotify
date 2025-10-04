@@ -76,26 +76,23 @@ export default () => {
             // Reverse the order if direction is 'asc' for date-based sorts, or 'desc' for title sort
             return activeSortDirection === 'asc' ? comparison * -1 : comparison;
         });
-
-        // Convert the sorted array back to an object and update the view
-        console.log({ newView }, activeSort, activeSortDirection); // PASS, newView updated
         // Keep the data as a sorted array to preserve order
         setSelectedCategoryView(newView);
 
     }, [notesViewData, activeCategory, activeSort, activeSortDirection, searchQuery]);
 
     return (
-        <div className="p-3 flex flex-1 flex-wrap justify-start content-start items-start gap-2 overflow-auto">
+        <div className="p-3 flex flex-1 flex-wrap justify-center md:justify-start content-start items-start gap-2 overflow-auto no-scrollbar">
             {selectedCategoryView.map((element) => { // Directly map over the array
                 return <Notes_Card key={element.id}
-                    noteId={element.id}
-                    title={element.title}
-                    isFavorite={element.is_favorite}
-                    isArchive={element.is_archive}
-                    isTrash={element.is_trash}
+                    noteId={element.id || ''}
+                    title={element.title || 'loading...'}
+                    isFavorite={element.is_favorite || ''}
+                    isArchive={element.is_archive || ''}
+                    isTrash={element.is_trash || false}
                     tags={element.tags || {}} // pass empty object if no tags
-                    created_at={element.created_at}
-                    updated_at={element.updated_at}
+                    created_at={element.created_at || 0}
+                    updated_at={element.updated_at || 0}
                 />
             })}
 

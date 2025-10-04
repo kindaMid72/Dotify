@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Sembunyikan scrollbar untuk Chrome, Safari, dan Opera */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Sembunyikan scrollbar untuk IE, Edge, dan Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE dan Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme{

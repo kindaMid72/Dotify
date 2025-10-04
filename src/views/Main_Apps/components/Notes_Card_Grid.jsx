@@ -249,7 +249,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
         <>
             {/** grid view */}
             {activeView === 'grid' &&
-                <div onClick={() => editNote()} className="w-[230px] border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
+                <div onClick={() => editNote()} className="md:w-[260px] w-full border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
                     <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
                         <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
                         <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">

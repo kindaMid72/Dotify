@@ -21,6 +21,7 @@ export const sharedContext = createContext();
 function Notes_App() {
 
   // state
+  const [sideBarActive, setSideBarActive] = useState(false);
   const [activeNote, setActiveNote] = useState(null); // Id Note yang sedang diedit, null jika tidak ada
   const [activeCategory, setActiveCategory] = useState('all'); // Kategori default: 'all', 'favorite', 'archived', dll.
   const [activeView, setActiveView] = useState('grid'); // Tampilan default: 'grid' atau 'list'
@@ -163,13 +164,16 @@ function Notes_App() {
           selectedCategoryView, setSelectedCategoryView,
           activeSortDirection, setActiveSortDirection,
           searchQuery, setSearchQuery,
-          themeMode, setThemeMode
+          themeMode, setThemeMode,
+          sideBarActive, setSideBarActive
         }
       }>
-        <div className='flex flex-col h-screen bg-gray-50 dark:bg-gray-900'>
-          <Navbar />
-          <div className='flex flex-1 overflow-auto'> {/* Hapus overflow-auto dari sini, overflow-auto mengaktifkan scrollbar untuk anaknya dengan cara memberi batasan tinggi maksimal, sortoff bilang kalo overflow jangan tambah tinggi, izinkan aktifkan scroll */}
-            <Side_Panel />
+        <div className='flex flex-col h-screen overflow-hidden bg-gray-50 dark:bg-gray-900'>
+          <Navbar/>
+          <div className='flex h-full'> {/* Hapus overflow-auto dari sini, overflow-auto mengaktifkan scrollbar untuk anaknya dengan cara memberi batasan tinggi maksimal, sortoff bilang kalo overflow jangan tambah tinggi, izinkan aktifkan scroll */}
+            <div className='relative'> {/** absolute display reference to closest parent element*/}
+              {sideBarActive && <Side_Panel />}
+            </div>
             <div className='flex flex-col w-full'>
               {
                 activeNote ?
@@ -180,8 +184,6 @@ function Notes_App() {
                     <Main_Content />
                   </div>
               }
-              {/* router based content (dependency: search, category, sort, view) */}
-
             </div>
           </div>
         </div>

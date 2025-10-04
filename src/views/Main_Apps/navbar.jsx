@@ -22,7 +22,8 @@ function Navbar(props) {
     // shared context
     const {
         searchQuery, setSearchQuery,
-        themeMode, setThemeMode
+        themeMode, setThemeMode,
+        sideBarActive, setSideBarActive
 
     } = useContext(sharedContext);
 
@@ -65,11 +66,16 @@ function Navbar(props) {
 
     return <>
         <nav id="container" className="p-2 pr-4 bg-gray-200 border-b-[2px] border-gray-300 dark:bg-gray-800 dark:border-gray-700">
-            <ol className=" flex justify-end items-center gap-1.5">
-                <li className="flex justify-start items-center flex-1 pl-4">
-                    <img src="../src/assets/Logo_Only.png" className="w-[25px]"></img>
-                    <p className="font-bold text-xl font-mono pl-2 dark:text-gray-200">Dotify</p>
-                </li>
+            <ol className=" flex justify-end items-center gap-1.5 flex-1">
+                <div className='flex-1 flex items-center justify-between'>
+                    <li className='ml-3' onClick={() => setSideBarActive(prev => !prev)}>
+                        <i className="fa-solid fa-bars text-black dark:text-white cursor-pointer hover:text-blue-500 scale-125 transition-colors duration-150 ease-in-out"></i>
+                    </li>
+                    <li className="hidden justify-start items-center flex-1 pl-4 md:flex">
+                        <img src="../src/assets/Logo_Only.png" className="w-[25px]"></img>
+                        <p className="font-bold text-xl font-mono pl-2 dark:text-gray-200">Dotify</p>
+                    </li>
+                </div>
                 <li className="group border-2 border-black p-2 rounded-xl flex justify-center items-center pl-3 pr-1  focus-within:bg-gray-100 bg-gray-200 transition-colors duration-300 ease-in-out dark:bg-gray-700 dark:border-gray-500 dark:focus-within:bg-gray-600">{/* place holder */}
                     <form onSubmit={(e) => e.preventDefault()}>
                         <input

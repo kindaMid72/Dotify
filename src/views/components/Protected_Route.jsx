@@ -6,7 +6,7 @@ export default (props) => { // accept a callback for checking autentication
     const navigate = useNavigate();
     const {requestUpdateJwt} = useContext(authToken);
     // check autentication
-    if (props.jwt) {
+    if (props.jwt){
         return (<Outlet />); // all protected routes will mounted here
     } else {
         requestUpdateJwt();

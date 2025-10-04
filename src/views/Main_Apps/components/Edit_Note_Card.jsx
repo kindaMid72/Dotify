@@ -555,7 +555,7 @@ export default function () {
                         <p className="flex-1 text-[1em] pl-2 font-bold">Created date: <i className="font-light dark:text-gray-400">{date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</i></p>
                     </div>
                 }
-                <button type="button" className="ml-3" onClick={(e) => editMetadata(e)}><i className={showEditMetadata ? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150" : "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
+                <button type="button" className="ml-3" onClick={(e) => { if(selectedNote) editMetadata(e);}}><i className={showEditMetadata ? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150" : "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
             </div>
             <textarea value={selectedNote.content || ""} onChange={(e) => setSelectedNote(prev => ({ ...prev, content: e.target.value }))} type="text" placeholder="write your notes here..." className="flex-1 font-light overflow-auto text-[1em] pl-5 mb-[6px] outline-none pt-4 h-full bg-transparent dark:text-gray-300"></textarea> {/* implement rest if the description length is reaching a certain point */}
         </form>
