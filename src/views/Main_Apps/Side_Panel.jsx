@@ -33,9 +33,9 @@ function Side_Panel() {
     }
     function setActiveClass(type) {
         return type === activeCategory ?
-            "hover:rounded-md hover:p-1 origin-left w-full bg-blue-200 border-2 !border-blue-300 flex items-center max-w-full"
+            "hover:rounded-md hover:p-1 origin-left w-full bg-blue-200 border-2 !border-blue-300 flex items-center max-w-full dark:bg-blue-900 dark:!border-blue-700 dark:text-white"
             :
-            "hover:bg-gray-300 hover:rounded-md hover:p-1 origin-left w-full flex items-center max-w-full";
+            "hover:bg-gray-300 hover:rounded-md hover:p-1 origin-left w-full flex items-center max-w-full dark:hover:bg-gray-700";
     }
     async function handleAddNewNote() {
         // fetch: request add new note
@@ -129,20 +129,20 @@ function Side_Panel() {
     }
 
     return <>
-        <div className=' p-3 w-[250px] flex flex-col items-center border-gray-300 border-r-2 pl-6 [&_*]:mb-1 [&_*]:font-mono [&_*]:font-extrabold [&_*]:cursor-pointer bg-gray-100 [&_li]:p-1 [&_li]:rounded-md [&_li]:border-2 [&_li]:border-transparent [&_li]:transition-color [&_li]:ease-in [&_li]:duration-200 '>
-            <button onClick={() => handleAddNewNote()} className='border-2 w-full border-transparent rounded-md px-2 py-1 bg-blue-950 text-white font-mono font-[900] !mb-5 hover:bg-blue-800 transition-colors ease-in duration-200'>+ New Note</button>
+        <div className=' p-3 w-[250px] flex flex-col items-center border-gray-300 border-r-2 pl-6 [&_*]:mb-1 [&_*]:font-mono [&_*]:font-extrabold [&_*]:cursor-pointer bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 [&_li]:p-1 [&_li]:rounded-md [&_li]:border-2 [&_li]:border-transparent [&_li]:transition-color [&_li]:ease-in [&_li]:duration-200 '>
+            <button onClick={() => handleAddNewNote()} className='border-2 w-full border-transparent rounded-md px-2 py-1 bg-blue-600 text-white font-mono font-[900] !mb-5 hover:bg-blue-700 transition-colors ease-in duration-200 dark:bg-blue-700 dark:hover:bg-blue-600'>+ New Note</button>
             <ol className=' flex flex-col justify-start w-[200px] items-start gap-2 [&_i]:mr-2 overflow-auto'>
                 <li onClick={() => category('all')} className={setActiveClass('all')}><i className="fa-solid fa-clipboard "></i>All Notes</li>
                 <li onClick={() => category('favorite')} className={setActiveClass('favorite')}><i className="fa-solid fa-star "></i>Favorite</li>
                 <li onClick={() => focusTags === 'hidden' ? setFocusTags('block') : setFocusTags('hidden')} className={setActiveClass('')}><i className="fa-solid fa-tags"></i>Tags</li>
-                <li className={`${focusTags} w-full !pl-3 flex`}>
+                <li className={`${focusTags} w-full !pl-3 flex dark:text-gray-300`}>
                     <div className="border-x-1 border-black mr-2"></div>
                     <ol className="flex flex-1 flex-col overflow-hidden [&_li]:overflow-hidden [&_li]:whitespace-nowrap [&_li]:text-ellipsis">
                         {Object.values(tagsViewData).map((tag) => {
                             return (                        //   chante the active category to the current active tags
                                 <li key={tag.slug} className={setActiveClass(tag.id)} onClick={() => setActiveCategory(tag.id)}>
                                     <p className='flex-1 overflow-hidden whitespace-nowrap text-ellipsis text-sm'>{tag.name}</p>
-                                    <i className='fa-solid fa-xmark cursor-pointer transition-colors ease-in-out duration-75 hover:text-red-500' onClick={(e) => { deleteTag(e, tag.id); }}></i>
+                                    <i className='fa-solid fa-xmark cursor-pointer transition-colors ease-in-out duration-75 hover:text-red-500 dark:hover:text-red-400' onClick={(e) => { deleteTag(e, tag.id); }}></i>
                                 </li>
                             )
                         })}

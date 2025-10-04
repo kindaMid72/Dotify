@@ -288,7 +288,7 @@ export default function () {
         const newTagLowercase = newVal.trim(); // only filter the extra spaces, this section is case sensitive
         const isExist = tagNamesLookup[newTagLowercase]; // O(1) complexity, return valid tags data
         setNewTagValue('');
-        if (isExist) { 
+        if (isExist) {
             // create note tag relation with existing tags
             const existedTagId = isExist.id;
             console.log(existedTagId);
@@ -304,39 +304,39 @@ export default function () {
                     withCredentials: true
                 }
             )
-            .then(res => {
-                // update local state
-                setSelectedNote(prev => {
-                    return {
-                        ...prev,
-                        tags: {
-                            ...prev.tags,
-                            [existedTagId]: isExist.name
-                        }
-                    }
-                })
-                // update global state
-                setNoteViewData(prevNoteViewData => {
-                    return {
-                        ...prevNoteViewData,
-                        [selectedNote.noteId]: {
-                            ...prevNoteViewData[selectedNote.noteId],
+                .then(res => {
+                    // update local state
+                    setSelectedNote(prev => {
+                        return {
+                            ...prev,
                             tags: {
-                                ...prevNoteViewData[selectedNote.noteId].tags,
+                                ...prev.tags,
                                 [existedTagId]: isExist.name
                             }
                         }
-                    }
+                    })
+                    // update global state
+                    setNoteViewData(prevNoteViewData => {
+                        return {
+                            ...prevNoteViewData,
+                            [selectedNote.noteId]: {
+                                ...prevNoteViewData[selectedNote.noteId],
+                                tags: {
+                                    ...prevNoteViewData[selectedNote.noteId].tags,
+                                    [existedTagId]: isExist.name
+                                }
+                            }
+                        }
+                    })
                 })
-            })
-            .catch(err => {
-                requestUpdateJwt();
-                console.error(err);
-            })
+                .catch(err => {
+                    requestUpdateJwt();
+                    console.error(err);
+                })
 
         } else {
             // create new tags and return id
-            const newTagId = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/tags/create_tag`, 
+            const newTagId = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/tags/create_tag`,
                 {
                     name: newVal.trim() // only filter the extra spaces, this section is case sensitive
                 },
@@ -347,13 +347,13 @@ export default function () {
                     withCredentials: true
                 }
             )
-            .then(res => {
-                return res.data.tagId; // parse 
-            })
-            .catch(err => {
-                requestUpdateJwt();
-                console.error(err);
-            })
+                .then(res => {
+                    return res.data.tagId; // parse 
+                })
+                .catch(err => {
+                    requestUpdateJwt();
+                    console.error(err);
+                })
 
             // create note tag relation with new tagId
             await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/create_note_tags_relation`,
@@ -368,73 +368,73 @@ export default function () {
                     withCredentials: true
                 }
             )// update tags local state
-            .then(res => {
-                // update local state
-                setSelectedNote(prev => {
-                    return {
-                        ...prev,
-                        tags: {
-                            ...prev.tags,
-                            [newTagId]: newVal
-                        }
-                    }
-                })
-                // update global state
-                setNoteViewData(prevNoteViewData => {
-                    return {
-                        ...prevNoteViewData,
-                        [selectedNote.noteId]: {
-                            ...prevNoteViewData[selectedNote.noteId],
+                .then(res => {
+                    // update local state
+                    setSelectedNote(prev => {
+                        return {
+                            ...prev,
                             tags: {
-                                ...prevNoteViewData[selectedNote.noteId].tags,
+                                ...prev.tags,
                                 [newTagId]: newVal
                             }
                         }
-                    }
-                })
-                // update tags lookup and global view state
-                setTagNamesLookup(prev => {
-                    return {
-                        ...prev,
-                        [newTagId]: {
-                            id: newTagId,
-                            name: newVal
+                    })
+                    // update global state
+                    setNoteViewData(prevNoteViewData => {
+                        return {
+                            ...prevNoteViewData,
+                            [selectedNote.noteId]: {
+                                ...prevNoteViewData[selectedNote.noteId],
+                                tags: {
+                                    ...prevNoteViewData[selectedNote.noteId].tags,
+                                    [newTagId]: newVal
+                                }
+                            }
                         }
-                    }
-                })
-                setTagsViewData(prev => {
-                    return {
-                        ...prev,
-                        [newTagId]: {
-                            id: newTagId,
-                            name: newVal,
+                    })
+                    // update tags lookup and global view state
+                    setTagNamesLookup(prev => {
+                        return {
+                            ...prev,
+                            [newTagId]: {
+                                id: newTagId,
+                                name: newVal
+                            }
                         }
-                    }
+                    })
+                    setTagsViewData(prev => {
+                        return {
+                            ...prev,
+                            [newTagId]: {
+                                id: newTagId,
+                                name: newVal,
+                            }
+                        }
+                    })
                 })
-            })
-            .catch(err => {
-                requestUpdateJwt();
-                console.error(err);
-            });
+                .catch(err => {
+                    requestUpdateJwt();
+                    console.error(err);
+                });
 
-            
+
         }
 
     }
     async function createNewNoteExistTags(tagId) {
         // TODO: create note tags relation based on existing tag, pass tagId
         await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/note_tags_relation/create_note_tags_relation`,
-                {
-                    noteId: selectedNote.noteId,
-                    tagId: tagId
+            {
+                noteId: selectedNote.noteId,
+                tagId: tagId
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
                 },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${jwt}`
-                    },
-                    withCredentials: true
-                }
-            )
+                withCredentials: true
+            }
+        )
             // update global state
             .then(res => {
                 setSelectedNote(prev => {
@@ -467,7 +467,7 @@ export default function () {
             .finally(() => {
                 setNewTagValue('');
             })
-        
+
     }
 
     // mini components
@@ -498,29 +498,29 @@ export default function () {
     //
     return (<>
         <form onSubmit={(e) => handleSubmit(e)} className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
-            <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700">
+            <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600">
                 <div className="" > {/* navigation container */}
                     <button type="button" onClick={() => { handleSaveClosedNote(); }} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
                 </div>
                 {/* title container */}
                 <div className={"flex items-center [&_*]:font-mono [&_*]:mb-1"} > {/* title section */}
-                    <input type="text" placeholder="title..." value={selectedNote.title || ''} onChange={(e) => setSelectedNote({ ...selectedNote, title: e.target.value })} className="flex-1 pl-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.4em] outline-none"></input>
+                    <input type="text" placeholder="title..." value={selectedNote.title || ''} onChange={(e) => setSelectedNote({ ...selectedNote, title: e.target.value })} className="flex-1 pl-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.4em] outline-none bg-transparent"></input>
                 </div>
                 {showEditMetadata &&
                     <div className="">
                         <button type="button" onClick={() => setSelectedNote({ ...selectedNote, isFavorite: !selectedNote.isFavorite })} className="max-w-fit pl-2 font-bold" aria-label="Favorite">
                             Set as favorite:
-                            <i className={selectedNote.isFavorite || false ? "fa-solid fa-square-check pl-3" : "fa-regular fa-square pl-3"}></i>
+                            <i className={selectedNote.isFavorite || false ? "fa-solid fa-square-check pl-3 text-blue-500" : "fa-regular fa-square pl-3"}></i>
                         </button>
                         <br></br>
                         <button type="button" onClick={() => setSelectedNote({ ...selectedNote, isArchive: !selectedNote.isArchive })} className="max-w-fit pl-2 font-bold" aria-label="Archive">
                             Set as Archived:
-                            <i className={selectedNote.isArchive || false ? "fa-solid fa-square-check pl-3" : "fa-regular fa-square pl-3"}></i>
+                            <i className={selectedNote.isArchive || false ? "fa-solid fa-square-check pl-3 text-blue-500" : "fa-regular fa-square pl-3"}></i>
                         </button>
                         <div className="flex justify-start">
                             <h3 className=" rounded-xl w-fit px-2 text-center font-bold">Tags: </h3>
                             {/* load all valid tags */}
-                            <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1 [&_li]:w-fit">
+                            <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1 [&_li]:w-fit dark:[&_li]:border-gray-500">
                                 {Object.entries(selectedNote.tags).map(([key, value]) => {
                                     return (
                                         <li key={key} > {/* pass tagId */}
@@ -547,17 +547,17 @@ export default function () {
                                          * if tag already exist (if any maching name, or existed tag being selected), create connection between tags and selected note
                                          * if tag didnt exist , create tags and create connection between tags and selected note
                                          */}                                { /* this is accept button, implement note save on click */}
-                                    {newTagValue && <button type="button" onClick={() => { createNewNoteTags(); }}><i className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer"></i></button>}
+                                    {newTagValue && <button type="button" onClick={() => { createNewNoteTags(); }}><i className="fa-solid fa-check ml-2 mt-[1px] cursor-pointer hover:text-green-500"></i></button>}
 
                                 </div>
                             </ol>
                         </div>
-                        <p className="flex-1 text-[1em] pl-2 font-bold">Created date: <i className="font-light">{date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</i></p>
+                        <p className="flex-1 text-[1em] pl-2 font-bold">Created date: <i className="font-light dark:text-gray-400">{date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</i></p>
                     </div>
                 }
                 <button type="button" className="ml-3" onClick={(e) => editMetadata(e)}><i className={showEditMetadata ? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150" : "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
             </div>
-            <textarea value={selectedNote.content || ""} onChange={(e) => setSelectedNote(prev => ({ ...prev, content: e.target.value }))} type="text" placeholder="write your notes here..." className="flex-1 font-light overflow-auto text-[1em] pl-5 mb-[6px] outline-none pt-4 h-full"></textarea> {/* implement rest if the description length is reaching a certain point */}
+            <textarea value={selectedNote.content || ""} onChange={(e) => setSelectedNote(prev => ({ ...prev, content: e.target.value }))} type="text" placeholder="write your notes here..." className="flex-1 font-light overflow-auto text-[1em] pl-5 mb-[6px] outline-none pt-4 h-full bg-transparent dark:text-gray-300"></textarea> {/* implement rest if the description length is reaching a certain point */}
         </form>
     </>)
 }

@@ -249,11 +249,11 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
         <>
             {/** grid view */}
             {activeView === 'grid' &&
-                <div onClick={() => editNote()} className="w-[230px] border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer">
+                <div onClick={() => editNote()} className="w-[230px] border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
                     <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
                         <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
                         <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
-                            <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
+                            <i className={isFavorite ? "fa-solid fa-star text-yellow-400" : "fa-regular fa-star"}></i>
                         </button>
                         {/* 3. Bungkus tombol dan menu dengan div yang memiliki ref */}
                         <div ref={menuRef} className="relative">
@@ -261,10 +261,10 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                                 e.stopPropagation(); // Hentikan event bubbling agar tidak memicu editNote()
                                 setShowMenu(!showMenu);
                             }} className="p-1" aria-label="More options">
-                                <i className="fa-solid fa-ellipsis-vertical mt-2"></i>
+                                <i className="fa-solid fa-ellipsis-vertical mt-2 "></i>
                             </button>
                             {/* Pindahkan menu ke sini dan pastikan posisinya benar */}
-                            <ol className={showMenu ? "absolute right-0 mt-2 z-10 bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-105 [&_li]:transition-transform [&_li]:ease-in-out [&_li]:duration-200 [&_li]:cursor-pointer" : "hidden"}>
+                            <ol className={showMenu ? "absolute right-0 mt-2 z-10 bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-105 [&_li]:transition-transform [&_li]:ease-in-out [&_li]:duration-200 [&_li]:cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" : "hidden"}>
                                 <li className='text-red-600' onClick={(e) => deleteNote(e)}>Delete</li>
                                 <li onClick={() => editNote()}>Edit</li>
                                 <li onClick={(e) => { archiveNote(e); }}>{isArchive ? "Unarchive" : "Archive"}</li>
@@ -272,12 +272,12 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                             </ol>
                         </div>
                     </div>
-                    <ol className='flex gap-2 items-center w-full overflow-hidden whitespace-nowrap text-ellipsis'>
-                        {Object.values(tags).length > 0? 
+                    <ol className='flex gap-2 items-center w-full overflow-hidden whitespace-nowrap text-ellipsis dark:text-gray-300'>
+                        {Object.values(tags).length > 0 ?
                             Object.values(tags).map((tag) => {
-                                return <li key={tag} className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]'>{tag}</li>
-                            }) 
-                            : 
+                                return <li key={tag} className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em] dark:border-gray-500'>{tag}</li>
+                            })
+                            :
                             <li className=' w-fit border-black rounded-xl text-center text-[0.8em] font-italic opacity-50'>No tags...</li>
                         }
                     </ol>
@@ -286,15 +286,15 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
             }
             {/** list view */}
             {activeView === 'list' &&
-                <div onClick={() => editNote()} className="w-full border-2 [&_*]:mx-[2px] border-gray-700 p-4 rounded-xl flex flex-col justify-center [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer">
+                <div onClick={() => editNote()} className="w-full border-2 [&_*]:mx-[2px] border-gray-700 p-4 rounded-xl flex flex-col justify-center [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800">
                     <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
                         <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
                         <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
-                            <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
+                            <i className={isFavorite ? "fa-solid fa-star text-yellow-400" : "fa-regular fa-star"}></i>
                         </button>
-                        <ol className='flex gap-2 items-center '>
+                        <ol className='flex gap-2 items-center dark:text-gray-300'>
                             {Object.values(tags).map((tag) => {
-                                return <li className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]'>{tag}</li>
+                                return <li className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em] dark:border-gray-500'>{tag}</li>
                             })}
                         </ol>
                         <p className="pl-3 text-[1.1em] font-bold">{date}</p>
@@ -306,7 +306,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                                 <i className="fa-solid fa-ellipsis-vertical mt-2"></i>
                             </button>
                             {/* Pindahkan menu ke sini dan pastikan posisinya benar */}
-                            <ol className={showMenu ? "absolute right-0 top-7 mt-2 z-10 bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-105 [&_li]:transition-transform [&_li]:ease-in-out [&_li]:duration-200 [&_li]:cursor-pointer" : "hidden"}>
+                            <ol className={showMenu ? "absolute right-0 top-7 mt-2 z-10 bg-gray-200 border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-105 [&_li]:transition-transform [&_li]:ease-in-out [&_li]:duration-200 [&_li]:cursor-pointer dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200" : "hidden"}>
                                 <li className='text-red-600' onClick={(e) => deleteNote(e)}>Delete</li>
                                 <li onClick={() => editNote()}>Edit</li>
                                 <li onClick={(e) => { archiveNote(e); }}>{isArchive ? "Unarchive" : "Archive"}</li>
