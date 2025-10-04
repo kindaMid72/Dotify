@@ -1,21 +1,30 @@
-import { useContext } from 'react';
+/**
+ * TODO: add sort by features, and add new toggle button for asc or desc
+ */
+
+import { useContext, useEffect } from 'react';
 import { sharedContext } from './Notes_App';
 
 export default () => {
     const {
         activeCategory, setActiveCategory,
+        notesViewData, setNoteViewData,
         activeView, setActiveView,
         activeSort, setActiveSort,
         tagsViewData, setTagsViewData,
-        selectedCategoryView, setSelectedCategoryView
+        selectedCategoryView, setSelectedCategoryView,
+        activeSortDirection, setActiveSortDirection
     } = useContext(sharedContext);
 
-
     // handler
+    function handleSortOption(e) {
+        setActiveSort(e.target.value);
+    }
+
     return (
         <>
             <div id="Header" className="flex items-center w-full h-20 border-b-2 border-gray-300">
-                <div className="pl-4 pt-4 flex-1"> {/* category section */}        
+                <div className="pl-4 pt-4 flex-1"> {/* category section */}
                     <h1 className="text-[1.2em] font-bold font-mono capitalize">{isNaN(activeCategory) ? activeCategory : (tagsViewData[activeCategory]?.name || activeCategory)} Note</h1> {/* based on sidebar selection */}
                     <p className="font-mono">{Object.values(selectedCategoryView).length} notes</p> {/* based on the number of notes available on that category */}
                 </div>
@@ -25,12 +34,19 @@ export default () => {
                     <i onClick={() => setActiveView('list')} className="fa-solid fa-list m-2 px-0.5"></i>
                 </div>
                 <div className="px-2 mx-3 border-2 border-black rounded-xl h-[40px] flex justify-center items-center">{/* sort section */}
-                    <select className="outline-none font-mono font-bold ">
-                        <option value="date">date</option>
+                    <select value={activeSort} onChange={handleSortOption} className="outline-none font-mono font-bold ">
                         <option value="last edited">last edited</option>
+                        <option value="title">title</option>
                         <option value="date">date</option>
                     </select>
                 </div>
+
+                <button onClick={() => setActiveSortDirection(activeSortDirection === 'desc' ? 'asc' : 'desc')}>
+                    {activeSortDirection === 'desc' ?
+                    <i className="fa-solid fa-arrow-down-wide-short mr-3"></i>
+                    :
+                    <i className="fa-solid fa-arrow-up-wide-short mr-3"></i>}
+                </button>
             </div>
         </>)
 }

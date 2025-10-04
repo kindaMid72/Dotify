@@ -1,5 +1,5 @@
 /**
- * FIXME: tag deletion success in server, but error when syncronize to global apps state
+ * 
  * 
  * 
  */
@@ -142,7 +142,7 @@ function Side_Panel() {
                             return (                        //   chante the active category to the current active tags
                                 <li key={tag.slug} className={setActiveClass(tag.id)} onClick={() => setActiveCategory(tag.id)}>
                                     <p className='flex-1 overflow-hidden whitespace-nowrap text-ellipsis text-sm'>{tag.name}</p>
-                                    <i className='fa-solid fa-xmark cursor-pointer ' onClick={(e) => { deleteTag(e, tag.id); }}></i>
+                                    <i className='fa-solid fa-xmark cursor-pointer transition-colors ease-in-out duration-75 hover:text-red-500' onClick={(e) => { deleteTag(e, tag.id); }}></i>
                                 </li>
                             )
                         })}

@@ -24,7 +24,8 @@ function Notes_App() {
   const [activeNote, setActiveNote] = useState(null); // Id Note yang sedang diedit, null jika tidak ada
   const [activeCategory, setActiveCategory] = useState('all'); // Kategori default: 'all', 'favorite', 'archived', dll.
   const [activeView, setActiveView] = useState('grid'); // Tampilan default: 'grid' atau 'list'
-  const [activeSort, setActiveSort] = useState('date_desc'); // Pengurutan default: 'date_desc', 'date_asc', 'title_asc', dll.
+  const [activeSort, setActiveSort] = useState('last edited'); // Pengurutan default: 'date_desc', 'date_asc', 'title_asc', dll.
+  const [activeSortDirection, setActiveSortDirection] = useState('desc'); // Pengurutan default: 'desc', 'asc'
 
   // data state storage, all data from server will be stored here
   const [notesViewData, setNoteViewData] = useState({}); // store all notes info data as an object
@@ -32,7 +33,7 @@ function Notes_App() {
   const [selectedNote, setSelectedNote] = useState({}); // contain current selected note
   const [tagNamesLookup, setTagNamesLookup] = useState({}); // store tags for quick lookup by name
   const [selectedNotesTag, setSelectedNotesTag] = useState([]); // contain current selected notes tag
-  const [selectedCategoryView, setSelectedCategoryView] = useState({}); // contain notes for selected category view for main content
+  const [selectedCategoryView, setSelectedCategoryView] = useState([]); // contain notes for selected category view for main content
 
 
   // imported context
@@ -110,6 +111,7 @@ function Notes_App() {
             .then(res => {
               // return ---> note_id : {}
               const formattedData = res.reduce((container, nextVal) => {
+                if(containerTags[nextVal.tag_id] === undefined) return container;
                 container[nextVal.note_id] = {
                   ...container[nextVal.note_id],
                   [nextVal.tag_id]: containerTags[nextVal.tag_id].name
@@ -154,7 +156,8 @@ function Notes_App() {
           activeCategory, setActiveCategory,
           activeView, setActiveView,
           activeSort, setActiveSort,
-          selectedCategoryView, setSelectedCategoryView
+          selectedCategoryView, setSelectedCategoryView,
+          activeSortDirection, setActiveSortDirection
         }
       }>
         <div className='flex flex-col h-screen bg-gray-50'>

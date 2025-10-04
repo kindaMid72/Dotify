@@ -523,8 +523,8 @@ export default function () {
                             <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1 [&_li]:w-fit">
                                 {Object.entries(selectedNote.tags).map(([key, value]) => {
                                     return (
-                                        <li key={key} onClick={(e) => { handleDeleteNoteTags(e, key); }}> {/* pass tagId */}
-                                            {value} <i key={key} className='fa-solid fa-xmark cursor-pointer'></i>
+                                        <li key={key} > {/* pass tagId */}
+                                            {value} <i onClick={(e) => { handleDeleteNoteTags(e, key); }} key={key} className='fa-solid fa-xmark cursor-pointer transition-colors ease-in-out duration-75 hover:text-red-500'></i>
                                         </li>
                                     )
                                 })}

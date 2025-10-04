@@ -10,13 +10,13 @@ import { authToken } from "../../router.jsx";
 import { sharedContext } from "../Notes_App.jsx";
 
 export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_at, updated_at }) => {
-    const { 
-        activeNote, setActiveNote, 
-        activeView, 
-        selectedNote, setSelectedNote, 
+    const {
+        activeNote, setActiveNote,
+        activeView,
+        selectedNote, setSelectedNote,
         noteViewData, setNoteViewData,
         tagsViewData, setTagsViewData
-     } = useContext(sharedContext);
+    } = useContext(sharedContext);
     const { jwt, setJwt, requestUpdateJwt } = useContext(authToken);
     // display
     let date = new Date(Number(created_at));
@@ -252,7 +252,7 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                 <div onClick={() => editNote()} className="w-[230px] border-2 border-gray-700 p-4 rounded-xl flex flex-col [&_*]:font-mono [&_*]:cursor-pointer cursor-pointer">
                     <div className="flex items-center [&_*]:font-mono [&_*]:mb-1"> {/* title section */}
                         <h2 className="flex-1 pr-3 overflow-hidden whitespace-nowrap text-ellipsis font-bold text-[1.1em] ">{title}</h2>
-                        <button onClick={(e) => {setFavorite(e);}} type="button" className="p-1" aria-label="Favorite">
+                        <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
                             <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
                         </button>
                         {/* 3. Bungkus tombol dan menu dengan div yang memiliki ref */}
@@ -273,9 +273,13 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                         </div>
                     </div>
                     <ol className='flex gap-2 items-center w-full overflow-hidden whitespace-nowrap text-ellipsis'>
-                        {Object.values(tags).map((tag) =>{
-                            return <li key={tag} className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]'>{tag}</li>
-                        })}
+                        {Object.values(tags).length > 0? 
+                            Object.values(tags).map((tag) => {
+                                return <li key={tag} className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]'>{tag}</li>
+                            }) 
+                            : 
+                            <li className=' w-fit border-black rounded-xl text-center text-[0.8em] font-italic opacity-50'>No tags...</li>
+                        }
                     </ol>
                     <p className="flex-1 text-[0.8em] font-bold">{date}</p>
                 </div>
@@ -288,9 +292,8 @@ export default ({ noteId, title, isFavorite, isArchive, isTrash, tags, created_a
                         <button onClick={(e) => { setFavorite(e); }} type="button" className="p-1" aria-label="Favorite">
                             <i className={isFavorite ? "fa-solid fa-star" : "fa-regular fa-star"}></i>
                         </button>
-                        {/* TODO: tags */}
                         <ol className='flex gap-2 items-center '>
-                            {Object.values(tags).map((tag) =>{
+                            {Object.values(tags).map((tag) => {
                                 return <li className='border-[1px] w-fit border-black rounded-xl px-2 text-center text-[0.8em]'>{tag}</li>
                             })}
                         </ol>

@@ -1,8 +1,9 @@
-/**TODO: filter on tags category
+/**
+ * 
  *
  */
 
-import { useContext, createContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import Notes_Card from "./components/Notes_Card_Grid.jsx";
 import { sharedContext } from "./Notes_App.jsx";
 
@@ -11,68 +12,68 @@ export default () => {
     // share context
 
     const {
-        activeNote, setActiveNote, 
-        activeCategory, setActiveCategory, 
-        notesViewData, setNoteViewData, 
+        activeNote, setActiveNote,
+        activeCategory, setActiveCategory,
+        notesViewData, setNoteViewData,
         selectedCategoryView, setSelectedCategoryView,
-        tagsViewData, setTagsViewData
-     } = useContext(sharedContext);
+        tagsViewData, setTagsViewData,
+        activeSort, setActiveSort,
+        activeSortDirection, setActiveSortDirection
+    } = useContext(sharedContext);
     // TODO:
     useEffect(() => {
+        let newView = [];
         if (activeCategory === 'all') { // all category, exclude trashed note, PASS
-            const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
-                                                        .filter(note => note.is_archive === 0);
-            setSelectedCategoryView({
-                ...newView.reduce((container, nextVal) => {
-                    container[nextVal.id] = nextVal;
-                    return container;
-                }, {})
-            })
-
+            newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
+                .filter(note => note.is_archive === 0);
         } else if (activeCategory === 'favorite') { // all favorite note, exclue trashed note
-            const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
-                                                        .filter(note => note.is_favorite === 1)
-                                                        .filter(note => note.is_archive === 0);
-            setSelectedCategoryView({
-                ...newView.reduce((container, nextVal) => {
-                    container[nextVal.id] = nextVal;
-                    return container;
-                }, {})
-            })
+            newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
+                .filter(note => note.is_favorite === 1)
+                .filter(note => note.is_archive === 0);
         } else if (activeCategory === 'archive') { // all archived note, exclue trashed note
-            const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
-                                                        .filter(note => note.is_archive === 1);
-            setSelectedCategoryView({
-                ...newView.reduce((container, nextVal) => {
-                    container[nextVal.id] = nextVal;
-                    return container;
-                }, {})
-            })
-        } else if(activeCategory === 'trash'){  // trash category, exclude all except trashed note
-            const newView = Object.values(notesViewData).filter(note => note.is_trash === 1);
-            setSelectedCategoryView({
-                ...newView.reduce((container, nextVal) => {
-                    container[nextVal.id] = nextVal;
-                    return container;
-                }, {})
-            })
-        }else{ // TODO: view based on tags category
-            const newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
-                                                        .filter(note => note.is_archive === 0)
-                                                        .filter(note => note.tags[activeCategory]); // note.tags[tag_id]
-            setSelectedCategoryView({
-                ...newView.reduce((container, nextVal) => {
-                    container[nextVal.id] = nextVal;
-                    return container;
-                }, {})
-            })
+            newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
+                .filter(note => note.is_archive === 1);
+        } else if (activeCategory === 'trash') {  // trash category, exclude all except trashed note
+            newView = Object.values(notesViewData).filter(note => note.is_trash === 1);
+        } else { // TODO: view based on tags category
+            newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
+                .filter(note => note.is_archive === 0)
+                .filter(note => note.tags[activeCategory]); // note.tags[tag_id]
         }
+        console.log(newView);
 
-    }, [notesViewData, activeCategory]);
+        newView.sort((a, b) => {
+            let comparison = 0;
+            switch (activeSort) {
+                case 'last edited':
+                    // Sort by updated_at
+                    comparison = b.updated_at - a.updated_at; // Default to descending (newest first)
+                    break;
+                case 'title':
+                    // Sort by title alphabetically
+                    comparison = a.title.localeCompare(b.title); // Default to ascending (A-Z)
+                    break;
+                case 'date':
+                    // Sort by created_at
+                    comparison = b.created_at - a.created_at; // Default to descending (newest first)
+                    break;
+                default:
+                    return 0;
+            }
+            // Reverse the order if direction is 'asc' for date-based sorts, or 'desc' for title sort
+            return activeSortDirection === 'asc' ? comparison * -1 : comparison;
+        });
+
+        // Convert the sorted array back to an object and update the view
+        console.log({ newView }, activeSort, activeSortDirection); // PASS, newView updated
+        // Keep the data as a sorted array to preserve order
+        setSelectedCategoryView(newView);
+
+    }, [notesViewData, activeCategory, activeSort, activeSortDirection]);
 
     return (
         <div className="p-3 flex flex-1 flex-wrap justify-start content-start items-start gap-2 overflow-auto">
-            {Object.values(selectedCategoryView).map((element) => { // TODO: pass tags argument
+            {selectedCategoryView.map((element) => { // Directly map over the array
                 return <Notes_Card key={element.id}
                     noteId={element.id}
                     title={element.title}
