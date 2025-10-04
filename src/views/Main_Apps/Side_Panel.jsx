@@ -59,7 +59,7 @@ function Side_Panel() {
                         is_favorite: 0,
                         is_archive: 0,
                         is_trash: 0,
-                        // TODO: add tags
+                        tags: {},
                         created_at: Date.now(),
                         updated_at: Date.now()
                     }
@@ -70,7 +70,7 @@ function Side_Panel() {
                 title: "",
                 isFavorite: false,
                 isArchive: false,
-                // TODO: add tags
+                tags: {},
                 content: "",
                 createdAt: Date.now(),
                 updatedAt: Date.now()
