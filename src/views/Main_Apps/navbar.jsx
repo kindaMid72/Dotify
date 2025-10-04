@@ -78,7 +78,7 @@ function Navbar(props) {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="outline-none w-[165px] bg-transparent transition-colors duration-300 ease-in-out dark:text-gray-200"
                             placeholder="Search..."></input>
-                        <button type="submit" className="mr-3 group-focus-within:bg-gray-100 transition-colors duration-300 ease-in-out dark:text-gray-300">
+                        <button type="submit" className="mr-3 group-focus-within:bg-gray-100 dark:group-focus-within:bg-gray-600 transition-colors duration-300 ease-in-out dark:text-gray-300">
                             <i className="fa-solid fa-magnifying-glass"></i>
                         </button>
                     </form>
