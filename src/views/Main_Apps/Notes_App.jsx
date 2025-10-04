@@ -26,7 +26,9 @@ function Notes_App() {
   const [activeView, setActiveView] = useState('grid'); // Tampilan default: 'grid' atau 'list'
   const [activeSort, setActiveSort] = useState('last edited'); // Pengurutan default: 'date_desc', 'date_asc', 'title_asc', dll.
   const [activeSortDirection, setActiveSortDirection] = useState('desc'); // Pengurutan default: 'desc', 'asc'
-
+  const [searchQuery, setSearchQuery] = useState(''); // Pencarian default
+  const [themeMode, setThemeMode] = useState('light'); // Tema default: 'light' atau 'dark'
+  
   // data state storage, all data from server will be stored here
   const [notesViewData, setNoteViewData] = useState({}); // store all notes info data as an object
   const [tagsViewData, setTagsViewData] = useState([]); // store active(interacable) tags
@@ -34,6 +36,8 @@ function Notes_App() {
   const [tagNamesLookup, setTagNamesLookup] = useState({}); // store tags for quick lookup by name
   const [selectedNotesTag, setSelectedNotesTag] = useState([]); // contain current selected notes tag
   const [selectedCategoryView, setSelectedCategoryView] = useState([]); // contain notes for selected category view for main content
+
+
 
 
   // imported context
@@ -89,7 +93,7 @@ function Notes_App() {
                 newTagNamesLookup[tag.name] = tag;
               });
               setTagNamesLookup(newTagNamesLookup);
-            
+
             })
             .catch(err => {
               throw new Error("tags fetch error:", err);
@@ -111,7 +115,7 @@ function Notes_App() {
             .then(res => {
               // return ---> note_id : {}
               const formattedData = res.reduce((container, nextVal) => {
-                if(containerTags[nextVal.tag_id] === undefined) return container;
+                if (containerTags[nextVal.tag_id] === undefined) return container;
                 container[nextVal.note_id] = {
                   ...container[nextVal.note_id],
                   [nextVal.tag_id]: containerTags[nextVal.tag_id].name
@@ -147,7 +151,7 @@ function Notes_App() {
     <>
       <sharedContext.Provider value={
         {
-          notesViewData, setNoteViewData, 
+          notesViewData, setNoteViewData,
           tagNamesLookup, setTagNamesLookup,
           tagsViewData, setTagsViewData,
           selectedNote, setSelectedNote,
@@ -157,7 +161,9 @@ function Notes_App() {
           activeView, setActiveView,
           activeSort, setActiveSort,
           selectedCategoryView, setSelectedCategoryView,
-          activeSortDirection, setActiveSortDirection
+          activeSortDirection, setActiveSortDirection,
+          searchQuery, setSearchQuery,
+          themeMode, setThemeMode
         }
       }>
         <div className='flex flex-col h-screen bg-gray-50'>

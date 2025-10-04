@@ -18,10 +18,13 @@ export default () => {
         selectedCategoryView, setSelectedCategoryView,
         tagsViewData, setTagsViewData,
         activeSort, setActiveSort,
-        activeSortDirection, setActiveSortDirection
+        activeSortDirection, setActiveSortDirection,
+        searchQuery, setSearchQuery,
     } = useContext(sharedContext);
     // TODO:
     useEffect(() => {
+
+        // 1. CATEGORY SORTING
         let newView = [];
         if (activeCategory === 'all') { // all category, exclude trashed note, PASS
             newView = Object.values(notesViewData).filter(note => note.is_trash === 0)
@@ -40,8 +43,18 @@ export default () => {
                 .filter(note => note.is_archive === 0)
                 .filter(note => note.tags[activeCategory]); // note.tags[tag_id]
         }
-        console.log(newView);
+    
+        // 2. searchQuery SORTING
+        if(searchQuery){ // if there an input in the seach bar
+            newView = newView.filter(note => {
+                const lowercaseSearchQuery = searchQuery.toLowerCase();
+                const validTitle = note.title.toLowerCase().includes(lowercaseSearchQuery);
+                const validTags = Object.values(note.tags).some(tag => tag.toLowerCase().includes(lowercaseSearchQuery));
+                return (validTitle || validTags);
+            })
+        }
 
+        // 3. SORTING by activeSort and activeSortDirection
         newView.sort((a, b) => {
             let comparison = 0;
             switch (activeSort) {
@@ -69,7 +82,7 @@ export default () => {
         // Keep the data as a sorted array to preserve order
         setSelectedCategoryView(newView);
 
-    }, [notesViewData, activeCategory, activeSort, activeSortDirection]);
+    }, [notesViewData, activeCategory, activeSort, activeSortDirection, searchQuery]);
 
     return (
         <div className="p-3 flex flex-1 flex-wrap justify-start content-start items-start gap-2 overflow-auto">
