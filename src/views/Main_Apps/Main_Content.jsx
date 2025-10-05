@@ -21,7 +21,6 @@ export default () => {
         activeSortDirection, setActiveSortDirection,
         searchQuery, setSearchQuery,
     } = useContext(sharedContext);
-    // TODO:
     useEffect(() => {
 
         // 1. CATEGORY SORTING
@@ -86,9 +85,9 @@ export default () => {
             {selectedCategoryView.map((element) => { // Directly map over the array
                 return <Notes_Card key={element.id}
                     noteId={element.id || ''}
-                    title={element.title || 'loading...'}
-                    isFavorite={element.is_favorite || ''}
-                    isArchive={element.is_archive || ''}
+                    title={element.title || 'loading...'} 
+                    isFavorite={element.is_favorite || false}
+                    isArchive={element.is_archive || false}
                     isTrash={element.is_trash || false}
                     tags={element.tags || {}} // pass empty object if no tags
                     created_at={element.created_at || 0}

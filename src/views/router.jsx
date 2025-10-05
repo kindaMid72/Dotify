@@ -16,26 +16,18 @@ export const authToken = createContext(); // shared token context
 
 //components 
 import Protected_Route from './components/Protected_Route.jsx';
+import Pure_Skeleton from './components/Pure_Skeleton.jsx';
+
 
 // main Apps
 import Notes_App from './Main_Apps/Notes_App.jsx';
 
 
 function Apps() {
-    const [jwt, setJwt] = useState(null);
-    // utils function 
-    function requestUpdateJwt(){
-        axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, { withCredentials: true })
-            .then(res => {
-                setJwt(res.data.accessToken);
-            }).catch(err => {
-                console.error("No active session found or refresh token is invalid.", err);
-            })
-    }
 
-    useEffect(() => { // Minta access token saat aplikasi pertama kali dimuat, jika punya refresh token
-        requestUpdateJwt();
-    }, []);
+    // global state
+    const [jwt, setJwt] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const router = createBrowserRouter([
         {
@@ -48,11 +40,12 @@ function Apps() {
                 { path: 'faq', element: <Front_Faq /> }
             ]
         },
+        // { path: '/skeleton', element: <Pure_Skeleton /> }, // test skeleton loading
         { path: '/login', element: <Login_Page jwt={jwt} setJwt={setJwt} /> }, // TODO: configure authentication
         { path: '/signin', element: <Sign_In /> },
         {
             path: '/notes',
-            element: <Protected_Route jwt={jwt} />, // if user is authenticate, will send the Outlet for element placeholder
+            element: <Protected_Route />, // Protected_Route akan menangani state loading-nya sendiri
             children: [
                 { index: true, element: <Notes_App /> } // will have a child too
                 // setting page
@@ -63,8 +56,31 @@ function Apps() {
         { path: '/*', element: <h1 className='pt-10 text-center'>this address goes nowhere, click <Link to='/' className='font-black'>Here</Link> to the landing page</h1> } //TODO: add UI
     ]);
 
+    // utils function 
+    async function requestUpdateJwt() {
+        return await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, 
+            { 
+                withCredentials: true
+            })
+            .then(res => {
+                setJwt(res.data.accessToken);
+            }).catch(err => {
+                console.error("No active session found or refresh token is invalid.", err);
+                // Redirect to login page on failure
+                router.navigate('/login');
+                // Rethrow error to be caught by other handlers if needed
+                throw err;
+            }).finally(() => {
+                setIsLoading(false); // Set loading ke false setelah selesai, baik berhasil maupun gagal.
+            })
+    }
+
+    useEffect(() => { // Minta access token saat aplikasi pertama kali dimuat, jika punya refresh token
+        requestUpdateJwt();
+    }, []);
+
     return (<>
-        <authToken.Provider value={{ jwt, setJwt, requestUpdateJwt }}>
+        <authToken.Provider value={{ jwt, setJwt, requestUpdateJwt, isLoading, setIsLoading }}>
             <RouterProvider router={router} />
         </authToken.Provider>
     </>);

@@ -286,6 +286,10 @@ export default function () {
         // check if the new tag value is already exist (by name) via tagsNameLookup
         const newVal = newTagValue;
         const newTagLowercase = newVal.trim(); // only filter the extra spaces, this section is case sensitive
+        if(newTagLowercase.length === 0){
+            setNewTagValue('');
+            return;
+        }
         const isExist = tagNamesLookup[newTagLowercase]; // O(1) complexity, return valid tags data
         setNewTagValue('');
         if (isExist) {
@@ -408,6 +412,7 @@ export default function () {
                             [newTagId]: {
                                 id: newTagId,
                                 name: newVal,
+                                slug: newVal.toLowerCase().replace(/\s+/g, '-')
                             }
                         }
                     })
@@ -487,7 +492,7 @@ export default function () {
         const children = showTags.length;
         return <>
             {children > 0 &&
-                <ol className="absolute bg-gray-200 min-w-[90px] min-h-[20px] border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer">
+                <ol className="absolute bg-gray-200 min-w-[90px] min-h-[20px] border-[1px] rounded-md p-2 flex flex-col gap-2 w-fit [&_li]:hover:scale-110 transition-transform ease-in-out duration-200 [&_li]:cursor-pointer dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500">
                     {/* filter if the input and the nametag match */}
                     {showTags}
                 </ol>
@@ -498,7 +503,7 @@ export default function () {
     //
     return (<>
         <form onSubmit={(e) => handleSubmit(e)} className="min-w-full flex flex-col [&_*]:font-mono h-full overflow-auto">
-            <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600">
+            <div className="group bg-gray-100 p-4 rounded-b-xl border-b-[1px] border-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
                 <div className="" > {/* navigation container */}
                     <button type="button" onClick={() => { handleSaveClosedNote(); }} className="cursor-pointer pb-2 hover:scale-[1.2] transition-transform ease-in-out duration-150"> <i className="fa-solid fa-arrow-left"></i></button>
                 </div>
@@ -521,7 +526,7 @@ export default function () {
                             <h3 className=" rounded-xl w-fit px-2 text-center font-bold">Tags: </h3>
                             {/* load all valid tags */}
                             <ol className="flex flex-col pt-[4px] pb-[4px] gap-2 [&_li]:border-[1px] [&_li]:border-black [&_li]:rounded-lg [&_li]:text-[0.7em] [&_li]:px-1 [&_li]:w-fit dark:[&_li]:border-gray-500">
-                                {Object.entries(selectedNote.tags).map(([key, value]) => {
+                                {selectedNote.tags && Object.entries(selectedNote.tags).map(([key, value]) => {
                                     return (
                                         <li key={key} > {/* pass tagId */}
                                             {value} <i onClick={(e) => { handleDeleteNoteTags(e, key); }} key={key} className='fa-solid fa-xmark cursor-pointer transition-colors ease-in-out duration-75 hover:text-red-500'></i>
@@ -555,9 +560,9 @@ export default function () {
                         <p className="flex-1 text-[1em] pl-2 font-bold">Created date: <i className="font-light dark:text-gray-400">{date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()}</i></p>
                     </div>
                 }
-                <button type="button" className="ml-3" onClick={(e) => { if(selectedNote) editMetadata(e);}}><i className={showEditMetadata ? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150" : "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
+                <button type="button" className="ml-3" onClick={(e) => { if (selectedNote) editMetadata(e); }}><i className={showEditMetadata ? "fa-solid fa-angle-up hover:scale-120 transition-transform ease-in-out duration-150" : "fa-solid fa-angle-down hover:scale-120 transition-transform ease-in-out duration-150"}></i></button>
             </div>
-            <textarea value={selectedNote.content || ""} onChange={(e) => setSelectedNote(prev => ({ ...prev, content: e.target.value }))} type="text" placeholder="write your notes here..." className="flex-1 font-light overflow-auto text-[1em] pl-5 mb-[6px] outline-none pt-4 h-full bg-transparent dark:text-gray-300"></textarea> {/* implement rest if the description length is reaching a certain point */}
+            <textarea value={selectedNote.content || ""} onChange={(e) => setSelectedNote(prev => ({ ...prev, content: e.target.value }))} type="text" placeholder="write your notes here..." className="flex-1 font-light overflow-auto text-[1em] pl-5 mb-[6px] outline-none pt-4 h-full bg-transparent dark:text-gray-300 dark:placeholder-gray-500"></textarea> {/* implement rest if the description length is reaching a certain point */}
         </form>
     </>)
 }
