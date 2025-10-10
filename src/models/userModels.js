@@ -39,7 +39,7 @@ async function getUserByEmail(params) {
     const email = params.email;
     const sql = "SELECT * FROM users WHERE email = ?";
     const [result] = await db.query(sql, [email]);
-    return result.length > 0 ? true : false; // check apakah user dengan email sudah ada atau tidak 
+    return result.length > 0; // check apakah user dengan email sudah ada atau tidak 
 }
 async function getIdByEmail(params) {
     const email = params.email;
@@ -62,4 +62,4 @@ async function getAllUser(params) {
 
 }
 
-export default { getHashedPasswordByEmail, createUser, editUser, deleteUser, getUserByEmail, getUserById, getAllUser, getIdByEmail }; // Jangan lupa ekspor router agar bisa digunakan
+export default { getHashedPasswordByEmail, createUser, editUser, deleteUser, getUserByEmail, getUserById, getAllUser, getIdByEmail, resetPasswordByEmail }; // Jangan lupa ekspor router agar bisa digunakan

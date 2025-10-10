@@ -11,13 +11,18 @@ async function storeResetToken({ email, token, expires_at }) {
         throw new Error(err.message);
     }
 }
-async function checkResetToken({ token }) { // return valid or not
-    try {
-        const sql = "SELECT * FROM password_reset WHERE token = ?";
+async function checkResetToken({ token }) { // return email if token valid
+    try { // return email
+        const sql = "SELECT email FROM password_reset WHERE token = ?";
         const [result] = await db.query(sql, [token]);
+        const currentDate = new Date();
         if (result.length === 0) return false;
-        if (result[0].expires_in < Date.now()) return false;
-        return true;
+        if (result[0].expires_at < currentDate){
+            // 1. expired token, delete from database
+            deleteResetToken({token});
+            return false;
+        }
+        return result[0].email;
     } catch (err) {
         throw new Error(err.message);
     }
