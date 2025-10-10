@@ -8,7 +8,6 @@ import mailer from '../config/mailer.js';
 import resetPasswordTokenModels from '../models/resetPasswordTokenModels.js';
 import sectionModel from '../models/sectionModel.js';
 import userModels from '../models/userModels.js';
-import { url } from 'inspector';
 
 // Panggil dotenv.config() hanya di file server.js
 const COOKIE_NAME = 'refreshToken';
@@ -186,8 +185,7 @@ route.post('/send-reset-password-email', async (req, res) => {
             subject: 'Reset Password',
             html: `<p>Anda meminta untuk mereset password. Klik tautan ini untuk melanjutkan:</p><a href="${resetUrl}">${resetUrl}</a><p>Tautan ini akan kedaluwarsa dalam 15 menit.</p>`
         });
-        if (process.env.VITE_API_BASE_URL === 'http://localhost:3000/api') res.status(200).json({ message: "If an account with that email exists, a reset link has been sent. (this on really got send)", url: resetUrl});
-        else res.status(200).json({ message: "it is get send? idk bro", link: resetUrl })
+        res.status(200).json({ message: "If an account with that email exists, a reset link has been sent.", url: resetUrl });
     } catch (err) {
         res.status(500).json({ message: err.message });
         console.error(err);
@@ -195,20 +193,20 @@ route.post('/send-reset-password-email', async (req, res) => {
 });
 
 route.post('/reset-password', async (req, res) => {
-    try{
-        const {password} = req.body;
+    try {
+        const { password } = req.body;
         const token = req.headers.authorization.split(' ')[1];
         // 1. check token from database
-        const email = await resetPasswordTokenModels.checkResetToken({token});
-        if(!email) return res.status(401).json({message: "Invalid or expired token"});
+        const email = await resetPasswordTokenModels.checkResetToken({ token });
+        if (!email) return res.status(401).json({ message: "Invalid or expired token" });
         // 2. reset password if token valid
         const hashedPassword = await bcrypt.hash(password, 10);
-        const attemptReset = await userModels.resetPasswordByEmail({email, newPasswordHash: hashedPassword});
-        if (!attemptReset) return res.status(500).json({message: "Failed to reset password, internal server error"});
-        await resetPasswordTokenModels.deleteResetToken({token});
-        res.status(200).json({message: "Password reset successfully"});
-    }catch(err){
-        res.status(500).json({message: err.message});
+        const attemptReset = await userModels.resetPasswordByEmail({ email, newPasswordHash: hashedPassword });
+        if (!attemptReset) return res.status(500).json({ message: "Failed to reset password, internal server error" });
+        await resetPasswordTokenModels.deleteResetToken({ token });
+        res.status(200).json({ message: "Password reset successfully" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
         console.error(err);
     }
 })
