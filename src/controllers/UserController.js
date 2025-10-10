@@ -185,7 +185,7 @@ route.post('/send-reset-password-email', async (req, res) => {
             subject: 'Reset Password',
             html: `<p>Anda meminta untuk mereset password. Klik tautan ini untuk melanjutkan:</p><a href="${resetUrl}">${resetUrl}</a><p>Tautan ini akan kedaluwarsa dalam 15 menit.</p>`
         });
-        res.status(200).json({ message: "If an account with that email exists, a reset link has been sent.", url: resetUrl });
+        res.status(200).json({ message: "If an account with that email exists, a reset link has been sent." });
     } catch (err) {
         res.status(500).json({ message: err.message });
         console.error(err);

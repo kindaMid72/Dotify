@@ -1,3 +1,8 @@
+/**
+ * TODO: some request got send when the login page get reloaded
+ */
+
+import axios from 'axios';
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -51,7 +56,26 @@ export default (props) => {
         }, 50);
     }
     async function handleForgotPassword() {
-        // handle forgot password
+        setPopUpElement(null); // reset popup massage
+
+        // 1. send email based on current email input
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setTimeout(async () => {
+            if (!emailRegex.test(email)) {
+                setPopUpElement(<PopupMassage title="Email Tidak Valid" massage="Mohon masukkan format email yang benar." color="red" />);
+                return;
+            }
+            await axios.post(`${import.meta.env.VITE_API_BASE_URL}/db/users/send-reset-password-email`, { email: email })
+                .then(res => {
+                    if (res.status === 200) {
+                        setPopUpElement(<PopupMassage title="Check Your Email" massage="Reset password instruction has been sent to your email" color="green" />);
+                    }
+                })
+                .catch(err => {
+                    setPopUpElement(<PopupMassage title="Failed to Send Email" massage="contact support if the problem persists" color="red" />)
+                    console.error(err)
+                })
+        }, 10);
     }
 
     // {/* google login section */}
@@ -75,7 +99,7 @@ export default (props) => {
                 </div>
 
                 {/* email login section */}
-                <form className="w-full flex flex-col mt-5">
+                <form onSubmit={(e) => e.preventDefault()} className="w-full flex flex-col mt-5">
                     <p>Email</p>
                     <input type='text' value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@example.com" className="w-full border-2 border-gray-300 p-2 rounded-md mb-2"></input>
                     <p>Password</p>
@@ -86,7 +110,7 @@ export default (props) => {
                             <input type='checkbox' className="mr-2"></input>
                             <p>Remember me</p>
                         </div>
-                        <button className="hover:underline" onClick="">Forgot Password?</button>
+                        <button className="hover:underline" onClick={() => handleForgotPassword()}>Forgot Password?</button>
                     </div>
 
                     {/* login button */} {/* onClick auth */}
