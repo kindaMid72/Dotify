@@ -18,7 +18,16 @@ async function editUser(params) {
 
 }
 async function deleteUser(params) {
-
+ // TODO: 
+}
+async function resetPasswordByEmail({email, newPasswordHash}) {
+    try{
+        const sql = 'UPDATE users SET password_hash = ? WHERE email = ?';
+        const [result] = await db.query(sql, [newPasswordHash, email]);
+        return result.affectedRows > 0;
+    }catch(err){
+        throw new Error(err.message);
+    }
 }
 async function getUserById(params) {
     const id = params.id;

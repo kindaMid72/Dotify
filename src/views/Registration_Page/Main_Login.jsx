@@ -50,7 +50,21 @@ export default (props) => {
             }
         }, 50);
     }
+    async function handleForgotPassword() {
+        // handle forgot password
+    }
 
+    // {/* google login section */}
+    // <div className="flex justify-center items-center border-2 border-gray-300 rounded-lg py-2 w-full mt-8 hover:bg-stone-200 cursor-pointer transition-color duration-75 ease-in-out">
+    //     <i className="fa-brands fa-google text-red-500 mr-3"></i>
+    //     <button className=""> Log in with Google</button>
+    // </div>
+    // {/* or break line */}
+    // <div className="flex justify-center items-center mt-8 w-full">
+    //     <div className="h-0 w-5 border-y-1 border-gray-300 flex-1"></div>
+    //     <p className="px-2 text-gray-400">or</p>
+    //     <div className="h-0 w-5 border-y-1 border-gray-300 flex-1"></div>
+    // </div>
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             {popUpElement}
@@ -58,19 +72,6 @@ export default (props) => {
                 <div> {/* welcome back section */}
                     <h1 className="text-4xl font-extrabold">Welcome back!</h1>
                     <p className="text-gray-600 mt-3">Log in to your Dotify account to continue</p>
-                </div>
-
-                {/* google login section */}
-                <div className="flex justify-center items-center border-2 border-gray-300 rounded-lg py-2 w-full mt-8 hover:bg-stone-200 cursor-pointer transition-color duration-75 ease-in-out">
-                    <i className="fa-brands fa-google text-red-500 mr-3"></i>
-                    <button className=""> Log in with Google</button>
-                </div>
-
-                {/* or break line */}
-                <div className="flex justify-center items-center mt-8 w-full">
-                    <div className="h-0 w-5 border-y-1 border-gray-300 flex-1"></div>
-                    <p className="px-2 text-gray-400">or</p>
-                    <div className="h-0 w-5 border-y-1 border-gray-300 flex-1"></div>
                 </div>
 
                 {/* email login section */}
@@ -85,7 +86,7 @@ export default (props) => {
                             <input type='checkbox' className="mr-2"></input>
                             <p>Remember me</p>
                         </div>
-                        <button className="hover:underline">Forgot Password?</button>
+                        <button className="hover:underline" onClick="">Forgot Password?</button>
                     </div>
 
                     {/* login button */} {/* onClick auth */}

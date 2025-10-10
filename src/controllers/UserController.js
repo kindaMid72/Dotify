@@ -1,8 +1,11 @@
 import bcrypt from 'bcrypt';
+import crypto from 'crypto'; // Import modul crypto untuk token yang aman
 import express from 'express';
 import jwt from 'jsonwebtoken';
 
 // models import
+import mailer from '../config/mailer.js';
+import resetPasswordTokenModels from '../models/resetPasswordTokenModels.js';
 import sectionModel from '../models/sectionModel.js';
 import userModels from '../models/userModels.js';
 
@@ -12,6 +15,7 @@ const ACCESS_TOKEN_AGE = '30m';
 const REFRESH_TOKEN_AGE_DAYS = 7; // Definisikan umur refresh token dalam hari
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'; // URL frontend Anda
 
 const route = express.Router();
 
@@ -24,8 +28,8 @@ route.post('/create_user', async (req, res) => {
     if (!email || !password || !name) {
         return res.status(400).json({ message: 'Email, password, and name are required.' });
     }
-    if (await userModels.getUserByEmail({ email }) == true) { // check if the email already exist
-        res.status(400).json({ message: "Email already exist nig" });
+    if (await userModels.getUserByEmail({ email })) { // check if the email already exist
+        res.status(409).json({ message: "Email already exists" }); // Gunakan status 409 Conflict
         return;
     }
     const passwordHashed = await bcrypt.hash(password, 10); // saltRound = 10 times
@@ -111,15 +115,15 @@ route.post('/logout', async (req, res) => {
 
 route.get('/check-token', async (req, res) => {
     // req -> accessToken
-    try{
-        const token =  req.headers.authorization?.split(' ')[1] || req.body.accessToken;
+    try {
+        const token = req.headers.authorization?.split(' ')[1] || req.body.accessToken;
         if (!token) return res.sendStatus(401);
         if (jwt.verify(token, ACCESS_TOKEN_SECRET)) {
             res.sendStatus(200); // authorize
         } else {
             res.sendStatus(401); // unautohorize
         }
-    }catch(err){
+    } catch (err) {
         res.sendStatus(401); // unauthorize
         throw new Error(err.message);
     }
@@ -134,8 +138,8 @@ route.get('/refresh-token', async (req, res) => { // pass
         if (checkToken && checkToken[0].expired_time > Date.now()) { // token valid
             const verify = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET); // mengembalikan object berisi email
             if (verify) {
-                const newAccessToken = jwt.sign({userId: verify.userId, email: verify.email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
-                res.status(200).json({userId: verify.userId, email: verify.email, accessToken: newAccessToken })
+                const newAccessToken = jwt.sign({ userId: verify.userId, email: verify.email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
+                res.status(200).json({ userId: verify.userId, email: verify.email, accessToken: newAccessToken })
             } else {
                 res.status(401).json({ message: "token expired or invalid, please login again" });
             }
@@ -148,7 +152,44 @@ route.get('/refresh-token', async (req, res) => { // pass
             res.sendStatus(401); // forbidden
         }
     } catch (err) {
+        res.sendStatus(401); // forbidden
         console.log(err);
+    }
+});
+
+// reset password request handler
+route.post('/send-reset-password-email', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: "Email is required" });
+
+        const user = await userModels.getUserByEmail({ email: email });
+        if (!user) { // if the email did not exist, send a resolve status
+            return res.status(200).json({ message: "If an account with that email exists, a reset link has been sent." });
+        }
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const expires_at = Date.now() + 15 * 60 * 1000; // Token berlaku 15 menit
+
+        // 1. Store reset password token in database
+        await resetPasswordTokenModels.storeResetToken({ email, token, expires_at });
+
+        // 2. create a custom url to reset
+        const resetUrl = `${CLIENT_URL}/reset_password?token=${token}`;
+
+        // 3. Kirim email
+        await mailer.sendMail({
+            // PERBAIKAN: Tambahkan fallback untuk MAILER_USER jika tidak ada di .env
+            from: `"Dotify Team" <${process.env.MAILER_USER || 'audra12@ethereal.email'}>`,
+            to: email,
+            subject: 'Reset Password',
+            html: `<p>Anda meminta untuk mereset password. Klik tautan ini untuk melanjutkan:</p><a href="${resetUrl}">${resetUrl}</a><p>Tautan ini akan kedaluwarsa dalam 15 menit.</p>`
+        });
+
+        res.status(200).json({ message: "If an account with that email exists, a reset link has been sent. (this on really got send" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+        console.error(err);
     }
 });
 

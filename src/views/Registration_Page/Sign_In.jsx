@@ -67,7 +67,12 @@ export default () => {
             console.error(error);
         }
     };
-
+                // sign in with google section 
+                // {/* google login section */}
+                // <div className="flex justify-center items-center border-2 border-gray-300 rounded-lg py-2 w-full mt-8 hover:bg-stone-200 cursor-pointer transition-color duration-75 ease-in-out">
+                //     <i className="fa-brands fa-google text-red-500 mr-3"></i>
+                //     <button className=""> Sign in with Google</button>
+                // </div>
 
     return (<>
         <div className="flex items-center justify-center min-h-screen bg-gray-100 relative">
@@ -78,11 +83,6 @@ export default () => {
                     <p className="text-gray-600 mt-3">Sign in to Dotify account to continue</p>
                 </div>
 
-                {/* google login section */}
-                <div className="flex justify-center items-center border-2 border-gray-300 rounded-lg py-2 w-full mt-8 hover:bg-stone-200 cursor-pointer transition-color duration-75 ease-in-out">
-                    <i className="fa-brands fa-google text-red-500 mr-3"></i>
-                    <button className=""> Sign in with Google</button>
-                </div>
 
                 {/* or break line */}
                 <div className="flex justify-center items-center mt-8 w-full">

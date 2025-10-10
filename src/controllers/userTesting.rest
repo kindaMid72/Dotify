@@ -1,0 +1,11 @@
+### login
+
+
+
+### send email 
+POST http://localhost:3000/api/db/users/send-reset-password-email
+Content-Type: application/json
+
+{
+    "email": "kingahmadilyas05@gmail.com"
+}

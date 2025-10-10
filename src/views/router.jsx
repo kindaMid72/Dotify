@@ -1,3 +1,5 @@
+// TODO: implementasi protected route untuk reset password di sini
+
 import axios from 'axios';
 import { createContext, useEffect, useState } from 'react';
 import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom';
@@ -12,12 +14,11 @@ import Front_Why_Us from './Landing_Page/Why.jsx';
 // login page
 import Login_Page from './Registration_Page/Main_Login.jsx';
 import Sign_In from './Registration_Page/Sign_In.jsx';
+import Reset_Password from './Registration_Page/Reset_Password.jsx';
 export const authToken = createContext(); // shared token context
 
 //components 
 import Protected_Route from './components/Protected_Route.jsx';
-import Pure_Skeleton from './components/Pure_Skeleton.jsx';
-
 
 // main Apps
 import Notes_App from './Main_Apps/Notes_App.jsx';
@@ -41,8 +42,9 @@ function Apps() {
             ]
         },
         // { path: '/skeleton', element: <Pure_Skeleton /> }, // test skeleton loading
-        { path: '/login', element: <Login_Page jwt={jwt} setJwt={setJwt} /> }, // TODO: configure authentication
+        { path: '/login', element: <Login_Page jwt={jwt} setJwt={setJwt} /> }, // 
         { path: '/signin', element: <Sign_In /> },
+        { path: '/reset_password', element: <Reset_Password/>}, //TODO: 
         {
             path: '/notes',
             element: <Protected_Route />, // Protected_Route akan menangani state loading-nya sendiri
