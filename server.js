@@ -2,7 +2,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import controllerRoute from './rc/controllers/controllerRoute.js';
+import controllerRoute from './src/controllers/controllerRoute.js';
 dotenv.config();
 
 const app = express();
