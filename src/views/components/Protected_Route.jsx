@@ -9,14 +9,14 @@ export default () => { // accept a callback for checking autentication
     } = useContext(authToken);
 
     useEffect(() => {
-
-    }, [jwt])
+        if(!jwt){
+            requestUpdateJwt();
+        }
+    }, [])
 
     // Jika sudah ada JWT, tampilkan konten yang diproteksi.
     if (jwt) {
         return <Outlet />;
-    }else{
-        requestUpdateJwt();
     }
 
     // Jika belum ada JWT, tampilkan skeleton loading.
