@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "NODE_ENV=production node server.js"
+    "start": "nodemon server.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",
