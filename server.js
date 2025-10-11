@@ -11,14 +11,17 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000; // default value for development process
 
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', process.env.FRONTEND_URL];
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL
+].filter(Boolean); // .filter(Boolean) akan menghapus nilai falsy (seperti undefined) dari array
 
 // Dapatkan __dirname di ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(cors({
-    origin: 'http://localhost:5173', // allow request only from this domain
+    origin: allowedOrigins, // allow request only from this domain
     credentials: true // allow to pass cookies
 }));
 app.use(cookieParser());
