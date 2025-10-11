@@ -1,4 +1,4 @@
-// TODO: implementasi protected route untuk reset password di sini
+// FIXME: login feature got some bug in it, shit
 
 import axios from 'axios';
 import { createContext, useEffect, useState } from 'react';
@@ -78,7 +78,7 @@ function Apps() {
     }
 
     useEffect(() => { // Minta access token saat aplikasi pertama kali dimuat, jika punya refresh token
-        requestUpdateJwt();
+        
     }, []);
 
     return (<>

@@ -5,12 +5,18 @@ import Skeleton_Loading from "./Skeleton_Loading.jsx";
 
 export default () => { // accept a callback for checking autentication
     const {
-        jwt
+        jwt, requestUpdateJwt
     } = useContext(authToken);
+
+    useEffect(() => {
+
+    }, [jwt])
 
     // Jika sudah ada JWT, tampilkan konten yang diproteksi.
     if (jwt) {
         return <Outlet />;
+    }else{
+        requestUpdateJwt();
     }
 
     // Jika belum ada JWT, tampilkan skeleton loading.

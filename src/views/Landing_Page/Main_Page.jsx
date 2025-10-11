@@ -8,7 +8,6 @@ export default () => {
         <>
             <Navbar />
             <Outlet />
-
         </>
 
     );

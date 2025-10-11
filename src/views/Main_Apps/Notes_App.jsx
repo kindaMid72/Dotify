@@ -1,5 +1,5 @@
 /**
- * FIXME: notes tag relation fetch success but error when syncronize
+ * 
  */
 import axios from 'axios';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -147,7 +147,7 @@ function Notes_App() {
         requestUpdateJwt();
       }
     }
-  }, []); // 
+  }, []); // on load page
   return (
     <>
       <sharedContext.Provider value={
