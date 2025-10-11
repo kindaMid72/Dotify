@@ -33,7 +33,7 @@ app.use('/api/db', controllerRoute);
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // Untuk semua permintaan GET lainnya yang bukan API, kirim index.html
-app.get('/*', (req, res) => {
+app.use((req, res, next) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
