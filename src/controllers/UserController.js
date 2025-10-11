@@ -66,7 +66,7 @@ route.post('/login', async (req, res) => {
             //set cookie in respose
             res.cookie(COOKIE_NAME, refreshToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production', // true di produksi, false di development
+                secure: true, // true di produksi, false di development
                 sameSite: 'strict',
                 maxAge: REFRESH_TOKEN_AGE_DAYS * 24 * 60 * 60 * 1000 // day to millisecond 
             })
@@ -80,7 +80,7 @@ route.post('/login', async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(401).json({ message: err.massage });
+        res.status(403).json({ message: err.massage });
     }
 });
 
@@ -94,7 +94,7 @@ route.post('/logout', async (req, res) => {
         if (!response) {
             res.clearCookie(COOKIE_NAME, { // clear cookie just in case
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production', // true di produksi, false di development
+                secure: true, // true di produksi, false di development
                 sameSite: 'strict'
             })
             return res.status(401).json({ message: "token valid but deletion in database failed" });
@@ -102,7 +102,7 @@ route.post('/logout', async (req, res) => {
         // hapus cookie  TODO: muncul error ke bawwah
         res.clearCookie(COOKIE_NAME, { // hapus cookies
             httpOnly: true, // pass atributi yang sama
-            secure: process.env.NODE_ENV === 'production', // true di produksi, false di development
+            secure: true, // true di produksi, false di development
             sameSite: 'strict'
         });
 
