@@ -45,10 +45,10 @@ export default () => {
     ];
 
     return (
-        <div className="container mx-auto px-6 py-12 font-mono">
+        <div className="container mx-auto px-6 py-8 md:py-12 font-mono">
             <div className="text-center mb-12">
-                <h1 className="text-5xl font-extrabold text-blue-600">Dotify Features</h1>
-                <p className="mt-4 text-lg text-gray-600">Everything you need to keep your ideas organized.</p>
+                <h1 className="text-4xl md:text-5xl font-extrabold text-blue-600">Dotify Features</h1>
+                <p className="mt-4 text-base md:text-lg text-gray-600">Everything you need to keep your ideas organized.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">

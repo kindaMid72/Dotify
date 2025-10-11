@@ -2,11 +2,11 @@ import AnimateOnView from '../components/AnimateOnView.jsx';
 
 export default () => {
     return (
-        <div className="container mx-auto px-6 py-12 font-mono text-gray-800">
+        <div className="container mx-auto px-6 py-8 md:py-12 font-mono text-gray-800">
             <AnimateOnView>
                 <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="text-5xl font-extrabold text-blue-600">About Dotify</h1>
-                    <p className="mt-4 text-lg text-gray-600">Your simple, fast, and elegant solution for note-taking.</p>
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-blue-600">About Dotify</h1>
+                    <p className="mt-4 text-base md:text-lg text-gray-600">Your simple, fast, and elegant solution for note-taking.</p>
                 </div>
             </AnimateOnView>
 

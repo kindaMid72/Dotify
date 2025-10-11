@@ -20,15 +20,15 @@ export default () => {
     return (
         <>
             <nav>
-                <ol className="flex justify-start gap-15 w-full items-center [&_*]:font-mono py-3 pl-7 border-b-1 border-black">
-                    <li className="flex items-center cursor-pointer" onClick={() => navigate('/')}>{/* this is main page */}
-                        <img src="../src/assets/Logo_Only.png" alt="logo" className="w-9"></img>
-                        <h1 className="font-mono font-extrabold pl-3 !text-[2.1em]">Dotify</h1>
+                <ol className="flex justify-start gap-4 md:gap-8 w-full items-center [&_*]:font-mono py-3 px-4 md:pl-7 border-b-1 dark:border-gray-700">
+                    <li className="hidden items-center cursor-pointer md:flex" onClick={() => navigate('/')}>{/* this is main page */}
+                        <img src="./src/assets/Logo_Only.png" alt="logo" className="w-8 md:w-9"></img>
+                        <h1 className="font-mono font-extrabold pl-2 text-2xl md:text-3xl">Dotify</h1>
                     </li>
-                    <li onClick={() => navigate('/about')} className="text-[1.3em] font-bold cursor-pointer hover:text-shadow-gray-400 text-shadow-xs">About Us</li>
-                    <li onClick={() => navigate('/features')} className="text-[1.3em] font-bold cursor-pointer hover:text-shadow-gray-400 text-shadow-xs">Features</li>
-                    <li onClick={() => handleOpenApps()} className="text-[1.2em] font-bold flex-1 text-end pr-7"> {/* to login pages */}
-                        <button className="border-3 transition-colors ease-in-out duration-200 border-gray-300 px-3 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-500 hover:text-white">Open Notes <i className="fa-solid fa-arrow-right"></i></button>
+                    <li onClick={() => navigate('/about')} className="md:block text-lg font-bold cursor-pointer hover:text-blue-600 transition-colors">About Us</li>
+                    <li onClick={() => navigate('/features')} className="md:block text-lg font-bold cursor-pointer hover:text-blue-600 transition-colors">Features</li>
+                    <li onClick={() => handleOpenApps()} className="font-bold flex-1 text-end cursor-pointer"> {/* to login pages */}
+                        <button className="border-2 transition-colors ease-in-out duration-200 border-gray-400 text-sm md:text-base px-4 py-2 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-500 hover:text-white dark:border-gray-500 dark:hover:border-blue-500">Open Notes <i className="fa-solid fa-arrow-right"></i></button>
                     </li>
                 </ol>
             </nav>
