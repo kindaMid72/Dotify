@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import AnimateOnView from '../components/AnimateOnView.jsx';
 
 export default () => {
+
+    const [languages, setLanguages] = useState('indo');
+
     return (
         <div className="container mx-auto px-6 py-8 md:py-12 font-mono text-gray-800">
             <AnimateOnView>
@@ -32,8 +36,20 @@ export default () => {
                 <div className="bg-white p-8 rounded-xl shadow-lg">
                     <h2 className="text-2xl font-bold mb-4 text-gray-900">About The Creator</h2>
                     <p className="text-gray-700 leading-relaxed">
-                        Perkenalkan, saya adalah developer di balik proyek ini. Dengan antusiasme tinggi dalam dunia software engineering, saya mendedikasikan proyek ini sebagai sarana untuk mengasah keterampilan, bereksperimen dengan teknologi baru, dan membangun produk yang fungsional dan bermanfaat. Semoga Anda menikmati menggunakan Dotify!
+                        {languages === 'indo' ? 'Perkenalkan, saya King Ahmad Ilyas, developer di balik proyek ini. Dengan antusiasme tinggi dalam dunia software engineering, saya mendedikasikan proyek ini sebagai sarana untuk mengasah keterampilan, bereksperimen dengan teknologi baru, dan membangun produk yang fungsional dan bermanfaat. Semoga Anda menikmati menggunakan Dotify!'
+                            :
+                            "Allow me to introduce myself—I'm King Ahmad Ilyas, the developer behind this project. With a deep enthusiasm for the world of software engineering, I dedicate this project as a platform to sharpen my skills, experiment with new technologies, and build a product that is both functional and meaningful. I hope you enjoy using Dotify!"
+                        }
                     </p>
+                    <div>
+                        <button onClick={() => setLanguages(prev => (prev === 'indo' ? 'en' : 'indo'))} className='border-2 mt-4 border-transparent text-white font-bold py-2 px-4 rounded-md bg-blue-500 hover:bg-blue-600 transition-colors duration-300'>
+                            {languages === 'indo' ? 'Switch to English' : 'Ganti Bahasa'}
+                        </button>
+                        {/* Menggunakan tag <a> untuk link eksternal dan styling seperti tombol */}
+                        <a href="https://www.instagram.com/khmadlys/" target="blank" rel="noopener noreferrer" className='ml-3 inline-block border-2 mt-4 border-transparent text-white font-bold py-2 px-4 rounded-md bg-blue-500 hover:bg-blue-600 transition-colors duration-300'>
+                            {languages === 'indo' ? 'Kenal Saya Lebih Jauh' : "Get to Know me Well"} <i className="fa-brands fa-instagram ml-2"></i>
+                        </a>
+                    </div>
                 </div>
             </AnimateOnView>
         </div>
