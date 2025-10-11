@@ -1,14 +1,42 @@
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 
 export default () => {
     const navigate = useNavigate();
-    
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2, // Memberi jeda animasi antar elemen anak
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut",
+            },
+        },
+    };
+
     return (<>
-    <div className="flex flex-col [&_*]:text-center [&_*]:font-mono justify-center items-center pt-8 pb-8 ">
-        <h1 className="font-[900] text-4xl text-blue-400">Capture Your Ideas.<br/>Organize Your Live.</h1>
-        <p className="font-[500] text-[1.1em] w-[450px] mt-4">The ultimate note-taking app that help you organize your thoughts, ideas in one place.</p>
-        <button onClick={() => navigate('/login')} className="border-2 border-gray-500 px-2 py-0.5 mt-5 rounded-lg">Try it Now</button> {/* go to login page, */}
-    </div>
+        <motion.div
+            className="flex flex-col font-mono justify-center items-center text-center min-h-[calc(100vh-120px)] px-4"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+        >
+            <motion.h1 variants={itemVariants} className="font-black text-5xl md:text-6xl text-blue-600 leading-tight">Capture Your Ideas.<br />Organize Your Life.</motion.h1>
+            <motion.p variants={itemVariants} className="font-medium text-lg text-gray-600 max-w-md mt-6">The ultimate note-taking app that helps you organize your thoughts and ideas, all in one place.</motion.p>
+            <motion.button variants={itemVariants} onClick={() => navigate('/login')} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="bg-blue-600 text-white font-bold text-lg px-8 py-3 mt-8 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300">Try Dotify Now</motion.button>
+        </motion.div>
     </>)
 }

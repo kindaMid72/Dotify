@@ -1,20 +1,20 @@
-// FIXME: login feature got some bug in it, shit
+// 
 
 import axios from 'axios';
 import { createContext, useEffect, useState } from 'react';
 import { createBrowserRouter, Link, RouterProvider } from 'react-router-dom';
 
 // landing page
-import Front_Faq from './Landing_Page/Faq.jsx';
+import Front_Faq from './Landing_Page/Konz.jsx';
 import Front_Features from './Landing_Page/Features.jsx';
 import Front_Index from './Landing_Page/Index.jsx';
 import Front_Page from './Landing_Page/Main_Page.jsx';
-import Front_Why_Us from './Landing_Page/Why.jsx';
+import Front_About from './Landing_Page/About.jsx';
 
 // login page
 import Login_Page from './Registration_Page/Main_Login.jsx';
-import Sign_In from './Registration_Page/Sign_In.jsx';
 import Reset_Password from './Registration_Page/Reset_Password.jsx';
+import Sign_In from './Registration_Page/Sign_In.jsx';
 export const authToken = createContext(); // shared token context
 
 //components 
@@ -36,15 +36,15 @@ function Apps() {
             element: <Front_Page />, // all children from this page will be mounted in <Outlet/>
             children: [
                 { index: true, element: <Front_Index /> },
-                { path: 'WhyUs', element: <Front_Why_Us /> },
+                { path: 'about', element: <Front_About /> },
                 { path: 'features', element: <Front_Features /> },
-                { path: 'faq', element: <Front_Faq /> }
+                { path: 'konz', element: <Front_Faq /> }
             ]
         },
         // { path: '/skeleton', element: <Pure_Skeleton /> }, // test skeleton loading
         { path: '/login', element: <Login_Page jwt={jwt} setJwt={setJwt} /> }, // 
         { path: '/signin', element: <Sign_In /> },
-        { path: '/reset_password', element: <Reset_Password/>}, //TODO: 
+        { path: '/reset_password', element: <Reset_Password /> }, //TODO: 
         {
             path: '/notes',
             element: <Protected_Route />, // Protected_Route akan menangani state loading-nya sendiri
@@ -60,8 +60,8 @@ function Apps() {
 
     // utils function 
     async function requestUpdateJwt() {
-        return await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`, 
-            { 
+        return await axios.get(`${import.meta.env.VITE_API_BASE_URL}/db/users/refresh-token`,
+            {
                 withCredentials: true
             })
             .then(res => {
@@ -76,10 +76,6 @@ function Apps() {
                 setIsLoading(false); // Set loading ke false setelah selesai, baik berhasil maupun gagal.
             })
     }
-
-    useEffect(() => { // Minta access token saat aplikasi pertama kali dimuat, jika punya refresh token
-        
-    }, []);
 
     return (<>
         <authToken.Provider value={{ jwt, setJwt, requestUpdateJwt, isLoading, setIsLoading }}>
