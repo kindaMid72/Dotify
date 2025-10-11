@@ -2,9 +2,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
-import controllerRoute from './src/controllers/controllerRoute.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import controllerRoute from './src/controllers/controllerRoute.js';
 
 dotenv.config();
 
@@ -33,8 +33,8 @@ app.use('/api/db', controllerRoute);
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // Untuk semua permintaan GET lainnya yang bukan API, kirim index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 
