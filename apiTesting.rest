@@ -5,8 +5,8 @@ POST http://localhost:3000/api/db/users/create_user
 Content-Type: application/json
 
 {
-    "email": "test",
-    "password": "test",
+    "email": "test1",
+    "password": "test1",
     "name" : "testAcc"
 }
 
@@ -15,13 +15,22 @@ POST http://localhost:3000/api/db/users/login
 Content-Type: application/json
 
 {
-    "email": "test",
-    "password": "test"
+    "email": "test1",
+    "password": "test1",
+    "rememberMe" : true  
 }
-
 
 ### logout
 POST http://localhost:3000/api/db/users/logout
+
+### delete acc
+DELETE http://localhost:3000/api/db/users/delete_user
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE4LCJlbWFpbCI6InRlc3QxIiwiaWF0IjoxNzYwMjM4MzQ3LCJleHAiOjE3NjAyNDAxNDd9.pjvvClV-81oOLLHn47cnYgOvBqMi9-gzb1CAE_v5HTE
+
+{
+    "id": 18
+}
 
 ### refresh token
 GET http://localhost:3000/api/db/users/refresh-token

@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { authToken } from '../router';
 import { sharedContext } from './Notes_App';
 
+// components
+import Confirmation_Card from '../components/Confirmation_Card';
+
 
 function Navbar(props) {
     const navigate = useNavigate();
@@ -18,6 +21,7 @@ function Navbar(props) {
     const userMenuRef = useRef(null);
     const [showMenu, setShowMenu] = useState(false);
     const { jwt, setJwt, requestUpdateJwt } = useContext(authToken);
+    const [showWarning, setShowWarning] = useState(null);
 
     // shared context
     const {
@@ -62,9 +66,31 @@ function Navbar(props) {
     function handleThemeChange() {
         setThemeMode(prev => prev === 'light' ? 'dark' : 'light');
     }
+    async function handleDeleteAccount(){
+        setShowWarning(
+        <Confirmation_Card title="Delete Account" message="Are you sure you want to delete your account?" delayConfirm={true}
+            onConfirm={() => {
+                const tempJwt = jwt; // simpan jwt sebelum menghapus akun
+                setShowWarning(null);
+                handleLogout(); // logout terlebih dahulu sebelum menghapus akun
+                axios.delete(`${import.meta.env.VITE_API_BASE_URL}/db/users/delete_user`, {
+                    headers: {
+                        Authorization: `Bearer ${tempJwt}`
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }}
+            onCancel={() => {
+                setShowWarning(null);
+            }}
+        />
+        )
+    }
 
 
     return <>
+        {showWarning}
         <nav id="container" className="p-2 pr-4 bg-gray-200 border-b-[2px] border-gray-300 dark:bg-gray-800 dark:border-gray-700">
             <ol className=" flex justify-end items-center gap-1.5 flex-1">
                 <div className='flex-1 flex items-center justify-between'>
@@ -101,6 +127,7 @@ function Navbar(props) {
                         <h3 className='pb-3 dark:text-gray-200'>{jwt ? JSON.parse(atob(jwt.split('.')[1])).email : 'User'}</h3>
                         <hr className="border-gray-400 dark:border-gray-600" />
                         <button onClick={handleLogout} className='pt-2 text-red-700 hover:text-red-400 w-full text-left dark:text-red-400 dark:hover:text-red-300'>Logout</button>
+                        <button onClick={handleDeleteAccount} className='pt-2 text-red-700 hover:text-red-400 w-full text-left dark:text-red-400 dark:hover:text-red-300'>Delete Account</button>
                     </div>
                 </li>
             </ol>

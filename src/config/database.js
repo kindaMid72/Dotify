@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-
-dotenv.config(); // env configuration
+dotenv.config(); // TODO: jangan di hilangkan
 
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,

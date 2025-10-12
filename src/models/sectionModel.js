@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
 import db from '../config/database.js';
-
-dotenv.config(); // env configuration'
 
 async function storeSectionToken(params) {
     const section_id = params.section_id;

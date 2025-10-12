@@ -1,6 +1,5 @@
 import db from '../config/database.js';
 
-
 async function createUser({ email, passwordHashed, name, profile_url, current_time }) {
     try {
         const sql = `
@@ -17,8 +16,14 @@ async function createUser({ email, passwordHashed, name, profile_url, current_ti
 async function editUser(params) {
 
 }
-async function deleteUser(params) {
- // TODO: 
+async function deleteUser({id}) {
+    const sql = "DELETE FROM users WHERE id = ?";
+    try{
+        const [result] = await db.query(sql, [id]);
+        return result.affectedRows > 0;
+    }catch(err){
+        throw new Error(err.message);
+    }
 }
 async function resetPasswordByEmail({email, newPasswordHash}) {
     try{

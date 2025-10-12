@@ -15,6 +15,7 @@ export default (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [popUpElement, setPopUpElement] = useState(null);
+    const [rememberMe, setRememberMe] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -31,10 +32,11 @@ export default (props) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'include', // <-- Perbaiki kesalahan ketik dari 'inclued' menjadi 'include'
+                    credentials: 'include',
                     body: JSON.stringify({
                         email: email,
-                        password: password
+                        password: password,
+                        rememberMe: rememberMe // boolean, remember for 30 days if true, default 7 days if false
                     })
                 });
                 const data = await response.json(); // extract json
@@ -107,7 +109,7 @@ export default (props) => {
 
                     <div className="flex justify-between items-center mt-5"> {/* forgot password section */}
                         <div className="flex justify-start items-center">
-                            <input type='checkbox' className="mr-2"></input>
+                            <input type='checkbox' checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="mr-2"></input> {/* remember for 30 day*/}
                             <p>Remember me</p>
                         </div>
                         <button className="hover:underline" onClick={() => handleForgotPassword()}>Forgot Password?</button>

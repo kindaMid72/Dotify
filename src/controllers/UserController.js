@@ -46,7 +46,7 @@ route.post('/create_user', async (req, res) => {
 route.post('/login', async (req, res) => {
     try {
         // check credentials
-        const { email, password } = req.body;
+        const { email, password, rememberMe } = req.body;
         const hashedPassword = await userModels.getHashedPasswordByEmail({ email }); // get hashed password by email for comparison
         if (!hashedPassword) {
             return res.sendStatus(401); // unauthorized, non-existing email. res.sendStatus() lebih singkat.
@@ -55,7 +55,7 @@ route.post('/login', async (req, res) => {
         // create section token & refresh token
         const isCorrect = await bcrypt.compare(password, hashedPassword);
         if (isCorrect) {
-            console.log('login successfull, password match');
+            console.log('login successfull, password match for user with email:', email);
             // TODO: get user id by email and pass it to jwt
             const userId = await userModels.getIdByEmail({ email });
             const accessToken = jwt.sign({ userId: userId, email: email }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_AGE });
@@ -68,7 +68,7 @@ route.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // true di produksi, false di development
                 sameSite: 'strict',
-                maxAge: REFRESH_TOKEN_AGE_DAYS * 24 * 60 * 60 * 1000 // day to millisecond 
+                maxAge: ( rememberMe ? 30 : REFRESH_TOKEN_AGE_DAYS) * 24 * 60 * 60 * 1000 // day to millisecond 
             })
             res.status(200).json(
                 { message: "login successfull", userId: userId, email: email, accessToken: accessToken }
@@ -112,6 +112,20 @@ route.post('/logout', async (req, res) => {
         res.sendStatus(500).json({ message: "something when wrong" });
     }
 });
+
+route.delete('/delete_user', async (req, res) => {
+    try{
+        const verify = jwt.verify(req.headers.authorization.split(' ')[1], ACCESS_TOKEN_SECRET);
+        if(!verify) return res.status(403).json({message: "invalid token"});
+        const userId = verify.userId;
+        const result = await userModels.deleteUser({id: userId});
+        if(result) return res.status(200).json({message: "user deleted successfully"});
+        return res.status(500).json({message: "failed to delete user"});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message: "failed to delete user"});
+    }
+})
 
 route.get('/check-token', async (req, res) => {
     // req -> accessToken
